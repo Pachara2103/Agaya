@@ -1,0 +1,178 @@
+.container {
+  display: flex;
+  background-color: #fff;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.signin-container {
+  width: 50vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & .column-box {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+}
+
+.google {
+  width: 18vw;
+  height: 6vh;
+  background-color: #fff;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px;
+  margin-left: 0;
+  color: #333;
+
+  border-radius: 10px;
+  border: 1px solid #5b86e5;
+  cursor: pointer;
+}
+
+.input {
+  background-color: #fff;
+  height: 45px;
+  border: none;
+  border-bottom: 1px solid #9d9d9d;
+  margin-bottom: 10px;
+  color: #9d9d9d;
+  outline: none;
+}
+.title {
+  font-size: 35px;
+  font-weight: bold;
+  color: #000;
+}
+
+.normal-text {
+  font-size: 16px;
+}
+
+.signin-button {
+  margin-bottom: 5px;
+  margin-top: 20px;
+}
+.register-button {
+  background-color: #fff;
+  border-color: #5b86e5;
+  color: #5b86e5;
+}
+
+/* image */
+.img-box {
+  width: 50vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  & .img {
+    width: 45vw;
+    height: 72vh;
+    background: url(https://i.pinimg.com/736x/25/06/c9/2506c909c706c6fcbaaf686aafc5032e.jpg)
+      no-repeat;
+    /* background-size: contain; */
+    background-size: cover;
+    background-position: center center;
+    /* ค่าที่ 1 → แนวนอน (horizontal)
+    ค่าที่ 2 → แนวตั้ง (vertical) */
+  }
+}
+
+@media (max-width: 400px) {
+  .img-box {
+    display: none;
+  }
+  .signin-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .column-box {
+      margin-right: 20px;
+
+      width: 70%;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+
+    .google {
+      width: 200px;
+      height: 6vh;
+      background-color: #fff;
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px;
+      margin-left: 0;
+      color: #333;
+
+      border-radius: 10px;
+      border: 1px solid #5b86e5;
+      cursor: pointer;
+    }
+
+    .input {
+      background-color: #fff;
+      height: 45px;
+      border: none;
+      border-bottom: 1px solid #9d9d9d;
+      margin-bottom: 10px;
+      color: #9d9d9d;
+      outline: none;
+    }
+    .title {
+      font-size: 30px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .normal-text {
+      font-size: 16px;
+    }
+
+    .signin-button {
+      margin-bottom: 5px;
+      margin-top: 20px;
+    }
+    .register-button {
+      background-color: #fff;
+      border-color: #5b86e5;
+      color: #5b86e5;
+    }
+  }
+}
+
+/* 
+
+ Portrait (แนวตั้ง): 768px
+ตัวอย่าง: iPad รุ่นมาตรฐาน, iPad Air แนวตั้ง
+
+Landscape (แนวนอน): 1024px
+ตัวอย่าง: iPad รุ่นมาตรฐาน, iPad Air หมุนเป็นแนวนอน
+
+Portrait (แนวตั้ง): 375px
+ตัวอย่าง: iPhone 6/7/8, iPhone X/11/12/13 Mini
+
+Landscape (แนวนอน): 667px
+ตัวอย่าง: iPhone 6/7/8, iPhone X/11/12/13 Mini หมุนเป็นแนวนอน
+
+Notebook 1920 x 1080 */
+
+body {
+  overflow: hidden;
+}
