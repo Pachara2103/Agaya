@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./page/HomePage/Home.jsx";
+import Signin from "./page/LoginPage/Signin.jsx"
+import Signup from "./page/LoginPage/Signup.jsx"
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  // https://reactrouter.com/start/declarative/routing
   return (
-    <>
-    
-      <h1>Vite + React</h1>
-     
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="signin" element={<Signin />}/>
+        <Route path="signup" element={<Signup />}/>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App
