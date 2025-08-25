@@ -1,20 +1,16 @@
 const express = require('express')
+const http = require("http");
 const dotenv = require('dotenv') 
-const app = express();
+const app = require("./app.js");
 const login = require('./routes/signin')
 const connectDB = require('./config/db')
-
-dotenv.config({path: './config/config.env'});
+dotenv.config({path: '.env'});
 connectDB();
 
-app.use(express.json())
-
-app.get('/', (req, res)=>{
-    res.send('hello world');
-})
+const server = http.createServer(app);  
 
 const port = process.env.PORT;
 
-app.listen(port, () => {
-    console.log('Server running at port', 5000);
+server.listen(port, () => {
+    console.log('Server running at port', port);
 });

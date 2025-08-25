@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  uid: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: 100
-  },
+  // uid: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  //   maxlength: 100
+  // },
   username: {
     type: String,
     required: true,
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     maxlength: 72
   },
-  phone_number: {
+  phoneNumber: {
     type: String,
     required: true,
     match: /^[0-9]{10}$/ // ตรวจสอบว่าเป็นเลข 10 หลัก
@@ -28,22 +28,23 @@ const userSchema = new mongoose.Schema({
     maxlength: 72,
     match: /^\S+@\S+\.\S+$/ // ตรวจสอบรูปแบบ email
   },
-  usertype: {
+  userType: {
     type: String,
     required: true,
-    maxlength: 10
+    maxlength: 10,
   },
   address: {
     type: String,
     required: true,
     maxlength: 255
   },
-  birth_date: {
+  dateOfBirth: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now()
   }
 }, {
-  timestamps: true // เพิ่ม createdAt และ updatedAt อัตโนมัติ
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);
