@@ -149,32 +149,6 @@ li {
   background-color: #ff3f33;
 }
 
-.footer {
-  position: relative;
-  margin-top: 20vh;
-  background-color: #000000;
-  width: 100vw;
-  height: 40vh;
-  gap: 40px;
-  color: #fafafa;
-
-  display: flex;
-  flex-direction: row;
-  & .column {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  & .coppyright {
-    color: #363738;
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-}
-
 /* image */
 .img-box {
   width: 50vw;
