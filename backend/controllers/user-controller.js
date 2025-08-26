@@ -7,7 +7,6 @@ const findAll = async (req, res) => {
 }
 
 const create = async (req, res) => {
-  console.log(req.body);
   const {
     username,
     password,
