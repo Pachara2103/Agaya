@@ -11,7 +11,7 @@ const findAll = async (req, res) => {
     res.status(400).json({msg: err.message})
   }
 }
-
+// remove address from create process
 const create = async (req, res) => {
   try {
     const {
@@ -20,19 +20,28 @@ const create = async (req, res) => {
       phoneNumber,
       email,
       userType,
-      address,
       dateOfBirth,
     } = req.body;
-    const existingUser = await User.findOne({ username: username });
-    if (existingUser) res.status(400).json({message:"user has been used"});
-  
+    // detect by phone or email instead
+    if (email != "") {
+      const existingEmail = await User.findOne({ email });
+      if (existingEmail) {
+        return res.status(400).json({ message: "Email has been used" });
+      }
+    }
+    if (phoneNumber != "") {
+      const existingPhone = await User.findOne({ phoneNumber });
+      if (existingPhone) {
+        return res.status(400).json({ message: "Phone number has been used" });
+      }
+    }
+
     const newUser = await User.create({
       username,
       password,
       phoneNumber,
       email,
       userType,
-      address,
       dateOfBirth,
     })
     return res.status(201).json(newUser);
@@ -49,7 +58,6 @@ const update = async (req, res) => {
       phoneNumber,
       email,
       userType,
-      address,
       dateOfBirth,
     } = req.body;
     let isUpdated = false;
@@ -80,11 +88,6 @@ const update = async (req, res) => {
   
     if(userType && user.userType !== userType) {
       updatedData.userType = userType;
-      isUpdated = true;
-    }
-  
-    if(address && user.address !== address) {
-      updatedData.address = address;
       isUpdated = true;
     }
   

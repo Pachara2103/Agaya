@@ -1,15 +1,12 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  // uid: {
-  //   type: String,
-  //   required: true,
-  //   unique: true,
-  //   maxlength: 100
-  // },
+  /* 
+    username field change to not require can modify or add later
+    user need to register either email or phone
+  */
   username: {
     type: String,
-    required: true,
     maxlength: 72
   },
   password: {
@@ -17,27 +14,44 @@ const userSchema = new mongoose.Schema({
     required: true,
     maxlength: 72
   },
+  // phone is unique
   phoneNumber: {
     type: String,
-    required: true,
+    unique: true,
+    trim: true,
+    sparse: true,
     match: /^[0-9]{10}$/ // ตรวจสอบว่าเป็นเลข 10 หลัก
   },
   email: {
     type: String,
-    required: true,
+    unique: true,
+    trim: true,
+    sparse: true,
+    lowercase: true,
     maxlength: 72,
     match: /^\S+@\S+\.\S+$/ // ตรวจสอบรูปแบบ email
   },
+  /*
+    change to enum and make it array user can have more than 1 role
+  */
   userType: {
-    type: String,
-    required: true,
-    maxlength: 10,
+    type: [String],
+    enum: ['customer', 'vendor', 'admin'],
+    default: ['customer'],
+    required: true
   },
-  address: {
-    type: String,
-    required: true,
-    maxlength: 255
-  },
+  /*
+    address have to create new model schema 
+    some people have more than 1 address
+    and it might have different name on that address
+    dont want to create nested array 
+  */
+  // address: {
+  //   type: String,
+  //   required: true,
+  //   maxlength: 255
+  // },
+  // this on can modify later
   dateOfBirth: {
     type: Date,
     required: true,
@@ -45,6 +59,14 @@ const userSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+});
+
+// check email or phoneNumber at least 1 exist 
+userSchema.pre('validate', function(next) {
+  if (!this.email && !this.phoneNumber) {
+    this.invalidate('email', 'Email or Phone number must exist');
+  }
+  next();
 });
 
 module.exports = mongoose.model('User', userSchema);
