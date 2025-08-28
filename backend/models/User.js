@@ -3,12 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-  // uid: {
-  //   type: String,
-  //   required: true,
-  //   unique: true,
-  //   maxlength: 100
-  // },
   username: {
     type: String,
     required: true,
@@ -67,4 +61,4 @@ userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 }
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.user || mongoose.model('user', userSchema);
