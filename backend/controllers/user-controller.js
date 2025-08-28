@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/user");
 const createError = require("http-errors");
 
 const findAll = async (req, res) => {
@@ -11,7 +11,7 @@ const findAll = async (req, res) => {
     res.status(400).json({msg: err.message})
   }
 }
-
+// remove address from create process
 const create = async (req, res) => {
   try {
     const {
@@ -20,19 +20,15 @@ const create = async (req, res) => {
       phoneNumber,
       email,
       userType,
-      address,
       dateOfBirth,
     } = req.body;
-    const existingUser = await User.findOne({ username: username });
-    if (existingUser) res.status(400).json({message:"user has been used"});
-  
+    // remove try catch will handle it
     const newUser = await User.create({
       username,
       password,
       phoneNumber,
       email,
       userType,
-      address,
       dateOfBirth,
     })
     return res.status(201).json(newUser);
@@ -49,7 +45,6 @@ const update = async (req, res) => {
       phoneNumber,
       email,
       userType,
-      address,
       dateOfBirth,
     } = req.body;
     let isUpdated = false;
@@ -80,11 +75,6 @@ const update = async (req, res) => {
   
     if(userType && user.userType !== userType) {
       updatedData.userType = userType;
-      isUpdated = true;
-    }
-  
-    if(address && user.address !== address) {
-      updatedData.address = address;
       isUpdated = true;
     }
   
