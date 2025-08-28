@@ -21,8 +21,7 @@ exports.register = async (req, res, next) => {
     phoneNumber,
     email,
     userType,
-    address,
-    birth_date,
+    dateOfBirth,
   } = req.body;
 
   const errors = validatePassword(password);
@@ -30,15 +29,39 @@ exports.register = async (req, res, next) => {
     return res.status(400).json({success: false, message: "Password " + errors.join(", ")});
   }
 
-  const user = await User.create({
-    username,
-    password,
-    phoneNumber,
-    email,
-    userType,
-    address,
-    birth_date,
-  });
+  try {
+    const existingUser = await User.findOne({
+      $or: [{email}, {phoneNumber}]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email or phone number already registered"
+      });
+    }
+
+    const user = await User.create({
+      username,
+      password,
+      phoneNumber,
+      email,
+      userType,
+      dateOfBirth,
+    });
+  } catch (err) {
+    console.error(err);
+    if (err.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Duplicate field value entered"
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
 
   //then creat jwt token & save to cookies
   // const token = user.getSignedJwtToken();
