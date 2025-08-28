@@ -17,7 +17,7 @@ exports.login = async (req, res, next) => {
     if (!user) {
       return res
         .status(400)
-        .json({success: false, msg: "Invalid credentials"});
+        .json({success: false, msg: "Invalid credentials1"});
     }
 
     //then validate the password
@@ -26,7 +26,7 @@ exports.login = async (req, res, next) => {
     if (!isMatch) {
       return res 
         .status(401)
-        .json({success: false, msg: 'Invalid credential'});
+        .json({success: false, msg: 'Invalid credential2'});
     }
 
     // Create token
