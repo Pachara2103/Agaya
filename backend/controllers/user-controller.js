@@ -22,20 +22,7 @@ const create = async (req, res) => {
       userType,
       dateOfBirth,
     } = req.body;
-    // detect by phone or email instead
-    if (email != "") {
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        return res.status(400).json({ message: "Email has been used" });
-      }
-    }
-    if (phoneNumber != "") {
-      const existingPhone = await User.findOne({ phoneNumber });
-      if (existingPhone) {
-        return res.status(400).json({ message: "Phone number has been used" });
-      }
-    }
-
+    // remove try catch will handle it
     const newUser = await User.create({
       username,
       password,
