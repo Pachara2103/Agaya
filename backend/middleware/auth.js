@@ -43,9 +43,29 @@ exports.protect = async (req, res, next) => {
 //Grant access to specific roles
 exports.authorize = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.userType)) {
-            return res.status(403).json({success: false, message: "User's role is not authorized to access this route"});
+        if (!req.user) {
+            return res.status(401).json({success: false, message: "Not authenticated"});
         }
+
+        const userRoles = Array.isArray(req.user.userType)
+          ? req.user.userType
+          : [req.user.userType];
+
+        const authorized = userRoles.some(r =>
+            roles.map(rr => rr.toLowerCase()).includes(r.toLowerCase())
+        );
+
+        if (!authorized) {
+            return res.status(403).json({
+                success: false,
+                message: `Not authorized - expected one of [${roles}], got [${userRoles}]`
+            });
+        }
+
+        // (In case userType.type() = string)
+        // if (!roles.includes(req.user.userType)) {
+        //     return res.status(403).json({success: false, message: "User's role is not authorized to access this route"});
+        // }
         next(); //if valid, go on
     }
 }
