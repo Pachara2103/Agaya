@@ -1,35 +1,83 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./.css";
+import OTPpage from "./OTP";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Footer from "../Footer/Footer";
+
 import { FcGoogle } from "react-icons/fc";
 import { CiSearch } from "react-icons/ci";
-import Footer from '../Footer/Footer';
+import { FaFacebook } from "react-icons/fa";
 
 function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, setState] = useState("fillUseraccount");
+  const [account, setAccount] = useState("");
+  const [invalid, setInvalid] = useState(false);
 
   const navigate = useNavigate();
   const goToSignin = () => {
     navigate("/signin");
   };
 
-  const fillEmail = (e) => {
-    setEmail(e.target.value);
+  const fillAccount = (e) => {
+    setAccount(e.target.value);
   };
-  const fillPassword = (e) => {
-    setPassword(e.target.value);
+
+  const pressEnter = (e) => {
+    if (e.key == "Enter") {
+      changState();
+    }
   };
+
+  const changState = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    let type = "email";
+    let account_user = account;
+
+    if (emailRegex.test(account)) {
+    } else if (phoneRegex.test(account)) {
+      type = "phone";
+    } else {
+      setInvalid(true);
+      return;
+    }
+    if (state === "fillUseraccount") {
+      setState("fillOTP");
+    } else if (state === "fillOTP") {
+      setState("fillPassword");
+    } else {
+      setState("fillUseraccount");
+    }
+
+    if (type == "phone") {
+      const num = account.slice(1);
+      const part1 = num.slice(0, 2);
+      const part2 = num.slice(2, 5);
+      const part3 = num.slice(5);
+      account_user = `(+66) ${part1} ${part2} ${part3}`;
+    }
+    navigate(`/signup?step=verify-identity&accountType=${type}`, {
+      state: { account_user },
+    });
+  };
+
+  useEffect(() => {
+    if (invalid) {
+      setTimeout(() => {
+        setInvalid(false);
+      }, 5000);
+    }
+  }, [invalid]);
 
   return (
     <div className="container">
-      <div className="promotion small">
+      {/* <div className="promotion small">
         <label>
           โปรโมชันพิเศษรับซัมเมอร์! ชุดว่ายน้ำลด 50% ทุกแบบ
           พร้อมส่งฟรีแบบด่วนพิเศษ!
         </label>
         <p style={{ fontWeight: "800" }}>ช็อปเลย!</p>
-      </div>
+      </div> */}
 
       <nav>
         <div className="header">
@@ -53,56 +101,56 @@ function Signup() {
 
       <main>
         <div className="content">
-          <div className="img-box">
-            <div className="img"></div>
-          </div>
+          {state === "fillUseraccount" && (
+            <div className="row">
+              <div className="img"></div>
 
-          <div className="signin-container">
-            <div className="column-box">
-              <h1 className="title">สมัครใหม่</h1>
+              <div className="register-container">
+                <h1 className="title">สมัครใหม่</h1>
 
-              <input
-                type="text"
-                placeholder="อีเมลล์ หรือ เบอร์โทรศัพท์"
-                onChange={fillEmail}
-                className="input normal"
-              />
-              <input
-                type="text"
-                placeholder="รหัสผ่าน"
-                onChange={fillPassword}
-                className="input normal"
-              />
+                <input
+                  type="text"
+                  placeholder="อีเมล หรือ เบอร์โทรศัพท์"
+                  onChange={fillAccount}
+                  onKeyDown={pressEnter}
+                  className="input normal"
+                />
 
-              <button className="signup-button normal">สร้างบัญชีผู้ใช้</button>
+                {invalid && (
+                  <p className="invalid">กรุณาใส่ อีเมล หรือ เบอร์โทรศัพท์ ให้ถูกต้อง</p>
+                )}
 
-              <div className="google">
-                <FcGoogle size={30} />
-                <p className="normal">Sign up with Google</p>
-              </div>
+                <button className="signup-button normal" onClick={changState}>
+                  สร้างบัญชีผู้ใช้
+                </button>
 
-              <div className="link normal">
-                <p>หากมีบัญชีผู้ใช้แล้ว คุณสามารถ</p>
-                <p
-                  style={{
-                    borderBottom: "solid 1px #000000",
-                    cursor: "pointer",
-                  }}
+                <div className="column">
+                  <div className="icon">
+                    <FaFacebook size={30} color="#0866FF" />
+                    <p className="normal">Sign up with Google</p>
+                  </div>
 
-                  onClick={goToSignin}
-                >
-                  เข้าสู่ระบบ
-                </p>
+                  <div className="icon">
+                    <FcGoogle size={30} />
+                    <p className="normal">Sign up with Google</p>
+                  </div>
+                </div>
+
+                <div className="link normal">
+                  <p>หากมีบัญชีผู้ใช้แล้ว คุณสามารถ</p>
+                  <p className="link-signin" onClick={goToSignin}>
+                    เข้าสู่ระบบ
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {state === "fillOTP" && <OTPpage />}
         </div>
       </main>
 
       <Footer />
-
-    
-
     </div>
   );
 }

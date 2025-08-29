@@ -2,9 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import Signin from "./components/LoginPage/Signin.jsx"
-import Signup from "./components/LoginPage/Signup.jsx"
-
+import Signin from "./components/LoginPage/Signin.jsx";
+import Signup from "./components/LoginPage/Signup.jsx";
+import OTP from "./components/LoginPage/OTP.jsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -14,13 +14,14 @@ let router = createBrowserRouter([
     Component: App,
   },
   {
-     path: "/signin",
+    path: "/signin",
     Component: Signin,
   },
   {
-     path: "/signup",
+    path: "/signup",
     Component: Signup,
-  }
+  },
+ 
 ]);
 
 createRoot(document.getElementById("root")).render(
