@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TestUserFetch from "./components/TestUserFetch";
 import "./app.css";
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
 
   return (
     <>
+      <TestUserFetch/>
       <header>
         <nav>
           <div className="top-bar">
