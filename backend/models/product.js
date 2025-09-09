@@ -40,7 +40,7 @@ const productSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    maxlength: 100,
+    maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
   }
 }, {
