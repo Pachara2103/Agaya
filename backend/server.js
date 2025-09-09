@@ -1,9 +1,11 @@
-const express = require('express')
+const express = require('express');
 const http = require("http");
-const dotenv = require('dotenv') 
+const dotenv = require('dotenv');
 const app = require("./app.js");
-const connectDB = require('./config/db')
+
 dotenv.config({path: '.env'});
+
+const connectDB = require('./config/db');
 connectDB();
 
 const server = http.createServer(app);  

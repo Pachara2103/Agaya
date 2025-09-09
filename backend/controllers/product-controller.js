@@ -111,4 +111,4 @@ const deleteProduct = async (req, res, next) => {
 }
 
 //CRUD operations
-modules.exports = { findAllProduct, findProductById, createProduct, updateProduct, deleteProduct }; 
+module.exports = { findAllProduct, findProductById, createProduct, updateProduct, deleteProduct }; 
