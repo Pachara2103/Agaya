@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
   vid: {
     type: String,
     required: [true,"Plaes e enter Vendor's id"],
-    maxlength: 100,
+    maxlength: [100,"Vidor's id can not be more than 100 characters"],
     ref: 'Vendor' 
   },
   type: {
