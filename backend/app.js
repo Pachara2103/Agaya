@@ -3,7 +3,6 @@ const express = require("express");
 // const passport = require('passport');
 // const session = require('express-session');
 const cors = require("cors");
-const userRouter = require("./routes/user-routes");
 const session = require('express-session');
 
 const app = express();
@@ -34,11 +33,11 @@ app.use(session({
 
 
 //Route files
+const userRouter = require("./routes/user-routes");
 const register = require('./routes/register');
 const login = require('./routes/login');
 // const googleLogin = require('./routes/login');
 const logout = require('./routes/logout');
-const userRouter = require("./routes/user-routes");
 
 //Mount routers
 app.use("/api/v1/Agaya/", register);

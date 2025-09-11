@@ -11,6 +11,7 @@ const findAll = async (req, res) => {
     res.status(400).json({msg: err.message})
   }
 }
+
 // remove address from create process
 const create = async (req, res) => {
   try {
@@ -36,6 +37,7 @@ const create = async (req, res) => {
     res.status(400).json({msg: err.message})
   }
 }
+
 const update = async (req, res) => {
   try {
     const id = req.params.id;
@@ -103,7 +105,6 @@ const deleteUser = async (req, res) => {
     res.status(400).json({msg: err.message})
   }
 }
-
 
 //CRUD
 
