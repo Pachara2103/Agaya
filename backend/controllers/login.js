@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 //@desc Register user
 //@route POST /api/v1/Agaya/login
 //@access Public
@@ -68,4 +68,14 @@ exports.getMe = async(req, res, next) => {
     success: true,
     data: user
   });
+}
+
+exports.googleCallback = (req, res) => {
+  const user = req.user;
+  sendTokenResponse(user, 200, res);
+
+  // In case you want to redirect to frontend instead of sending JSON
+  // const token = req.user.getSignedJwtToken();
+  // res.cookie('token', token, {httpOnly: true});
+  // res.redirect('/dashboard');
 }

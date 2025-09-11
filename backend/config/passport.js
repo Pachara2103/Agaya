@@ -30,30 +30,3 @@ passport.use(new GoogleStrategy({
         }
     }
 ));
-
-//Facebook Strategy
-passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: "/api/v1/Agaya/facebook/callback",
-    profileFields: ['id', 'emails', 'name']
-    },
-    async (accessToken, refreshToken, profile, done) => {
-        try {
-            const user = await User.findOne({email: profile.emails[0].valie});
-            if (user) {
-                done(null, user);
-            } else {
-                const newUser = new User({
-                    email: profile.emails[0].value,
-                    username: profile.displayName,
-                    password: 'oauth'
-                });
-                await newUser.save();
-                done(null, newUser);
-            }
-        } catch (err) {
-            done(err, null);
-        }
-    }
-));
