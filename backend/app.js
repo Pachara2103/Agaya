@@ -21,6 +21,17 @@ app.use(session({
 //app.use(passport.initialize());
 //app.use(passport.session());
 
+//Session middleware
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true
+}));
+
+//Passport.js middleware
+//app.use(passport.initialize());
+//app.use(passport.session());
+
 
 //Route files
 const register = require('./routes/register');

@@ -14,6 +14,9 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 5000;
 
+//Cookie parser
+app.use(cookieParser());
+
 server.listen(port, () => {
     console.log('Server running at port', port);
 });
