@@ -6,9 +6,7 @@ exports.login = async (req, res, next) => {
   const { loginId, password } = req.body; //loginId is either email or phone number
 
   if (!loginId || !password) {
-    return res
-      .status(400)
-      .json({ success: false, msg: "Please provide an valid email or phone number and password" });
+    return res.status(400).json({success: false, message: "Please provide an valid email or phone number and password"});
   }
 
   try {
@@ -17,17 +15,13 @@ exports.login = async (req, res, next) => {
     }).select('+password');
 
     if (!user) {
-      return res
-        .status(400)
-        .json({success: false, msg: "Invalid credentials1"});
+      return res.status(400).json({success: false,message: "Invalid credentials (user)"});
     }
 
     //then validate the password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res 
-        .status(401)
-        .json({success: false, msg: 'Invalid credential2'});
+      return res .status(401).json({success: false, message: 'Invalid credential (password)'});
     }
 
     // Create token
@@ -54,10 +48,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     options.secure = true;
   }
 
-  res.status(statusCode).cookie('token', token, options).json({
-    success: true,
-    token
-  });
+  res.status(statusCode).cookie('token', token, options).json({success: true, token});
 }
 
 //@desc Get current logged in user
@@ -65,10 +56,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 //@access Private
 exports.getMe = async(req, res, next) => {
   const user = await User.findById(req.user.id);
-  res.status(200).json({
-    success: true,
-    data: user
-  });
+  res.status(200).json({success: true,data: user});
 }
 
 exports.googleCallback = (req, res) => {
@@ -79,4 +67,4 @@ exports.googleCallback = (req, res) => {
   // const token = req.user.getSignedJwtToken();
   // res.cookie('token', token, {httpOnly: true});
   // res.redirect('/dashboard');
-}
+};

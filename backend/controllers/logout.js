@@ -21,9 +21,9 @@ exports.logout = async (req, res) => {
         await TokenBlacklist.create({token, expiresAt});
 
         res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'development',
-        sameSite: 'strict'
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'development',
+            sameSite: 'strict'
         });
 
         res.status(200).json({success: true, message: 'Logged out successfully'});

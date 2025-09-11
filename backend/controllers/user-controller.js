@@ -8,7 +8,7 @@ const findAll = async (req, res) => {
 
   }
   catch (err) {
-    res.status(400).json({msg: err.message})
+    res.status(400).json({message: err.message})
   }
 }
 
@@ -34,7 +34,7 @@ const create = async (req, res) => {
     })
     return res.status(201).json(newUser);
   } catch (err) {
-    res.status(400).json({msg: err.message})
+    res.status(400).json({message: err.message})
   }
 }
 
@@ -91,7 +91,7 @@ const update = async (req, res) => {
     
     return res.status(200).json(updatedUser);
   } catch (err) {
-    res.status(400).json({msg: err.message})
+    res.status(400).json({message: err.message})
   }
 }
 
@@ -102,7 +102,7 @@ const deleteUser = async (req, res) => {
     if(!user) return res.status(400).json({message:"user not found"});
     return res.status(200).json(user);
   }  catch (err) {
-    res.status(400).json({msg: err.message})
+    res.status(400).json({message: err.message})
   }
 }
 

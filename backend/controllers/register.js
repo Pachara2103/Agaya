@@ -51,7 +51,7 @@ exports.register = async (req, res, next) => {
       userType,
       dateOfBirth,
     });
-
+    
     res.status(200).json({success: true, message: "Register successfully"});
   } catch (err) {
     console.error(err);
