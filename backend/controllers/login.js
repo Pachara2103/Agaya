@@ -3,16 +3,18 @@ const User = require("../models/user");
 //@route POST /api/v1/Agaya/login
 //@access Public
 exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { loginId, password } = req.body; //loginId is either email or phone number
 
-  if (!email || !password) {
+  if (!loginId || !password) {
     return res
       .status(400)
-      .json({ success: false, msg: "Please provide an email and password" });
+      .json({ success: false, msg: "Please provide an valid email or phone number and password" });
   }
 
   try {
-    const user = await User.findOne({email: email}).select('+password');
+    const user = await User.findOne({
+      $or: [{email: loginId}, {phoneNumber: loginId}]
+    }).select('+password');
 
     if (!user) {
       return res
@@ -22,7 +24,6 @@ exports.login = async (req, res, next) => {
 
     //then validate the password
     const isMatch = await user.matchPassword(password);
-
     if (!isMatch) {
       return res 
         .status(401)
@@ -35,7 +36,7 @@ exports.login = async (req, res, next) => {
     sendTokenResponse(user, 200, res);
   } catch (err) {
     console.log("error", err);
-    return res.status(400).json({ success: false });
+    return res.status(400).json({success: false, message: "Server error"});
   }
 }
 
