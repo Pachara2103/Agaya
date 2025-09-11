@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     trim: true,
-    sparse: true,
+    sparse: true, //can be null แต่ค่าที่ไม่ใช่ null ต้อง unique
     lowercase: true,
     maxlength: 72,
     match: /^\S+@\S+\.\S+$/ // ตรวจสอบรูปแบบ email

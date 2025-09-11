@@ -30,9 +30,11 @@ exports.register = async (req, res, next) => {
   }
 
   try {
-    const existingUser = await User.findOne({
-      $or: [{email}, {phoneNumber}]
-    });
+    const query = [];
+    if (email) query.push({email});
+    if (phoneNumber) query.push({phoneNumber});
+
+    const existingUser = await User.findOne({$or: query});
 
     if (existingUser) {
       return res.status(400).json({
@@ -49,14 +51,25 @@ exports.register = async (req, res, next) => {
       userType,
       dateOfBirth,
     });
+
+    res.status(200).json({success: true, message: "Register successfully"});
   } catch (err) {
     console.error(err);
+
+    if (err.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: Object.values(err.errors).map(e => e.message).join(", ")
+      });
+    }
+
     if (err.code === 11000) {
       return res.status(400).json({
         success: false,
         message: "Duplicate field value entered"
       });
     }
+
     return res.status(500).json({
       success: false,
       message: "Server error"
