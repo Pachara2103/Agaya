@@ -6,7 +6,7 @@ const app = require("./app.js");
 // const login = require('./routes/signin')
 
 //Load env vars
-dotenv.config({path: 'config/config.env'});
+dotenv.config({path: './config/config.env'});
 const connectDB = require('./config/db')
 connectDB();
 
@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const port = process.env.PORT || 5000;
 
 //Cookie parser
-app.use(cookieParser());
+// app.use(cookieParser());
 
 server.listen(port, () => {
     console.log('Server running at port', port);

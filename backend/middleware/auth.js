@@ -41,34 +41,25 @@ exports.protect = async (req, res, next) => {
 }
 
 //Grant access to specific roles
+// Fix authorize
 exports.authorize = (...roles) => {
     return (req, res, next) => {
         if (!req.user) {
-            return res.status(401).json({success: false, message: "Not authenticated"});
+            return res.status(401).json({ success: false, message: "Not authenticated" });
         }
+        
+        const userRoles = req.user.userType; // Assuming userType is an array of strings from the model
+        const hasRequiredRole = userRoles.some(role => roles.includes(role));
 
-        const userRoles = Array.isArray(req.user.userType)
-          ? req.user.userType
-          : [req.user.userType];
-
-        const authorized = userRoles.some(r =>
-            roles.map(rr => rr.toLowerCase()).includes(r.toLowerCase())
-        );
-
-        if (!authorized) {
+        if (!hasRequiredRole) {
             return res.status(403).json({
                 success: false,
-                message: `Not authorized - expected one of [${roles}], got [${userRoles}]`
+                message: `User role '${userRoles.join(', ')}' is not authorized to access this route`
             });
         }
-
-        // (In case userType.type() = string)
-        // if (!roles.includes(req.user.userType)) {
-        //     return res.status(403).json({success: false, message: "User's role is not authorized to access this route"});
-        // }
-        next(); //if valid, go on
-    }
-}
+        next();
+    };
+};
 
 // ตัวอย่างการเรียกใช้ auth เพื่อแยกให้ user แต่ละแบบเข้าใช้งานเว็บได้แตกต่างกัน
 // const { protect, authorize } = require('./middleware/auth');
