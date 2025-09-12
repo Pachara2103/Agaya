@@ -1,9 +1,8 @@
 require('dotenv').config();
 const express = require("express");
-// const passport = require('passport');
-// const session = require('express-session');
-const cors = require("cors");
+const passport = require('passport');
 const session = require('express-session');
+const cors = require("cors");
 
 const app = express();
 app.use(cors());
@@ -17,27 +16,27 @@ app.use(session({
 }));
 
 //Passport.js middleware
-//app.use(passport.initialize());
-//app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 //Route files
 const userRouter = require("./routes/user-routes");
 const register = require('./routes/register');
 const login = require('./routes/login');
-// const googleLogin = require('./routes/login');
+const googleLogin = require('./routes/google-login');
 const changePassword = require('./routes/change-password')
 const logout = require('./routes/logout');
 
 //Mount routers
 app.use("/api/v1/Agaya/", register);
 app.use("/api/v1/Agaya/", login);
-// app.use("/api/v1/Agaya/", googleLogin);
+app.use("/api/v1/Agaya/", googleLogin);
 app.use("/api/v1/Agaya/", changePassword);
 app.use("/api/v1/Agaya/", logout);
 app.use("/api/v1/Agaya/users", userRouter);
 
 //Import Passport strategies (Google)
-//require('./config/passport');
+require('./config/passport');
 
 module.exports = app;

@@ -4,11 +4,18 @@ const User = require('../models/user');
 const dotenv = require('dotenv');
 dotenv.config();
 
+// For Debuggin
+// console.log('Reading .env:', {
+//   clientID: process.env.GOOGLE_CLIENT_ID,
+//   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//   callbackURL: process.env.GOOGLE_CALLBACK_URL
+// });
+
 //Google Strategy
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/v1/Agaya/google/callback"
+    callbackURL: process.env.GOOGLE_CALLBACK_URL //"/api/v1/Agaya/google/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
         try {
@@ -29,3 +36,18 @@ passport.use(new GoogleStrategy({
         }
     }
 ));
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (err) {
+        done(err, null)
+    }
+});
+
+module.exports = passport;

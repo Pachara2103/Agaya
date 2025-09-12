@@ -1,4 +1,5 @@
 const User = require("../models/user");
+
 //@desc Register user
 //@route POST /api/v1/Agaya/login
 //@access Public
