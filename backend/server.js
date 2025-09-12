@@ -1,22 +1,13 @@
-const express = require('express');
+require('dotenv').config({ path: './config/config.env' });
 const http = require("http");
-const dotenv = require('dotenv');
-const cookieParser = require('cookie-parser');
-const app = require("./app.js");
-// const login = require('./routes/signin')
-
-//Load env vars
-dotenv.config({path: './config/config.env'});
-const connectDB = require('./config/db')
+const app = require("./app.js"); 
+const connectDB = require('./config/db');
+// remove unused import that will use in app.js
 connectDB();
 
-const server = http.createServer(app);  
-
+const server = http.createServer(app);
 const port = process.env.PORT || 5000;
 
-//Cookie parser
-// app.use(cookieParser());
-
 server.listen(port, () => {
-    console.log('Server running at port', port);
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${port}`);
 });
