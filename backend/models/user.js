@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const userSchema = new mongoose.Schema({
   /* 
     username field change to not require can modify or add later
-    user need to register either email or phone
+    user need to register either email 
   */
   username: {
     type: String,
@@ -17,11 +17,10 @@ const userSchema = new mongoose.Schema({
     maxlength: 72
   },
   // phone is unique
+  // ไม่ได้ใช้ login แล้ว เนื่องจาก sms เสียตัง
   phoneNumber: {
     type: String,
     unique: true,
-    trim: true,
-    sparse: true,
     match: /^[0-9]{10}$/ // ตรวจสอบว่าเป็นเลข 10 หลัก
   },
   email: {
