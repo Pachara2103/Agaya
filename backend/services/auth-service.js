@@ -20,6 +20,11 @@ exports.register = async (userData) => {
         throw new Error("Password validation failed: " + errors.join(", "));
     }
 
+    /* 
+        ตรงนี้พอสร้างจริงอาจต้องมากัน userType: ["customer"]
+        admin อาจต้องไปกดสร้างใน database เอง
+        ตอนนี้ยังไม่ได้แก้สามารถสร้างได้ปกติ
+    */
     const user = await User.create(userData);
     return user;
 };

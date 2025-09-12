@@ -1,44 +1,36 @@
 const User = require("../models/user");
 const createError = require("http-errors");
 
-const findAll = async (req, res) => {
-  try {
-    const users = await User.find();
-    return res.status(200).json(users);
+// ใช้ exports แทน
+// กัน role admin
+// @desc    Get all users (Admin)
+// ปรับจากของแบ้งนิดน่อย แค่ใส่พวก success เข้าไป
+exports.findAll = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json({ success: true, count: users.length, data: users });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
 
-  }
-  catch (err) {
-    res.status(400).json({message: err.message})
-  }
-}
+// ลบ create เนื่องจากมี register ไปอยู่กับ auth เลยน่าจะดีกว่า
 
-// remove address from create process
-const create = async (req, res) => {
-  try {
-    const {
-      username,
-      password,
-      phoneNumber,
-      email,
-      userType,
-      dateOfBirth,
-    } = req.body;
-    // remove try catch will handle it
-    const newUser = await User.create({
-      username,
-      password,
-      phoneNumber,
-      email,
-      userType,
-      dateOfBirth,
-    })
-    return res.status(201).json(newUser);
-  } catch (err) {
-    res.status(400).json({message: err.message})
-  }
-}
+// @desc    Get single user by ID (Admin)
+exports.findById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.status(200).json({ success: true, data: user });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
 
-const update = async (req, res) => {
+
+exports.update = async (req, res) => {
   try {
     const id = req.params.id;
     const {
@@ -95,17 +87,20 @@ const update = async (req, res) => {
   }
 }
 
-const deleteUser = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const user = await User.findByIdAndDelete(id);
-    if(!user) return res.status(400).json({message:"user not found"});
-    return res.status(200).json(user);
-  }  catch (err) {
-    res.status(400).json({message: err.message})
-  }
-}
+// @desc    Delete a user (Admin)
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.status(200).json({ success: true, message: "User deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
 
 //CRUD
 
-module.exports = {findAll, create, update, deleteUser};
+// module.exports = {findAll, create, update, deleteUser};
+// ใช้ exports แทน module.exports
