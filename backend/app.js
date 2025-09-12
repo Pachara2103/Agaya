@@ -26,12 +26,14 @@ const userRouter = require("./routes/user-routes");
 const register = require('./routes/register');
 const login = require('./routes/login');
 // const googleLogin = require('./routes/login');
+const changePassword = require('./routes/change-password')
 const logout = require('./routes/logout');
 
 //Mount routers
 app.use("/api/v1/Agaya/", register);
 app.use("/api/v1/Agaya/", login);
 // app.use("/api/v1/Agaya/", googleLogin);
+app.use("/api/v1/Agaya/", changePassword);
 app.use("/api/v1/Agaya/", logout);
 app.use("/api/v1/Agaya/users", userRouter);
 
