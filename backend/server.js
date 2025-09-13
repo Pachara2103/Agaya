@@ -1,15 +1,13 @@
-const express = require('express')
+require('dotenv').config({ path: '.env' });
 const http = require("http");
-const dotenv = require('dotenv') 
-const app = require("./app.js");
-const connectDB = require('./config/db')
-dotenv.config({path: '.env'});
+const app = require("./app.js"); 
+const connectDB = require('./config/db');
+// remove unused import that will use in app.js
 connectDB();
 
-const server = http.createServer(app);  
-
+const server = http.createServer(app);
 const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
-    console.log('Server running at port', port);
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${port}`);
 });

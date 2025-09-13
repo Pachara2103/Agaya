@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
   /* 
     username field change to not require can modify or add later
-    user need to register either email or phone
+    user need to register either email 
   */
   username: {
     type: String,
@@ -15,18 +17,17 @@ const userSchema = new mongoose.Schema({
     maxlength: 72
   },
   // phone is unique
+  // ไม่ได้ใช้ login แล้ว เนื่องจาก sms เสียตัง
   phoneNumber: {
     type: String,
     unique: true,
-    trim: true,
-    sparse: true,
     match: /^[0-9]{10}$/ // ตรวจสอบว่าเป็นเลข 10 หลัก
   },
   email: {
     type: String,
     unique: true,
     trim: true,
-    sparse: true,
+    sparse: true, //can be null แต่ค่าที่ไม่ใช่ null ต้อง unique
     lowercase: true,
     maxlength: 72,
     match: /^\S+@\S+\.\S+$/ // ตรวจสอบรูปแบบ email
@@ -38,7 +39,7 @@ const userSchema = new mongoose.Schema({
     type: [String],
     enum: ['customer', 'vendor', 'admin'],
     default: ['customer'],
-    required: true
+    required: true,
   },
   /*
     address have to create new model schema 
@@ -51,22 +52,42 @@ const userSchema = new mongoose.Schema({
   //   required: true,
   //   maxlength: 255
   // },
-  // this on can modify later
   dateOfBirth: {
     type: Date,
     required: true,
     default: Date.now()
+  },
+  provider: {
+    type: String,
+    enum: ['local', 'google'],
+    default: 'local'
+  },
+  thirdPartyPassword: {
+    type: String
   }
 }, {
   timestamps: true
 });
 
-// check email or phoneNumber at least 1 exist 
-userSchema.pre('validate', function(next) {
-  if (!this.email && !this.phoneNumber) {
-    this.invalidate('email', 'Email or Phone number must exist');
+//Encrypt password using bcrypt
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) {
+    return next();
   }
-  next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
-module.exports = mongoose.model('User', userSchema);
+//Sign JWT and return
+userSchema.methods.getSignedJwtToken = function() {
+  return jwt.sign({id:this._id}, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  });
+}
+
+//Match user entered password to hashed password in database (log in)
+userSchema.methods.matchPassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+}
+
+module.exports = mongoose.models.user || mongoose.model('user', userSchema);
