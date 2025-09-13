@@ -6,11 +6,11 @@ const productSchema = new mongoose.Schema({
     required: [true,"Plaese enter Product's id"],
     unique: true,
     trim: true,
-    maxlength: [100, "Product,s id can not be more than 100 characters"]
+    maxlength: [100, "Product's id can not be more than 100 characters"]
   },
   product_name: {
     type: String,
-    required: [true,"Plaese enter Product's name"], 
+    required: [true,"Please enter Product's name"], 
     trim : true ,
     maxlength: [255, "Product's name can not be more than 255 characters"]
   },
@@ -34,8 +34,8 @@ const productSchema = new mongoose.Schema({
   },
   vid: {
     type: String,
-    required: [true,"Plaes e enter Vendor's id"],
-    maxlength: [100,"Vidor's id can not be more than 100 characters"],
+    required: [true,"Please enter Vendor's id"],
+    maxlength: [100,"Vendor's id can not be more than 100 characters"],
     ref: 'Vendor' 
   },
   type: {
