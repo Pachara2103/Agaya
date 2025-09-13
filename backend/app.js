@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require('passport');
 const session = require('express-session');
+const errorHandler = require('./middleware/errorHandler');
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
 
@@ -14,6 +15,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+app.use(errorHandler);
 
 //Passport.js middleware
 app.use(passport.initialize());
