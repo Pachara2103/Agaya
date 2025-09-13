@@ -2,7 +2,6 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/user');
 const dotenv = require('dotenv');
-dotenv.config({path: './config.env'});
 
 // For Debuggin
 // console.log('Reading .env:', {

@@ -20,6 +20,6 @@ exports.validatePassword = (password) => {
     if (!/[a-z]/.test(password)) errors.push("must include a lowercase letter");
     if (!/[A-Z]/.test(password)) errors.push("must include an uppercase letter");
     if (!/[0-9]/.test(password)) errors.push("must include a number");
-    if (!/[@$!%*?&]/.test(password)) errors.push("must include a special character");
+    // if (!/[@$!%*?&]/.test(password)) errors.push("must include a special character");
     return errors;
 };
