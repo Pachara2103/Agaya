@@ -15,40 +15,25 @@ exports.findById = async (id) => {
 };
 
 exports.update = async (id, updateData) => {
-    const { username, password, phoneNumber, email, userType, dateOfBirth } = updateData;
+    if (updateData.password) {
+        /* 
+            ไม่ hash จะเป็นงี้
+            ex. oldpassword = 1234 hash แล้วได้ 1243c13@#%@^V%@FRSDSFA
+            พอเปลี่ยน newpassword = 1234 มันทะลุเป็น 1234 เลย
+        */
+        const salt = await bcrypt.genSalt(10);
+        updateData.password = await bcrypt.hash(updateData.password, salt);
+    }
 
-    const user = await User.findById(id);
-    if (!user) {
+    // check ของเดิมที่เช็ค 400 ข้อมูลไม่มีการเปลี่ยนแปลงเหมือนไม่ค่อยมีคนทำ
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+        new: true,
+        runValidators: true, 
+    });
+
+    if (!updatedUser) {
         throw createError(404, "User not found");
     }
-
-    const dataToUpdate = {};
-    let isUpdated = false;
-
-    if (username && user.username !== username) { 
-        dataToUpdate.username = username; isUpdated = true; 
-    }
-    if (password && user.password !== password) { 
-        dataToUpdate.password = password; isUpdated = true; 
-    }
-    if (phoneNumber && user.phoneNumber !== phoneNumber) { 
-        dataToUpdate.phoneNumber = phoneNumber; isUpdated = true; 
-    }
-    if (email && user.email !== email) { 
-        dataToUpdate.email = email; isUpdated = true; 
-    }
-    if (userType && user.userType !== userType) { 
-        dataToUpdate.userType = userType; isUpdated = true; 
-    }
-    if (dateOfBirth && user.dateOfBirth !== dateOfBirth) { 
-        dataToUpdate.dateOfBirth = dateOfBirth; isUpdated = true; 
-    }
-
-    if (!isUpdated) {
-        throw createError(400, "Does not have any different data.");
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(id, dataToUpdate, { new: true });
     return updatedUser;
 };
 
