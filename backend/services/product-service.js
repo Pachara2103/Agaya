@@ -61,7 +61,7 @@ exports.updateProduct = async (product, updateData, user) => {
     try {
         
         let isUpdated = false;
-        const fields = ["product_id", "product_name", "stock_quantity", "price", "rating", "vid", "type"];
+        const fields = ["product_id", "product_name", "stock_quantity", "price", "rating", "type"];
         const dataToUpdate = {};
 
         for (const key of fields) {
