@@ -25,10 +25,12 @@ app.use(cookieParser());
 //Route files
 const userRouter = require("./routes/user-routes");
 const authRouter = require("./routes/auth-routes");
+const productRouter = require("./routes/product-routes");
 
 //Mount routers
 app.use("/api/v1/Agaya/auth", authRouter);  
 app.use("/api/v1/Agaya/users", userRouter);
+app.use("/api/v1/Agaya/products", productRouter);
 
 //Import Passport strategies (Google)
 require('./config/passport');
