@@ -25,19 +25,19 @@ exports.update = async (id, updateData) => {
 
     for (const x of tmp) {
         if (updateData[x]) {
-        if (x === "password") {
-            const isSame = await bcrypt.compare(updateData.password, user.password);
-            if (!isSame) {
-                const salt = await bcrypt.genSalt(10);
-                dataToUpdate.password = await bcrypt.hash(updateData.password, salt);
-                isUpdated = true;
+            if (x === "password") {
+                const isSame = await bcrypt.compare(updateData.password, user.password);
+                if (!isSame) {
+                    const salt = await bcrypt.genSalt(10);
+                    dataToUpdate.password = await bcrypt.hash(updateData.password, salt);
+                    isUpdated = true;
+                }
+            } else {
+                if (user[x] !== updateData[x]) {
+                    dataToUpdate[x] = updateData[x];
+                    isUpdated = true;
+                }
             }
-        } else {
-            if (user[x] !== updateData[x]) {
-                dataToUpdate[x] = updateData[x];
-                isUpdated = true;
-            }
-        }
         }
     }
 
