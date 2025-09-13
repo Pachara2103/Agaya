@@ -3,24 +3,26 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
   product_id: {
     type: String,
-    required: true,
+    required: [true,"Plaese enter Product's id"],
     unique: true,
-    maxlength: 100
+    trim: true,
+    maxlength: [100, "Product's id can not be more than 100 characters"]
   },
   product_name: {
     type: String,
-    required: true,
-    maxlength: 255
+    required: [true,"Please enter Product's name"], 
+    trim : true ,
+    maxlength: [255, "Product's name can not be more than 255 characters"]
   },
   stock_quantity: {
     type: Number,
-    required: true,
+    required: [true,"Require stock quantity"],
     min: 0,
     max: 99999
-  },
-  price: {
+  }, 
+  price : {
     type: Number,
-    required: true,
+    required: [true,"Please enter Product's price"],
     min: 0,
     max: 99999999
   },
@@ -28,18 +30,18 @@ const productSchema = new mongoose.Schema({
     type: Number,
     min: 0.0,
     max: 5.0,
-    default: null // เพราะ Allow Nulls = Yes
+    default: null
   },
   vid: {
     type: String,
-    required: true,
-    maxlength: 100,
-    ref: 'Vendor' // อ้างอิง Vendor schema
+    required: [true,"Please enter Vendor's id"],
+    maxlength: [100,"Vendor's id can not be more than 100 characters"],
+    ref: 'Vendor' 
   },
   type: {
     type: String,
-    maxlength: 100,
-    default: null // เพราะ Allow Nulls = Yes
+    maxlength: [100,"Type can not be more than 100 characters"],
+    default: null 
   }
 }, {
   timestamps: true
