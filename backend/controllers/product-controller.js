@@ -29,7 +29,7 @@ exports.createProduct = async (req, res, next) => {
 
 exports.updateProduct = async (req, res, next) => {
     try {
-        const updatedProduct = await productService.updateProduct(req.params.id, req.body, req.user);
+        const updatedProduct = await productService.updateProduct(req.resource, req.body, req.user);
         res.status(200).json({ success: true, data: updatedProduct });
     } catch (err) {
         next(err);
@@ -38,7 +38,7 @@ exports.updateProduct = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
     try {
-        await productService.deleteProduct(req.params.id, req.user);
+        await productService.deleteProduct(req.resource, req.user);
         res.status(200).json({ success: true, message: "Product deleted successfully" });
     } catch (err) {
         next(err);
