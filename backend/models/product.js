@@ -42,6 +42,11 @@ const productSchema = new mongoose.Schema({
     type: String,
     maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
+  },
+  product_description: {
+    type: String,
+    maxlength: [200,"Product description can not be more than 200 characters"],
+    default: null 
   }
 }, {
   timestamps: true

@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 
 // @desc   Get all products
-// @route  GET /api/products
+// @route  GET /api/v1/Agaya/products
 // @access Public
 const getProducts = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ const getProducts = async (req, res) => {
 };
 
 // @desc   Get single product by ID
-// @route  GET /api/products/:id
+// @route  GET /api/v1/Agaya/products/:id
 // @access Public
 const getProductById = async (req, res) => {
   try {
@@ -27,7 +27,7 @@ const getProductById = async (req, res) => {
 };
 
 // @desc   Create new product
-// @route  POST /api/products
+// @route  POST /api/v1/Agaya/products
 // @access Public
 const createProduct = async (req, res) => {
   try {
