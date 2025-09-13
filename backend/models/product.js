@@ -38,11 +38,15 @@ const productSchema = new mongoose.Schema({
     maxlength: [100,"Vendor's id can not be more than 100 characters"],
     ref: 'Vendor' 
   },
-  type: {
+  type: { // category
     type: String,
     maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
+  },
+  image: {
+    type: String,
   }
+
 }, {
   timestamps: true
 });
