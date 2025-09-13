@@ -31,7 +31,7 @@ exports.protect = async (req, res, next) => {
         req.user = await User.findById(decoded.id);
 
         if (!req.user) {
-            return res.status(401).json({success: false, messga: 'User no longer exists'});
+            return res.status(401).json({success: false, message: 'User no longer exists'});
         }
 
         next();
@@ -60,6 +60,8 @@ exports.authorize = (...roles) => {
         next();
     };
 };
+
+
 
 // ตัวอย่างการเรียกใช้ auth เพื่อแยกให้ user แต่ละแบบเข้าใช้งานเว็บได้แตกต่างกัน
 // const { protect, authorize } = require('./middleware/auth');

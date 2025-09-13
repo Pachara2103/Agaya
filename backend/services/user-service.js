@@ -37,9 +37,9 @@ exports.update = async (id, updateData) => {
     if (email && user.email !== email) { 
         dataToUpdate.email = email; isUpdated = true; 
     }
-    if (userType && user.userType !== userType) { 
+    
+    }if (userType && user.userType !== userType) { 
         dataToUpdate.userType = userType; isUpdated = true; 
-    }
     if (dateOfBirth && user.dateOfBirth !== dateOfBirth) { 
         dataToUpdate.dateOfBirth = dateOfBirth; isUpdated = true; 
     }
