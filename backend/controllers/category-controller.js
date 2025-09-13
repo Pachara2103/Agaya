@@ -14,7 +14,7 @@ exports.createCategory = async (req, res, next) => {
 exports.getAllCategories = async (req, res, next) => {
     try {
         const categories = await categoryService.getAllCategories();
-        res.json({ success: true, data: categories });
+        res.status(200).json({ success: true, data: categories });
     } catch (error) {
         next(error);
     }
@@ -24,12 +24,7 @@ exports.getAllCategories = async (req, res, next) => {
 exports.getCategoryById = async (req, res, next) => {
     try {
         const category = await categoryService.getCategoryById(req.params.id);
-        if (!category) {
-            const err = new Error('Category not found');
-            err.statusCode = 404;
-            return next(err);
-        }
-        res.json({ success: true, data: category });
+        res.status(200).json({ success: true, data: category });
     } catch (error) {
         next(error);
     }
@@ -39,12 +34,7 @@ exports.getCategoryById = async (req, res, next) => {
 exports.updateCategory = async (req, res, next) => {
     try {
         const updated = await categoryService.updateCategory(req.params.id, req.body);
-        if (!updated) {
-            const err = new Error('Category not found');
-            err.statusCode = 404;
-            return next(err);
-        }
-        res.json({ success: true, data: updated });
+        res.status(200).json({ success: true, data: updated });
     } catch (error) {
         next(error);
     }
@@ -54,12 +44,7 @@ exports.updateCategory = async (req, res, next) => {
 exports.deleteCategory = async (req, res, next) => {
     try {
         const deleted = await categoryService.deleteCategory(req.params.id);
-        if (!deleted) {
-            const err = new Error('Category not found');
-            err.statusCode = 404;
-            return next(err);
-        }
-        res.json({ success: true, message: 'Category deleted successfully' });
+        res.status(200).json({ success: true, message: 'Category deleted successfully', data: deleted });
     } catch (error) {
         next(error);
     }
