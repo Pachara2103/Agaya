@@ -1,106 +1,37 @@
-const User = require("../models/user");
-const createError = require("http-errors");
+const userService = require("../services/user-service");
 
-// ใช้ exports แทน
-// กัน role admin
-// @desc    Get all users (Admin)
-// ปรับจากของแบ้งนิดน่อย แค่ใส่พวก success เข้าไป
-exports.findAll = async (req, res) => {
+exports.findAll = async (req, res, next) => {
     try {
-        const users = await User.find();
+        const users = await userService.findAll();
         res.status(200).json({ success: true, count: users.length, data: users });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        next(err);
     }
 };
 
-// ลบ create เนื่องจากมี register ไปอยู่กับ auth เลยน่าจะดีกว่า
-
-// @desc    Get single user by ID (Admin)
-exports.findById = async (req, res) => {
+exports.findById = async (req, res, next) => {
     try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
+        const user = await userService.findById(req.params.id);
         res.status(200).json({ success: true, data: user });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        next(err);
     }
 };
 
-
-exports.update = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const {
-      username,
-      password,
-      phoneNumber,
-      email,
-      userType,
-      dateOfBirth,
-    } = req.body;
-    let isUpdated = false;
-
-    const user = await User.findById(id);
-    if (!user) res.status(400).json({message:"user not found"});
-    const updatedData = {};
-  
-    if(username && user.username !== username) {
-      updatedData.username = username;
-      isUpdated = true;
-    }
-  
-    if(password && user.password !== password) {
-      updatedData.password = password;
-      isUpdated = true;
-    }
-  
-    if(phoneNumber && user.phoneNumber !== phoneNumber) {
-      updatedData.phoneNumber = phoneNumber;
-      isUpdated = true;
-    }
-  
-    if(email && user.email !== email) {
-      updatedData.email = email;
-      isUpdated = true;
-    }
-  
-    if(userType && user.userType !== userType) {
-      updatedData.userType = userType;
-      isUpdated = true;
-    }
-  
-    if(dateOfBirth && user.dateOfBirth !== dateOfBirth) {
-      updatedData.dateOfBirth = dateOfBirth;
-      isUpdated = true;
-    }
-  
-    // if (!isUpdated) throw createError(400, "Does not have any different data.");
-    if (!isUpdated) return res.status(400).json({message:"Does not have any different data."});
-    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {new : true});
-    
-    return res.status(200).json(updatedUser);
-  } catch (err) {
-    res.status(400).json({message: err.message})
-  }
-}
-
-// @desc    Delete a user (Admin)
-exports.deleteUser = async (req, res) => {
+exports.update = async (req, res, next) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
+        const updatedUser = await userService.update(req.params.id, req.body);
+        res.status(200).json({ success: true, data: updatedUser });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.deleteUser = async (req, res, next) => {
+    try {
+        await userService.deleteUser(req.params.id);
         res.status(200).json({ success: true, message: "User deleted successfully" });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        next(err);
     }
 };
-
-//CRUD
-
-// module.exports = {findAll, create, update, deleteUser};
-// ใช้ exports แทน module.exports
