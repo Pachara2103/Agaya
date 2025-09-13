@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const createError = require("http-errors");
+const bcrypt = require('bcryptjs');
 
 exports.findAll = async () => {
     const users = await User.find();
@@ -18,21 +19,25 @@ exports.update = async (id, updateData) => {
     const user = await User.findById(id);
     if (!user) throw createError(404, "User not found");
 
-    const tmp = { username, password, phoneNumber, email, userType, dateofBirth}
+    const tmp = ["username", "password", "phoneNumber", "email", "userType", "dateOfBirth"];
     const dataToUpdate = {};
     let isUpdated = false;
 
-    for (x in tmp) {
-        if (x == password) {
-            if (updateData[x] !== undefined) {
+    for (const x of tmp) {
+        if (updateData[x]) {
+        if (x === "password") {
+            const isSame = await bcrypt.compare(updateData.password, user.password);
+            if (!isSame) {
                 const salt = await bcrypt.genSalt(10);
-                dataToUpdate[x] = await bcrypt.hash(updateData[x], salt);
+                dataToUpdate.password = await bcrypt.hash(updateData.password, salt);
+                isUpdated = true;
             }
         } else {
-            if (updateData[x] !== undefined && user[x] !== updateData[x]) {
-                isUpdated = true;
+            if (user[x] !== updateData[x]) {
                 dataToUpdate[x] = updateData[x];
+                isUpdated = true;
             }
+        }
         }
     }
 
