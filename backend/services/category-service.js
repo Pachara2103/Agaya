@@ -3,7 +3,7 @@ const Category = require('../models/category');
 // Create Category
 exports.createCategory = async (data) => {
     const category = new Category(data);
-    return await category.save();
+    return await Category.save();
 };
 
 // Get All Categories
