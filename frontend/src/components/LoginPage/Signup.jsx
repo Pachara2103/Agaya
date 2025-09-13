@@ -2,10 +2,12 @@ import "./.css";
 import OTPpage from "./OTP";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import Footer from "../Footer/Footer";
+import Promotion from '../Promotion/Promotion.jsx';
+import Nav from '../NavBar/Nav.jsx';
 
 import { FcGoogle } from "react-icons/fc";
-import { CiSearch } from "react-icons/ci";
 import { FaFacebook } from "react-icons/fa";
 
 function Signup() {
@@ -70,34 +72,10 @@ function Signup() {
   }, [invalid]);
 
   return (
+    
     <div className="container">
-      {/* <div className="promotion small">
-        <label>
-          โปรโมชันพิเศษรับซัมเมอร์! ชุดว่ายน้ำลด 50% ทุกแบบ
-          พร้อมส่งฟรีแบบด่วนพิเศษ!
-        </label>
-        <p style={{ fontWeight: "800" }}>ช็อปเลย!</p>
-      </div> */}
-
-      <nav>
-        <div className="header">
-          <h2 className="big" style={{ color: "#000000" }}>
-            Agaya
-          </h2>
-
-          <ul className="nav medium">
-            <li>เปิดร้านค้าใหม่</li>
-            <li>ช่วยเหลือ</li>
-            <li>สมัครใหม่</li>
-            <li>เข้าสู่ระบบ</li>
-          </ul>
-
-          <div className="search-box small">
-            <input type="text" placeholder="ค้นหาสินค้าและร้านค้า" />
-            <CiSearch size={22} />
-          </div>
-        </div>
-      </nav>
+      <Promotion />
+      <Nav />
 
       <main>
         <div className="content">
@@ -117,7 +95,9 @@ function Signup() {
                 />
 
                 {invalid && (
-                  <p className="invalid">กรุณาใส่ อีเมล หรือ เบอร์โทรศัพท์ ให้ถูกต้อง</p>
+                  <p className="invalid">
+                    กรุณาใส่ อีเมล หรือ เบอร์โทรศัพท์ ให้ถูกต้อง
+                  </p>
                 )}
 
                 <button className="signup-button normal" onClick={changState}>

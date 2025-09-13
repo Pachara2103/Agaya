@@ -1,6 +1,6 @@
 import "./otp.css";
-import { useState, useEffect, use } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useState, useEffect} from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import ArrowLeft from "../../assets/arrow-left.png";
 import { FaCheck } from "react-icons/fa";
@@ -8,6 +8,8 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { HiArrowLongRight } from "react-icons/hi2";
+
+import moduleName from 'module';
 
 function OTP() {
   const navigate = useNavigate();
@@ -77,6 +79,10 @@ function OTP() {
     }
   }, [OTP]);
 
+  // api //
+
+  // api //
+
   const nextState = () => {
     if (state == 0 && OTP.join("").length == 6) {
       // if ("รหัส otp ผิด") {
@@ -91,6 +97,7 @@ function OTP() {
 
     if (state == 1) {
       setState(state + 1);
+
       navigate("/signup?step=done");
     } else {
       return;
