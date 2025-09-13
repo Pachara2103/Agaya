@@ -1,4 +1,3 @@
-import "./globals.css";
 import "./styleguide.css";
 import "./style.css";
 import React, { useEffect, useState } from "react";
