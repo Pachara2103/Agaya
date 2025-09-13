@@ -15,25 +15,38 @@ exports.findById = async (id) => {
 };
 
 exports.update = async (id, updateData) => {
-    if (updateData.password) {
-        /* 
-            ไม่ hash จะเป็นงี้
-            ex. oldpassword = 1234 hash แล้วได้ 1243c13@#%@^V%@FRSDSFA
-            พอเปลี่ยน newpassword = 1234 มันทะลุเป็น 1234 เลย
-        */
-        const salt = await bcrypt.genSalt(10);
-        updateData.password = await bcrypt.hash(updateData.password, salt);
+    const user = await User.findById(id);
+    if (!user) throw createError(404, "User not found");
+
+    const tmp = { username, password, phoneNumber, email, userType, dateofBirth}
+    const dataToUpdate = {};
+    let isUpdated = false;
+
+    for (x in tmp) {
+        if (x == password) {
+            if (updateData[x] !== undefined) {
+                const salt = await bcrypt.genSalt(10);
+                dataToUpdate[x] = await bcrypt.hash(updateData[x], salt);
+            }
+        } else {
+            if (updateData[x] !== undefined && user[x] !== updateData[x]) {
+                isUpdated = true;
+                dataToUpdate[x] = updateData[x];
+            }
+        }
     }
 
-    // check ของเดิมที่เช็ค 400 ข้อมูลไม่มีการเปลี่ยนแปลงเหมือนไม่ค่อยมีคนทำ
-    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+    // send 200
+    if (!isUpdated) {
+        return user;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, dataToUpdate, {
         new: true,
-        runValidators: true, 
+        runValidators: true,
     });
 
-    if (!updatedUser) {
-        throw createError(404, "User not found");
-    }
+    if (!updatedUser) throw createError(404, "User not found");
     return updatedUser;
 };
 
