@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import Signin from "./components/LoginPage/Signin.jsx"
 import Signup from "./components/LoginPage/Signup.jsx"
+import Profile from "./components/ProfilePage/Profile.jsx";
 
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -20,11 +21,15 @@ let router = createBrowserRouter([
   {
      path: "/signup",
     Component: Signup,
+  },
+  {
+     path: "/profile",
+    Component: Profile,
   }
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />,
+    <RouterProvider router={router} />
   </StrictMode>
 );
