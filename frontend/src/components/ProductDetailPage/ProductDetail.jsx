@@ -29,69 +29,17 @@ const ProductDetailPage = () => {
   }, [id]);
 
   if (!product) return <p>Loading...</p>;
+  if(!product.product.rating) product.product.rating = 0;
 
   return (
     <div className="product-details-page">
-      {/* Top Header */}
-      {/*<div className="top-header">
-        <div className="frame">
-          <div className="div">
-            <p className="text-wrapper">
-              โปรโมชันพิเศษรับซัมเมอร์! ชุดว่ายน้ำลด 50% ทุกแบบ พร้อมส่งฟรีแบบด่วนพิเศษ!
-            </p>
-            <div className="text-wrapper-2">ช็อปเลย!</div>
-          </div>
-          <div className="frame-2">
-            <div className="text-wrapper-3">ไทย</div>
-            <img className="img" src="img/drop-down.svg" alt="Dropdown" />
-          </div>
-        </div>
-      </div>}
-
-      {/* Header */}
-      {/*<div className="header">
-        <div className="frame-3">
-          <div className="logo">
-            <div className="exclusive">Agaya</div>
-          </div>
-          <div className="frame-4">
-            <div className="div-wrapper">
-              <div className="text-wrapper-4">เปิดร้านค้าใหม่</div>
-            </div>
-            <div className="div-wrapper">
-              <div className="text-wrapper-5">ช่วยเหลือ</div>
-            </div>
-            <div className="header-2">
-              <div className="text-wrapper-6">สมัครใหม่</div>
-            </div>
-            <div className="header-3">
-              <div className="text-wrapper-7">เข้าสู่ระบบ</div>
-            </div>
-          </div>
-        </div>
-        <div className="frame-5">
-          <div className="search-component-set">
-            <div className="frame-6">
-              <div className="text-wrapper-8">ค้นหาสินค้าและร้านค้า</div>
-              <img className="img" src="img/component-2.svg" alt="Search" />
-            </div>
-          </div>
-          <div className="frame-7">
-            <img className="img-2" src="img/wishlist.svg" alt="Wishlist" />
-            <div className="with-buy"></div>
-            <img className="img-2" src="img/user.svg" alt="User" />
-          </div>
-        </div>
-      </div>*/}
-
       <div className="line"></div>
-
       {/* Roadmap */}
       <div className="roadmap">
         <div className="text-wrapper-9">Account</div>
-        <img className="line-2" src="img/line-13.svg" alt="line" />
+        <img className="line-2" src="https://i.postimg.cc/qB5QkPqq/slash2.webp" alt="line" />
         <div className="text-wrapper-9">Gaming</div>
-        <img className="line-2" src="img/line-16.svg" alt="line" />
+        <img className="line-2" src="https://i.postimg.cc/qB5QkPqq/slash2.webp" alt="line" />
         <div className="nothing">{product.product.product_name}</div>
       </div>
 
@@ -119,23 +67,19 @@ const ProductDetailPage = () => {
       <div className="frame-11">
         <div className="div-2">
           <div className="div-3">
-            <img className="vector" src="img/vector-8.svg" alt="" />
-            <img className="vector" src="img/vector-21.svg" alt="" />
-            <img className="vector" src="img/vector-15.svg" alt="" />
-            <img className="vector" src="img/vector-22.svg" alt="" />
-            <img className="vector" src="img/vector-14.svg" alt="" />
+            <div className="text-wrapper-9">{product.product.rating}&nbsp;</div>
+            <img className="vector" src="https://i.postimg.cc/JhyD1223/star-new2-f3fdd7b8.png" alt="aa" />
           </div>
           <div className="text-wrapper-9">(150 Reviews)</div>
         </div>
         <div className="frame-12">
           <img className="line-3" src="img/line-17.svg" alt="" />
-          <div className="text-wrapper-12">In Stock</div>
+          <div className="text-wrapper-12">{product.product.stock_quantity} In Stock</div>
         </div>
       </div>
 
       <p className="playstation">
-        PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install &amp;
-        mess free removal Pressure sensitive.
+        {product.product.product_description}
       </p>
 
       {/* Product Options: Colors */}
@@ -179,13 +123,13 @@ const ProductDetailPage = () => {
       {/* Quantity Selector */}
       <div className="frame-20">
         <div className="icon-minus-wrapper">
-          <img className="icon-minus" src="img/icon-minus.svg" alt="Minus" />
+          <img className="icon-minus" src="https://i.postimg.cc/Dz08yM8f/minus-vector-icon.jpg" alt="Minus" />
         </div>
         <div className="frame-21">
           <div className="text-wrapper-20">2</div>
         </div>
         <div className="icon-plus-wrapper">
-          <img className="icon-plus" src="img/icon-plus.svg" alt="Plus" />
+          <img className="icon-plus" src="https://i.postimg.cc/HxKWxYFB/pinpng-com-plus-sign-png-523438.png" alt="Plus" />
         </div>
       </div>
 
@@ -194,21 +138,21 @@ const ProductDetailPage = () => {
         <div className="text-wrapper-21">Buy Now</div>
       </button>
       <div className="wishlist-wrapper">
-        <img className="wishlist" src="img/wishlist.svg" alt="Wishlist" />
+        <img className="wishlist" src="https://i.postimg.cc/mZtSHw6t/heart.png" alt="Wishlist" />
       </div>
 
       {/* Delivery & Return Info */}
       <div className="frame-22">
         <div className="under-line-2"></div>
         <div className="frame-23">
-          <img className="img-4" src="img/icon-delivery.svg" alt="Delivery" />
+          <img className="img-4" src="https://i.postimg.cc/50pk220T/13-09-2025-21-41-04-REC.png" alt="Delivery" />
           <div className="frame-24">
             <div className="text-wrapper-22">Free Delivery</div>
             <p className="p">Enter your postal code for Delivery Availability</p>
           </div>
         </div>
         <div className="frame-25">
-          <img className="img-4" src="img/icon-return.svg" alt="Return" />
+          <img className="img-4" src="https://i.postimg.cc/5N5QYQ1X/circle.png" alt="Return" />
           <div className="frame-24">
             <div className="text-wrapper-22">Return Delivery</div>
             <p className="free-days">
