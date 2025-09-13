@@ -61,12 +61,12 @@ const ProductDetailPage = () => {
 
       {/* Product Info */}
       <div className="text-wrapper-10">{product.product.product_name}</div>
-      <div className="text-wrapper-11">${product.product.price}</div>
+      <div className="text-wrapper-11">${product.product.price.toFixed(2)}</div>
 
       <div className="frame-11">
         <div className="div-2">
           <div className="div-3">
-            <div className="text-wrapper-9">{product.product.rating}&nbsp;</div>
+            <div className="text-wrapper-9">{product.product.rating.toFixed(1)}&nbsp;</div>
             <img className="vector" src="https://i.postimg.cc/JhyD1223/star-new2-f3fdd7b8.png" alt="aa" />
           </div>
           <div className="text-wrapper-9">(150 Reviews)</div>
