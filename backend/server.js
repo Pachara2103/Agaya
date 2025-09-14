@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 require('dotenv').config({ path: './config/config.env' });
+||||||| 8833a62
+require('dotenv').config({ path: '.env' });
+=======
+>>>>>>> 4fa6c6ae5a9c1c679bf58b642b15670b8e915504
 const http = require("http");
-const app = require("./app.js"); 
-const connectDB = require('./config/db');
-// remove unused import that will use in app.js
+const dotenv = require('dotenv') 
+const app = require("./app.js");
+const connectDB = require('./config/db')
+
 connectDB();
 
 const server = http.createServer(app);

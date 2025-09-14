@@ -8,7 +8,7 @@ exports.register = async (req, res, next) => {
         const user = await authService.register(req.body);
         sendTokenResponse(user, 201, res); // 201 Created
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        next(error)
     }
 };
 
@@ -20,7 +20,7 @@ exports.login = async (req, res, next) => {
         const user = await authService.login(email, password);
         sendTokenResponse(user, 200, res);
     } catch (error) {
-        res.status(401).json({ success: false, message: error.message });
+        next(error)
     }
 };
 
@@ -34,7 +34,7 @@ exports.logout = async (req, res, next) => {
         res.clearCookie('token');
         res.status(200).json({ success: true, message: 'Logged out successfully' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Logout failed', error: error.message });
+        next(error)
     }
 };
 
@@ -46,7 +46,7 @@ exports.changePassword = async (req, res, next) => {
         await authService.changePassword(req.user.id, oldPassword, newPassword);
         res.status(200).json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        next(error)
     }
 };
 

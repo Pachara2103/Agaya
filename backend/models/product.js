@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  product_id: {
-    type: String,
-    required: [true,"Plaese enter Product's id"],
-    unique: true,
-    trim: true,
-    maxlength: [100, "Product's id can not be more than 100 characters"]
-  },
+  // product_id: {
+  //   type: String,
+  //   required: [true,"Plaese enter Product's id"],
+  //   unique: true,
+  //   trim: true,
+  //   maxlength: [100, "Product's id can not be more than 100 characters"]
+  // },
   product_name: {
     type: String,
     required: [true,"Please enter Product's name"], 
@@ -38,10 +38,11 @@ const productSchema = new mongoose.Schema({
     maxlength: [100,"Vendor's id can not be more than 100 characters"],
     ref: 'Vendor' 
   },
-  type: {
+  type: { // category
     type: String,
     maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
+<<<<<<< HEAD
   },
   product_description: {
     type: String,
@@ -51,7 +52,20 @@ const productSchema = new mongoose.Schema({
   image: {
     type: [String],
     default: [] 
+||||||| 8833a62
+=======
+  },
+   product_description: {
+    type: String,
+    maxlength: [200,"Product description can not be more than 200 characters"],
+    default: null 
+  },
+  image: {
+    type: [String],
+    default: [] 
+>>>>>>> 4fa6c6ae5a9c1c679bf58b642b15670b8e915504
   }
+
 }, {
   timestamps: true
 });
