@@ -13,7 +13,6 @@ function Signup() {
   const [state, setState] = useState("fillUseraccount");
   const [account, setAccount] = useState("");
   const [invalid, setInvalid] = useState(0);
-  const invalidText = ["", ""];
 
   const navigate = useNavigate();
   const goToSignin = () => {

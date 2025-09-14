@@ -38,7 +38,7 @@ exports.login = async (email, password) => {
     // Find user by email and include the password field for comparison
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-        throw createError(401, "Invalid credentials.");
+        throw createError(401, "Invalid credentialssssssss.");
     }
 
     // Use the model's method to compare passwords
