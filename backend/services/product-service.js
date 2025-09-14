@@ -1,6 +1,8 @@
 const Product = require('../models/product');
+const AuditLog = require('../models/audit-log');
 const createError = require('http-errors');
 const auditService = require('./audit-service');
+
 
 // Get all products
 exports.findAllProduct = async () => {
@@ -10,11 +12,20 @@ exports.findAllProduct = async () => {
 
 // Get product by ID
 exports.findProductById = async (id) => {
-        const product = await Product.findById(id);
-        if (!product){
-            throw createError(404, "Product not found");
-        } 
+    const product = await Product.findById(id);
+        
+    if (product) {
         return product;
+    }
+
+    const deleteLog = await AuditLog.findOne({ resource: 'Product', resourceId: id, action: 'delete' }).sort({ timestamp: -1 });
+    
+    if (deleteLog) {
+        const deletedAt = deleteLog.timestamp.toISOString();
+        throw createError(410, `Product was deleted at ${deletedAt}`);
+    }
+
+    throw createError(404, 'Product not found');
 }
 
 // Create a new product
