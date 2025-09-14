@@ -34,7 +34,6 @@ function CreateAccountProcess() {
   const nextState = () => {
     if (state == 0) {
       setState(state + 1);
-      navigate("/signup?step=set-password");
     }
     if (state == 1) {
       setState(state + 1);
@@ -51,15 +50,9 @@ function CreateAccountProcess() {
   const renderStepContent = () => {
     switch (state) {
       case 0:
-        return (
-          <OtpInput
-            account={account}
-            onNext={nextState}
-            onBack={backToSignup}
-          />
-        );
+        return <OtpInput account={account} onNext={nextState} />;
       case 1:
-        return <PasswordInput onNext={nextState} onBack={backToSignup} />;
+        return <PasswordInput onNext={nextState}  />;
       case 2:
         return <Redirect />;
       default:
@@ -71,7 +64,7 @@ function CreateAccountProcess() {
     <div className="flex flex-col items-center justify-center gap-[10px] w-[50vw]">
       <div className="flex flex-row items-center justify-center mb-[20px] w-[50vw]">
         {procress.map((text, index) => (
-          <div class="flex flex-row gap-2">
+          <div class="flex flex-row gap-2" key={index}>
             <div className={state >= index ? "otp-focus" : "otp-nfocus"}>
               <div className="circle">
                 <p className="text-[18px]">

@@ -5,15 +5,20 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
-const PasswordInput = ({ onNext, onBack }) => {
+import { createUser } from "../../libs/fetchUserUtils";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const PasswordInput = ({ onNext }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const [format1, setFormat1] = useState(true);
   const [format2, setFormat2] = useState(false);
   const [format3, setFormat3] = useState(false);
   const [format4, setFormat4] = useState(false);
   const [disable, setDisable] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const account = location.state?.account;
 
   useEffect(() => {
     const check = {
@@ -44,16 +49,20 @@ const PasswordInput = ({ onNext, onBack }) => {
     setShowPassword(!showPassword);
   };
 
+  const register = async () => {
+    const res = await createUser({
+      email: account,
+      password: password,
+    });
+    console.log(res);
+    navigate("/signup?step=done");
+    onNext();
+  };
+
   return (
-    // display: flex;
-    // flex-direction: column;
-    // color: #000000;
-    // position: relative;
-    // justify-content: center;
-    // align-items: center;
     <div className="otp-input-box">
       <div className="relative flex flex-col justify-center items-center text-[#000] gap-2 mt-3">
-        <BackButton  />
+        <BackButton />
 
         <h1 className="text-[18px] font-bold">ตั้งรหัสผ่าน</h1>
         <p class="flex flex-col items-center justify-center font-medium gap-[5px] text-[14px]">
@@ -70,7 +79,7 @@ const PasswordInput = ({ onNext, onBack }) => {
             onChange={fillPassword}
             onKeyDown={(e) => {
               if (e.key == "Enter" && !disable) {
-                onNext();
+                register();
               }
             }}
           />
@@ -106,7 +115,7 @@ const PasswordInput = ({ onNext, onBack }) => {
         ))}
 
         <button
-          onClick={() => onNext()}
+          onClick={() => register()}
           className={disable ? "button-disable mt-5" : "mt-5"}
           disabled={disable}
         >

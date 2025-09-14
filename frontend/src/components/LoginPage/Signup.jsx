@@ -3,17 +3,17 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Footer from "../Footer/Footer";
-import Promotion from '../Promotion/Promotion.jsx';
-import Nav from '../NavBar/Nav.jsx';
+import Promotion from "../Promotion/Promotion.jsx";
+import Nav from "../NavBar/Nav.jsx";
 
 import { FcGoogle } from "react-icons/fc";
-import { CiSearch } from "react-icons/ci";
-import { FaFacebook } from "react-icons/fa";
+import { findByEmail, sendOTP} from "../../libs/userService.js";
 
 function Signup() {
   const [state, setState] = useState("fillUseraccount");
   const [account, setAccount] = useState("");
-  const [invalid, setInvalid] = useState(false);
+  const [invalid, setInvalid] = useState(0);
+  const invalidText = ["", ""];
 
   const navigate = useNavigate();
   const goToSignin = () => {
@@ -30,16 +30,23 @@ function Signup() {
     }
   };
 
-  const changState = () => {
+  const changState = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     let account_user = account;
 
     if (emailRegex.test(account)) {
+      const res = await findByEmail(account.trim());
+      console.log(res.data)
+      if (res.data.length == 1) {
+        setInvalid(1);
+        return;
+      }
     } else {
-      setInvalid(true);
+      setInvalid(2);
       return;
     }
+
     if (state === "fillUseraccount") {
       setState("fillOTP");
     } else if (state === "fillOTP") {
@@ -48,6 +55,8 @@ function Signup() {
       setState("fillUseraccount");
     }
 
+     const send = await sendOTP(account);
+     console.log(send.message)
     navigate(`/signup?step=verify-identity`, {
       state: { account_user },
     });
@@ -56,7 +65,7 @@ function Signup() {
   useEffect(() => {
     if (invalid) {
       setTimeout(() => {
-        setInvalid(false);
+        setInvalid(0);
       }, 5000);
     }
   }, [invalid]);
@@ -92,9 +101,14 @@ function Signup() {
                   className="bg-white h-[45px] border-b border-gray-400 mb-2 px-2 outline-none text-gray-500 focus:text-black"
                 />
 
-                {invalid && (
+                {invalid == 2 && (
                   <p className="text-red-500 mb-2 text-sm">
                     กรุณาใส่ อีเมล ให้ถูกต้อง
+                  </p>
+                )}
+                {invalid == 1 && (
+                  <p className="text-red-500 mb-2 text-sm">
+                    อีเมลนี้ลงทะเบียนเเล้ว กรุณาใช้ email อื่น
                   </p>
                 )}
 

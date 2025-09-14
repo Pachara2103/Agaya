@@ -1,6 +1,7 @@
-const getUser = async (url) => {
+import {API_URL} from './api';
+const getUser = async () => {
   try {
-    const data = await fetch(`${url}/users`);
+    const data = await fetch(`${API_URL}/api/v1/Agaya/users`);
     const users = data.json();
     return users;
   } catch (err) {
@@ -8,10 +9,11 @@ const getUser = async (url) => {
   }
 }
 
-const createUser = async (url, newUser) => {
+const createUser = async (newUser) => {
+  console.log("Create User Called")
   try {
     console.log(JSON.stringify(newUser))
-    const res = await fetch(`${url}/users`, {
+    const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -23,6 +25,7 @@ const createUser = async (url, newUser) => {
     const createdUser = await res.json();
     return createdUser;
   } catch (e) {
+    console.log(e);
     throw new Error("Can not create user");
   }
 };
