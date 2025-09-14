@@ -2,10 +2,6 @@ import CreateAccountProcess from "./CreateAccountProcess";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Footer from "../Footer/Footer";
-import Promotion from "../Promotion/Promotion.jsx";
-import Nav from "../NavBar/Nav.jsx";
-
 import { FcGoogle } from "react-icons/fc";
 import { findByEmail, sendOTP} from "../../libs/userService.js";
 
@@ -14,6 +10,12 @@ function Signup() {
   const [account, setAccount] = useState("");
   const [invalid, setInvalid] = useState(0);
   const invalidText = ["", ""];
+
+  // อันนี้ช่วยให้กดแล้วลิ้งก์ไปล็อกอินด้วยเมลได้ แต่ยังไม่ได้ทำว่าจะ redirect ไปไหนต่อ
+  // const handleGoogleLogin = () => {
+  //   window.location.href = 'http://localhost:5000/api/v1/Agaya/auth/google';
+  // };
+  // onClick={handleGoogleLogin} เอาอันนี้ไปใส่ที่ปุ่มล็อกอินด้วย google
 
   const navigate = useNavigate();
   const goToSignin = () => {
@@ -73,8 +75,6 @@ function Signup() {
   return (
 
     <div className="flex flex-col relative min-h-screen overflow-x-hidden">
-      <Promotion />
-      <Nav />
       <main>
         <div className="flex flex-row justify-center items-center h-[75vh] w-full px-[10vw] pr-[12vw] box-border">
           {state === "fillUseraccount" && (
@@ -134,11 +134,9 @@ function Signup() {
               </div>
             </div>
           )}
-
           {state === "fillOTP" && <CreateAccountProcess />}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
