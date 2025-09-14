@@ -1,12 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
+import axios from 'axios';
 import {FaEye, FaEyeSlash, FaArrowLeft} from 'react-icons/fa';
 import './SetNewPassword.css';
 
 function SetNewPasswordPage() {
     // State Management
+    const navigate = useNavigate();
+    const location = useLocation();
+    const oldPassword = location.state?.oldPassword;
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [validations, setValidations] = useState({
         lower: false,
@@ -15,6 +21,13 @@ function SetNewPasswordPage() {
         length: false,
         match: false
     });
+
+    useEffect(() => {
+        if (!oldPassword) {
+            console.log("ไม่พบรหัสผ่านเดิม กรุณาเริ่มจากขั้นตอนแรก");
+            navigate('/change-password-form');
+        }
+    }, [oldPassword, navigate]);
 
     useEffect(() => {
         setValidations({
@@ -26,10 +39,69 @@ function SetNewPasswordPage() {
         });
     }, [password, confirmPassword]);
 
-    const navigate = useNavigate();
+    //for debugging
+        const testAuthentication = async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('ไม่พบ Token ใน Local Storage!');
+                return;
+            }
+            try {
+                const config = { headers: { Authorization: `Bearer ${token}` } };
+                const response = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', config);
+                console.log('Authentication Success!', response.data);
+                alert('Token ใช้งานได้ปกติ!');
+            } catch (error) {
+                console.error('Authentication Failed!', error.response);
+                alert('Token ไม่ถูกต้องหรือไม่สามารถใช้งานได้! ดูที่ Console');
+            }
+            };
 
-    const handleConfirm = () => {
-        navigate('/change-password-success');
+    const handleConfirm = async (event) => {
+        event.preventDefault();
+        setIsLoading(true);
+        setError('');
+
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setError("Token ไม่ถูกต้อง");
+            return;
+        }
+
+        const requestData = {
+            oldPassword: oldPassword,
+            newPassword: password
+        };
+
+        console.log(oldPassword);
+        console.log(password);
+
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+
+        //console.log("กำลังจะส่ง PUT Request พร้อมกับ config นี้:", config);
+
+        try {
+            await axios.put(
+                'http://localhost:5000/api/v1/Agaya/auth/change-password', 
+                requestData,
+                config
+            );
+
+            console.log('Password updated successfully');
+            setIsLoading(false);
+            navigate('/change-password-success');
+        } catch (err) {
+            setIsLoading(false);
+            if (err.response) {
+                if (err.response.status === 401) setError('รหัสผ่านเดิมไม่ถูกต้อง');
+                else if (err.response.status === 400) setError('รหัสผ่านใหม่ไม่ถูกต้องตามเงื่อนไข');
+                else {
+                    setError('เกิดข้อผิดพลาดในการเชื่อมต่อ')
+                }
+            } else {
+                setError('ไม่สามารถเชื่อมต่อกับเซิฟเวอร์ได้');
+            }
+        }
     };
 
     return (
@@ -74,8 +146,14 @@ function SetNewPasswordPage() {
                             <li className={validations.match ? 'valid' : 'invalid'}>รหัสผ่านทั้ง 2 ต้องเหมือนกัน</li>
                         </ul>
 
-                        <button className="submit-button" onClick={handleConfirm}>
-                            ถัดไป
+                        {error && <p className="error-message">{error}</p>}
+
+                        <button className="submit-button" onClick={handleConfirm} disabled={isLoading}>
+                            {isLoading ? 'กำลังบันทึก' : 'ถัดไป'}
+                        </button>
+
+                        <button className="submit-button" onClick={testAuthentication}>
+                            debug
                         </button>
                     </div>
                 </div>

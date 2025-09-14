@@ -5,11 +5,17 @@ import './ChangePasswordForm.css';
 
 function PasswordForm() {
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-        navigate('/set-new-password');
+        if (!password) {
+            setError('กรุณากรอกรหัสผ่านเดิมของคุณ');
+            return;
+        }
+
+        navigate('/set-new-password', {state: {oldPassword: password}});
     };
 
     return (

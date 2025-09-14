@@ -4,6 +4,13 @@ const TokenBlacklist = require('../models/token-blacklist');
 
 //Protect routes
 exports.protect = async (req, res, next) => {
+    // ========== ↓↓↓ เพิ่มโค้ด DEBUG 4 บรรทัดนี้ ↓↓↓ ==========
+    console.log('--- PROTECT MIDDLEWARE ถูกเรียก ---');
+    console.log('Method:', req.method);
+    console.log('URL:', req.originalUrl);
+    console.log('Authorization Header:', req.headers.authorization);
+    // ========== ↑↑↑ สิ้นสุดโค้ด DEBUG ↑↑↑ ==========
+
     let token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
