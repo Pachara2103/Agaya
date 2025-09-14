@@ -26,9 +26,10 @@ const ProductDetailPage = () => {
     fetchProduct();
 
   }, [id]);
-
+  
   if (!product) return <p>Loading...</p>;
   if(!product.product.rating) product.product.rating = 0;
+  console.log("Image[0] : ",product.product.image[0]);
 
   return (
     <div className="product-details-page">
@@ -36,28 +37,30 @@ const ProductDetailPage = () => {
       {/* Roadmap */}
       <div className="roadmap">
         <div className="text-wrapper-9">Account</div>
-        <img className="line-2" src="https://i.postimg.cc/qB5QkPqq/slash2.webp" alt="line" />
-        <div className="text-wrapper-9">Gaming</div>
+        {product.product.type && <img className="line-2" src="https://i.postimg.cc/qB5QkPqq/slash2.webp" alt="line" />}
+        {product.product.type && <div className="text-wrapper-9">{product.product.type}</div>}
         <img className="line-2" src="https://i.postimg.cc/qB5QkPqq/slash2.webp" alt="line" />
         <div className="nothing">{product.product.product_name}</div>
       </div>
 
       {/* Product Images */}
       <div className="image-wrapper">
-        <img className="image" src="img/image-63.png" alt="Product" />
+        {product.product.image?.[0] && (
+          <img className="image" src={product.product.image[0]} alt="Product" />
+        )}
       </div>
-      <div className="img-wrapper">
-        <img className="image-2" src="img/image-57.png" alt="Product" />
-      </div>
-      <div className="frame-8">
-        <img className="image-3" src="img/image-58.png" alt="Product" />
-      </div>
-      <div className="frame-9">
-        <img className="image-4" src="img/image-61.png" alt="Product" />
-      </div>
-      <div className="frame-10">
-        <img className="image-5" src="img/image-59.png" alt="Product" />
-      </div>
+      {product.product.image?.[1] && (<div className="img-wrapper">
+        <img className="image-2" src={product.product.image[1]} alt="Product" />
+      </div>)}
+      {product.product.image?.[2] && (<div className="frame-8">
+        <img className="image-3" src={product.product.image[2]} alt="Product" />
+      </div>)}
+      {product.product.image?.[3] && (<div className="frame-9">
+        <img className="image-4" src={product.product.image[3]} alt="Product" />
+      </div>)}
+      {product.product.image?.[4] && (<div className="frame-10">
+        <img className="image-5" src={product.product.image[4]} alt="Product" />
+      </div>)}
 
       {/* Product Info */}
       <div className="text-wrapper-10">{product.product.product_name}</div>
