@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  product_id: {
-    type: String,
-    required: [true,"Plaese enter Product's id"],
-    unique: true,
-    trim: true,
-    maxlength: [100, "Product's id can not be more than 100 characters"]
-  },
+  // product_id: {
+  //   type: String,
+  //   required: [true,"Plaese enter Product's id"],
+  //   unique: true,
+  //   trim: true,
+  //   maxlength: [100, "Product's id can not be more than 100 characters"]
+  // },
   product_name: {
     type: String,
-    required: [true,"Please enter Product's name"], 
+    required: [true,"Please enter Product's name"],
     trim : true ,
     maxlength: [255, "Product's name can not be more than 255 characters"]
   },
@@ -38,13 +38,42 @@ const productSchema = new mongoose.Schema({
     maxlength: [100,"Vendor's id can not be more than 100 characters"],
     ref: 'Vendor' 
   },
-  type: {
+  type: { // category
     type: String,
     maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
-  }
+  },
+  product_description: {
+    type: String,
+    maxlength: [200,"Product description can not be more than 200 characters"],
+    default: null 
+  },
+  image: {
+    type: [String],
+    default: [] 
+  },
+  promotion: {
+    active: { type: Boolean, default: false },
+    promoDiscount: { type: Number },       
+    startDate: { type: Date },
+    endDate: { type: Date },
+  },
+  
+
 }, {
   timestamps: true
 });
+
+productSchema.methods.getFinalPrice = function (){
+  let finalPrice = this.price;
+
+  if(this.promotion && this.promotion.active && 
+    (!this.promotion.startDate || this.promotion.startDate <= new Date()) &&
+    (!this.promotion.endDate || this.promotion.endDate >= new Date())
+  ){
+    finalPrice = (1 - this.promotion.promoDiscount/100) * finalPrice;
+  }
+  return parseFloat(finalPrice.toFixed(2));
+}
 
 module.exports = mongoose.model('Product', productSchema);
