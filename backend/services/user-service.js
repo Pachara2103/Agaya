@@ -39,7 +39,6 @@ exports.update = async (id, updateData) => {
                 }
             }
         }
-    }
 
     // send 200
     if (!isUpdated) {
