@@ -5,6 +5,8 @@ import App from "./App.jsx";
 import Signin from "./components/LoginPage/Signin.jsx";
 import Signup from "./components/LoginPage/Signup.jsx";
 import OTP from "./components/LoginPage/OTP.jsx";
+import Profile from "./components/ProfilePage/Profile.jsx";
+
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -20,12 +22,11 @@ let router = createBrowserRouter([
   {
     path: "/signup",
     Component: Signup,
-  },
- 
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />,
+    <RouterProvider router={router} />
   </StrictMode>
 );
