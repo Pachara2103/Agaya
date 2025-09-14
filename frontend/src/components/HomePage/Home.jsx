@@ -1,7 +1,3 @@
-import Promotion from "../Promotion/Promotion.jsx";
-import Nav from "../NavBar/Nav.jsx";
-import Footer from "../Footer/Footer.jsx";
-
 import GridProductAndTitle from "../ProductPage/GridProduct.jsx";
 import RowProductAndTitle from "../ProductPage/RowProduct.jsx";
 import CategoryAndTitle from "../ProductPage/Category.jsx";
@@ -13,8 +9,7 @@ import { products, bestSelling } from "../ProductPage/exampleProduct.jsx";
 function Home() {
   return (
     <div class="flex flex-col relative ">
-      <Promotion />
-      <Nav />
+  
 
       <main>
         <div class="flex flex-col gap-10 px-30">
@@ -49,7 +44,7 @@ function Home() {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }

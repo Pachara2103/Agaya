@@ -70,6 +70,7 @@ function Signup() {
   }, [invalid]);
 
   return (
+
     <div className="flex flex-col relative min-h-screen overflow-x-hidden">
       <Promotion />
       <Nav />

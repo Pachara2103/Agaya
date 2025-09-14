@@ -1,6 +1,8 @@
 import { useState } from "react";
-import TestUserFetch from "./components/TestUserFetch.jsx";
-import Homepage from "./components/HomePage/Home";
+import {Outlet} from 'react-router-dom';
+import Promotion from "./components/Promotion/Promotion.jsx";
+import Nav from "./components/NavBar/Nav.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 import "./app.css";
 
 function App() {
@@ -8,10 +10,16 @@ function App() {
   let buttonArray = ["Home", " New Arrivals", "Sign in", ""];
 
   return (
-    <>
-      <TestUserFetch />
-      <Homepage />
-    </>
+    <div className="app-container">
+      <Promotion />
+      <Nav />
+
+      <main className="main-content">
+        <Outlet />
+      </main>
+    
+    <Footer />
+    </div>
   );
 }
 
