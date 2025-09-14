@@ -29,7 +29,14 @@ const categories = [
   { name: "Health & Beauty", hasSubmenu: false },
 ];
 
-const AdsImg = ["https://i.postimg.cc/SK0WBzLd/Frame-560.png"];
+const AdsImg = [
+  "https://i.postimg.cc/SK0WBzLd/Frame-560.png",
+  "https://i.postimg.cc/V6N5vHvL/4e3ed1555d1c546f923e3aba24083f3d.jpg",
+  "https://i.postimg.cc/TPtYzq08/b5626b9b25e5f59949beab342db47c85.jpg",
+  "https://i.postimg.cc/c4f3V28V/72e20befbffe6df0a734648e8d02ac00.jpg",
+  "https://i.postimg.cc/nz7VXbZx/ef6769403bb7a67768a1dea51ca130ea.jpg"
+
+];
 
 const Advertisement = () => {
   const [index, setIndex] = useState(0);
@@ -60,11 +67,11 @@ const Advertisement = () => {
         <div class="border-r-2 border-[#c9c9c9] "></div>
       </aside>
 
-      <main class="w-full h-full p-10">
-        <div class="relative bg-black text-white h-[384px] rounded-lg overflow-hidden">
+      <main class="w-full h-full p-10  flex items-center justify-center">
+        <div class="relative text-white h-[384px] w-200 rounded-lg overflow-hidden flex items-center justify-center">
           <img
             src={AdsImg[index]}
-            class="absolute right-0 bottom-0 h-full w-auto object-center object-contain"
+            class="h-full w-full object-fill"
           />
 
           <div class="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-3 flex-row">

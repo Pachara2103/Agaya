@@ -6,8 +6,9 @@ import GridProductAndTitle from "../ProductPage/GridProduct.jsx";
 import RowProductAndTitle from "../ProductPage/RowProduct.jsx";
 import CategoryAndTitle from "../ProductPage/Category.jsx";
 import Advertisement from "../ProductPage/Advertisement.jsx";
+import Service from "../ProductPage/Service.jsx";
 
-import products from "../ProductPage/exampleProduct.jsx";
+import { products, bestSelling } from "../ProductPage/exampleProduct.jsx";
 
 function Home() {
   return (
@@ -28,8 +29,14 @@ function Home() {
 
           <RowProductAndTitle
             title="This Month"
-            products={products}
+            products={bestSelling}
             details="Best Selling Products"
+          />
+
+          <img
+            src="https://i.postimg.cc/CLTyzzLn/Frame-600.png"
+            alt="ads"
+            class="y-2"
           />
 
           <GridProductAndTitle
@@ -37,6 +44,8 @@ function Home() {
             details="Explore Our Products"
             title="Our Products"
           />
+
+          <Service />
         </div>
       </main>
 

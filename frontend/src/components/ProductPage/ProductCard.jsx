@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
         <img
           src={product.imageUrl}
           alt={product.name}
-          class="h-[80%] w-[80%] object-contain object-center p-4 transition-transform duration-300 group-hover:scale-110"
+          class="h-[80%] w-[80%] object-contain object-center p-4 transition-transform duration-300 group-hover:scale-110 cursor-pointer"
         />
 
         {/* ปุ่ม Add to Cart  */}
@@ -35,10 +35,12 @@ const ProductCard = ({ product }) => {
           Add To Cart
         </button>
 
-        {/* icon ♡ & 👁  */}
-        <div class="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button class="bg-white rounded-full p-2 leading-none shadow-md">♡</button>
-          <button class="bg-white rounded-full p-2 leading-none shadow-md">👁</button>
+        {/* icon ♡ & 👁 opacity-0 group-hover:opacity-100  transition-opacity duration-300*/}
+        <div class="absolute top-3 right-3 flex flex-col gap-2 ">
+          <button class="bg-white rounded-full w-8 h-8 p-2 leading-none shadow-md text-[#000] text-[18px] hover:shadow-gray-400 cursor-pointer">♡</button>
+          <button class="bg-white rounded-full w-8 h-8 p-2 leading-none shadow-md text-[#000] text-[18px] hover:shadow-gray-400 cursor-pointer">
+            <img src="https://i.postimg.cc/sxdv675C/eye-1.png" alt="view" class="w-full" />
+          </button>
         </div>
 
         {/* Tag ex -40%  */}
