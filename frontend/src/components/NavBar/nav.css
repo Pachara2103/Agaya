@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  padding: 0 20vw;
+  box-sizing: border-box;
+  border-bottom: solid 1px #7d8184;
+  padding-top: 15px;
+ padding-bottom: 10px;
+
+  & .nav {
+    display: flex;
+    flex-direction: row;
+    color: #000000;
+    gap: 30px;
+    padding: 10px 10px;
+    box-sizing: border-box;
+  }
+  & .search-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    color: #000;
+    border-radius: 5px;
+  }
+  & .search-box input {
+    background-color: #f5f5f5;
+    color: #7d8184;
+    padding: 8px 10px;
+    width: 160px;
+    height: 35px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+  }
+}
