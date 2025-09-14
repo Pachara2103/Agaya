@@ -1,7 +1,12 @@
+.app-container {
+  display: grid;
+  grid-template-rows: 1fr auto; /* content takes available space, footer takes auto height */
+  min-height: 100vh;
+}
 .product-details-page {
   position: relative;
   width: 1440px;
-  height: 2093px;
+  height: 1653px;
   background-color: #fff;
 }
 
