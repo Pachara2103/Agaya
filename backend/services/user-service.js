@@ -15,6 +15,14 @@ exports.findById = async (id) => {
     return user;
 };
 
+exports.findByEmail = async (email) => {
+    const user = await User.find({email:email});
+    if (!user) {
+        throw createError(404, "User not found");
+    }
+    return user;
+};
+
 exports.update = async (id, updateData) => {
     const user = await User.findById(id);
     if (!user) throw createError(404, "User not found");
