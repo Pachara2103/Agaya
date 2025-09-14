@@ -1,7 +1,3 @@
-import Promotion from "../Promotion/Promotion.jsx";
-import Nav from "../NavBar/Nav.jsx";
-import Footer from "../Footer/Footer.jsx";
-
 import GridProductAndTitle from "../ProductPage/GridProduct.jsx";
 import RowProductAndTitle from "../ProductPage/RowProduct.jsx";
 import CategoryAndTitle from "../ProductPage/Category.jsx";

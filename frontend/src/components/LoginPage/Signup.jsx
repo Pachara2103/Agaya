@@ -3,10 +3,6 @@ import OTPpage from "./OTP";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Footer from "../Footer/Footer";
-import Promotion from '../Promotion/Promotion.jsx';
-import Nav from '../NavBar/Nav.jsx';
-
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 
@@ -74,8 +70,6 @@ function Signup() {
   return (
     
     <div className="container">
-      <Promotion />
-      <Nav />
 
       <main>
         <div className="content">
@@ -130,7 +124,6 @@ function Signup() {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }
