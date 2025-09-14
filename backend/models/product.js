@@ -51,10 +51,29 @@ const productSchema = new mongoose.Schema({
   image: {
     type: [String],
     default: [] 
-  }
+  },
+  promotion: {
+    active: { type: Boolean, default: false },
+    promoDiscount: { type: Number },       
+    startDate: { type: Date },
+    endDate: { type: Date },
+  },
+  
 
 }, {
   timestamps: true
 });
+
+productSchema.methods.getFinalPrice = function (){
+  let finalPrice = this.price;
+
+  if(this.promotion && this.promotion.active && 
+    (!this.promotion.startDate || this.promotion.startDate <= new Date()) &&
+    (!this.promotion.endDate || this.promotion.endDate >= new Date())
+  ){
+    finalPrice = (1 - this.promotion.promoDiscount/100) * finalPrice;
+  }
+  return parseFloat(finalPrice.toFixed(2));
+}
 
 module.exports = mongoose.model('Product', productSchema);
