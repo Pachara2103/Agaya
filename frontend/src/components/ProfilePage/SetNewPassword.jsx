@@ -39,23 +39,9 @@ function SetNewPasswordPage() {
         });
     }, [password, confirmPassword]);
 
-    //for debugging
-        const testAuthentication = async () => {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('ไม่พบ Token ใน Local Storage!');
-                return;
-            }
-            try {
-                const config = { headers: { Authorization: `Bearer ${token}` } };
-                const response = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', config);
-                console.log('Authentication Success!', response.data);
-                alert('Token ใช้งานได้ปกติ!');
-            } catch (error) {
-                console.error('Authentication Failed!', error.response);
-                alert('Token ไม่ถูกต้องหรือไม่สามารถใช้งานได้! ดูที่ Console');
-            }
-            };
+    const handleBack = async (event) => {
+        navigate('/change-password-form');
+    }
 
     const handleConfirm = async (event) => {
         event.preventDefault();
@@ -73,12 +59,7 @@ function SetNewPasswordPage() {
             newPassword: password
         };
 
-        console.log(oldPassword);
-        console.log(password);
-
         const config = { headers: { Authorization: `Bearer ${token}` } };
-
-        //console.log("กำลังจะส่ง PUT Request พร้อมกับ config นี้:", config);
 
         try {
             await axios.put(
@@ -110,7 +91,7 @@ function SetNewPasswordPage() {
                 <div className="form-container">
                     <div className="form-card">
                         <div className="card-header">
-                            <button className="back-button"><FaArrowLeft /></button>
+                            <button className="back-button" onClick={handleBack}><FaArrowLeft /></button>
                         </div>
 
                         <h2 className="form-title">ตั้งรหัสผ่าน</h2>
@@ -139,21 +120,17 @@ function SetNewPasswordPage() {
                             />
                         </div>
                         <ul className="password-requirement">
-                            <li className={validations.lower ? 'valid' : 'invalid'}>ตัวพิมพ์เล็ก อย่างน้อย 1 ตัว (a-z)</li>
-                            <li className={validations.upper ? 'valid' : 'invalid'}>ตัวพิมพ์ใหญ่ อย่างน้อย 1 ตัว (A-Z)</li>
-                            <li className={validations.number ? 'valid' : 'invalid'}>ตัวเลขอย่างน้อย 1 ตัว (0-9)</li>
-                            <li className={validations.length ? 'valid' : 'invalid'}>ความยาวขั้นต่ำ 8 ตัวอักษร</li>
-                            <li className={validations.match ? 'valid' : 'invalid'}>รหัสผ่านทั้ง 2 ต้องเหมือนกัน</li>
+                            <li className={validations.lower ? 'valid' : 'invalid'}>ต้องมีตัวพิมพ์เล็ก อย่างน้อย 1 ตัว (a-z)</li>
+                            <li className={validations.upper ? 'valid' : 'invalid'}>ต้องมีตัวพิมพ์ใหญ่ อย่างน้อย 1 ตัว (A-Z)</li>
+                            <li className={validations.number ? 'valid' : 'invalid'}>ต้องมีตัวเลขอย่างน้อย 1 ตัว (0-9)</li>
+                            <li className={validations.length ? 'valid' : 'invalid'}>ต้องมีความยาวขั้นต่ำ 8 ตัวอักษร</li>
+                            <li className={validations.match ? 'valid' : 'invalid'}>ต้องมีรหัสผ่านทั้ง 2 ต้องเหมือนกัน</li>
                         </ul>
 
                         {error && <p className="error-message">{error}</p>}
 
                         <button className="submit-button" onClick={handleConfirm} disabled={isLoading}>
                             {isLoading ? 'กำลังบันทึก' : 'ถัดไป'}
-                        </button>
-
-                        <button className="submit-button" onClick={testAuthentication}>
-                            debug
                         </button>
                     </div>
                 </div>

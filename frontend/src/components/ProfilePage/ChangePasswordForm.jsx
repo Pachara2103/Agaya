@@ -11,7 +11,7 @@ function PasswordForm() {
 
     const handleSubmit = () => {
         if (!password) {
-            setError('กรุณากรอกรหัสผ่านเดิมของคุณ');
+            setError('กรุณากรอกรหัส');
             return;
         }
 
@@ -43,6 +43,8 @@ function PasswordForm() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+
+                        {error && <p className="error-message">{error}</p>}
 
                         <button className="submit-button" onClick={handleSubmit}>
                         ถัดไป
