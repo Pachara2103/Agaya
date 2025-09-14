@@ -10,6 +10,7 @@ import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
 import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/Profile.jsx";
+import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -41,9 +42,21 @@ let router = createBrowserRouter([
       {
         path: "/change-password-success",
         element: <ChangePasswordSuccess />
-      }
+      },
+        {
+     path: "/profile",
+    Component: Profile,
+  },
+  {
+     path: "/productdetail/:id",
+    Component: ProductDetail,
+  }
+        
+        
+        
     ]
   },
+
 ]);
 
 createRoot(document.getElementById("root")).render(

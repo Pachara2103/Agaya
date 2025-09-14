@@ -32,12 +32,17 @@ const userRouter = require("./routes/user-routes");
 const authRouter = require("./routes/auth-routes");
 const productRouter = require("./routes/product-routes");
 const categoryRouter = require("./routes/category-routes");
+const otpRoutes = require('./routes/otp-routes');
+
+
 
 //Mount routers
 app.use("/api/v1/Agaya/auth", authRouter);  
 app.use("/api/v1/Agaya/users", userRouter);
 app.use("/api/v1/Agaya/products", productRouter);
 app.use("/api/v1/Agaya/category", categoryRouter);
+app.use('/api/v1/Agaya/otp', otpRoutes);
+
 
 //Import Passport strategies (Google)
 require('./config/passport');
