@@ -26,3 +26,4 @@ dist-ssr
 config/config.env
 # vscode extension
 .vscode
+node_modules
