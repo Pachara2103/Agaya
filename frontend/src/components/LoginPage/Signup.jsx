@@ -1,7 +1,14 @@
 import CreateAccountProcess from "./CreateAccountProcess";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import Footer from "../Footer/Footer";
+import Promotion from '../Promotion/Promotion.jsx';
+import Nav from '../NavBar/Nav.jsx';
+
 import { FcGoogle } from "react-icons/fc";
+import { CiSearch } from "react-icons/ci";
+import { FaFacebook } from "react-icons/fa";
 
 function Signup() {
   const [state, setState] = useState("fillUseraccount");
@@ -56,6 +63,8 @@ function Signup() {
 
   return (
     <div className="flex flex-col relative min-h-screen overflow-x-hidden">
+      <Promotion />
+      <Nav />
       <main>
         <div className="flex flex-row justify-center items-center h-[75vh] w-full px-[10vw] pr-[12vw] box-border">
           {state === "fillUseraccount" && (
@@ -114,7 +123,7 @@ function Signup() {
           {state === "fillOTP" && <CreateAccountProcess />}
         </div>
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

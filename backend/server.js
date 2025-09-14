@@ -1,8 +1,8 @@
-require('dotenv').config({ path: '.env' });
 const http = require("http");
-const app = require("./app.js"); 
-const connectDB = require('./config/db');
-// remove unused import that will use in app.js
+const dotenv = require('dotenv') 
+const app = require("./app.js");
+const connectDB = require('./config/db')
+
 connectDB();
 
 const server = http.createServer(app);

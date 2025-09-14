@@ -1,13 +1,57 @@
-import { useState } from 'react'
+import Promotion from "../Promotion/Promotion.jsx";
+import Nav from "../NavBar/Nav.jsx";
+import Footer from "../Footer/Footer.jsx";
+
+import GridProductAndTitle from "../ProductPage/GridProduct.jsx";
+import RowProductAndTitle from "../ProductPage/RowProduct.jsx";
+import CategoryAndTitle from "../ProductPage/Category.jsx";
+import Advertisement from "../ProductPage/Advertisement.jsx";
+import Service from "../ProductPage/Service.jsx";
+
+import { products, bestSelling } from "../ProductPage/exampleProduct.jsx";
 
 function Home() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-     
-    </>
-  )
+    <div class="flex flex-col relative ">
+      <Promotion />
+      <Nav />
+
+      <main>
+        <div class="flex flex-col gap-10 px-30">
+          <Advertisement />
+
+          <RowProductAndTitle
+            title="Today's"
+            products={products}
+            details="Flash Sales"
+          />
+          <CategoryAndTitle title="Categories" details="Browse By Category" />
+
+          <RowProductAndTitle
+            title="This Month"
+            products={bestSelling}
+            details="Best Selling Products"
+          />
+
+          <img
+            src="https://i.postimg.cc/CLTyzzLn/Frame-600.png"
+            alt="ads"
+            class="y-2"
+          />
+
+          <GridProductAndTitle
+            products={products}
+            details="Explore Our Products"
+            title="Our Products"
+          />
+
+          <Service />
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
 }
 
-export default Home
+export default Home;

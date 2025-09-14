@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TestUserFetch from "./components/TestUserFetch";
+import TestUserFetch from "./components/TestUserFetch.jsx";
 import Homepage from "./components/HomePage/Home";
 import "./app.css";
 
