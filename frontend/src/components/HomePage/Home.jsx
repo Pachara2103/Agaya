@@ -13,8 +13,7 @@ import { products, bestSelling } from "../ProductPage/exampleProduct.jsx";
 function Home() {
   return (
     <div class="flex flex-col relative ">
-      <Promotion />
-      <Nav />
+  
 
       <main>
         <div class="flex flex-col gap-10 px-30">
@@ -49,7 +48,7 @@ function Home() {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }
