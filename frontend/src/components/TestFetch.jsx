@@ -10,9 +10,9 @@ function TestFetch() {
 
     useEffect(() => {
     const fetchTest = async () => {
-      // testObj = await getProducts(API_URL);
+      testObj = await getProducts(API_URL, token);
+      console.log(testObj);
       // users = await getUser(API_URL);
-      // console.log(testObj);
       // console.log(await updateUser(API_URL, "68ad16333b6e594e92e48e04", {username: "test1"}));
       // console.log(await deleteUser(API_URL, "68ad16333b6e594e92e48e04"));
       console.log(

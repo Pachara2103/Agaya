@@ -1,13 +1,18 @@
-const getProducts = async (url) => {
+const getProducts = async (url, token) => {
   try {
-    const data = await fetch(`${url}/products`);
+    const data = await fetch(`${url}/products`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
+    });
     const products = data.json();
     return products;
   } catch (err) {
     throw new Error("Can not get products");
   }
 }
-const createProduct = async (url,token, newProduct ) => {
+const createProduct = async (url, token, newProduct ) => {
   console.log("Create Product Called")
   try {
     console.log(JSON.stringify(newProduct))
