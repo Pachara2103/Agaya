@@ -42,7 +42,6 @@ const productSchema = new mongoose.Schema({
     type: String,
     maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
-<<<<<<< HEAD
   },
   product_description: {
     type: String,
@@ -52,18 +51,6 @@ const productSchema = new mongoose.Schema({
   image: {
     type: [String],
     default: [] 
-||||||| 8833a62
-=======
-  },
-   product_description: {
-    type: String,
-    maxlength: [200,"Product description can not be more than 200 characters"],
-    default: null 
-  },
-  image: {
-    type: [String],
-    default: [] 
->>>>>>> 4fa6c6ae5a9c1c679bf58b642b15670b8e915504
   }
 
 }, {
