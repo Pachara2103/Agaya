@@ -79,7 +79,9 @@ function Profile() {
                 <div className='px-2 col-span-3 h-10 flex items-center'>{dob}</div>
               </div>
             </div>
-            <div className='flex flex-col flex-1 my-6 mr-6 bg-white items-center justify-start gap-2'>
+            <div className='flex flex-col flex-1 text-black my-6 mr-6 bg-white'>
+
+            <div className='flex flex-col flex-1 bg-white items-center justify-start gap-2'>
               <div className={`text-black`}><MdAccountCircle size={120} /></div>
               <div className={`h-12 w-36 flex items-center justify-center rounded-md text-black shadow-[0_0_2px_1px_rgba(200,200,200,0.8)] cursor-pointer`}>เลือกรูป</div>
               <div className='flex flex-col gap-1 text-[12px]'>
@@ -87,6 +89,9 @@ function Profile() {
                 <div className='text-gray-500'>ไฟล์ที่รองรับ: .JPEG, .PNG</div> 
               </div>
             </div>
+            <div className={`h-12 w-36 mb-10 bg-[#48B3AF] flex self-center items-center justify-center rounded-md text-white shadow-[0_0_2px_1px_rgba(200,200,200,0.8)] cursor-pointer`}>ยืนยัน</div>
+            </div>
+            
           </div>
         </div>
       </div>

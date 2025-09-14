@@ -8,7 +8,7 @@ import Signup from "./components/LoginPage/Signup.jsx";
 import ChangePasswordForm from "./components/ProfilePage/ChangePasswordForm.jsx";
 import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
-import OTP from "./components/LoginPage/OTP.jsx";
+// import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/Profile.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 
