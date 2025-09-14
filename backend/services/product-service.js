@@ -2,33 +2,34 @@ const Product = require('../models/product');
 const createError = require('http-errors');
 const auditService = require('./audit-service');
 
-// Get all products
+// Get all products 
 exports.findAllProduct = async () => {
     const products = await Product.find();
     return products;
 }
 
-// Get product by ID
+// Get product by ID 
 exports.findProductById = async (id) => {
-        const product = await Product.findById(id);
-        if (!product){
-            throw createError(404, "Product not found");
-        } 
-        return product;
+    const product = await Product.findById(id);
+    if (!product) {
+        throw createError(404, "Product not found");
+    }
+    return product;
 }
 
-// Create a new product
 exports.createProduct = async (createData, user) => {
     try {
-        const { product_id, product_name, stock_quantity, price, rating, vid, type } = createData;
+        const { product_name, stock_quantity, price, rating, type, product_description, image } = createData;
+        
         const newProduct = await Product.create({
-            product_id,
             product_name,
             stock_quantity,
             price,
             rating,
-            vid,
-            type
+            type,
+            product_description,
+            image,
+            vid: user._id 
         });
 
         if (user) {
@@ -44,37 +45,48 @@ exports.createProduct = async (createData, user) => {
         return newProduct;
     } catch (err) {
         if (err.code === 11000) {
-            throw createError(400, `Product with ID '${createData.product_id}' already exists`);
+            throw createError(400, `Product with the same unique field already exists`);
         }
-
         if (err.name === 'ValidationError') {
             const messages = Object.values(err.errors).map(val => val.message);
             throw createError(400, messages.join(', '));
         }
-
         throw err;
     }
 }
 
-// Update an existing product
-exports.updateProduct = async (product, updateData, user) => {
+exports.updateProduct = async (id, updateData, user) => {
     try {
-        
+        const product = await Product.findById(id);
+        if (!product) {
+            throw createError(404, "Product not found");
+        }
+
+        // Move here
+        const isAdmin = user.userType.includes('admin');
+        const isOwner = product.vid.toString() === user._id.toString();
+
+        if (!isAdmin && !isOwner) {
+            throw createError(403, "You do not have permission to modify this product.");
+        }
+
         let isUpdated = false;
-        const fields = ["product_id", "product_name", "stock_quantity", "price", "rating", "type"];
+        const fields = ["product_name", "stock_quantity", "price", "rating", "type", "product_description", "image"];
         const dataToUpdate = {};
 
         for (const key of fields) {
-            if (updateData[key] !== undefined && product[key] !== updateData[key]) {
+            if (updateData.hasOwnProperty(key) && product[key] !== updateData[key]) {
                 dataToUpdate[key] = updateData[key];
                 isUpdated = true;
             }
         }
 
-        if (!isUpdated) throw createError(400, "Does not have any different data.");
+        if (!isUpdated) {
+            throw createError(400, "Does not have any different data to update.");
+        }
 
         Object.assign(product, dataToUpdate);
-        const updated = await product.save();
+        const updatedProduct = await product.save();
 
         // Audit log
         if (user) {
@@ -82,28 +94,34 @@ exports.updateProduct = async (product, updateData, user) => {
                 user: user._id,
                 action: "update",
                 resource: "Product",
-                resourceId: updated._id,
+                resourceId: updatedProduct._id,
                 changes: dataToUpdate
             });
         }
 
-        return updated;
-        
-    } catch (err) {
-        if (err.code === 11000) {
-            throw createError(400, `Product with ID '${updateData.product_id}' already exists`);
-        }   
+        return updatedProduct;
 
+    } catch (err) {
         if (err.name === 'ValidationError') {
             const messages = Object.values(err.errors).map(val => val.message);
             throw createError(400, messages.join(', '));
         }
-        throw err;
+        throw err; 
     }
 }
 
-// Delete a product
-exports.deleteProduct = async (product, user) => {
+exports.deleteProduct = async (id, user) => {
+    const product = await Product.findById(id);
+    if (!product) {
+        throw createError(404, "Product not found");
+    }
+    // Check permmission here
+    const isAdmin = user.userType.includes('admin');
+    const isOwner = product.vid.toString() === user._id.toString();
+
+    if (!isAdmin && !isOwner) {
+        throw createError(403, "You do not have permission to delete this product.");
+    }
 
     await product.deleteOne();
 
@@ -113,9 +131,10 @@ exports.deleteProduct = async (product, user) => {
             action: "delete",
             resource: "Product",
             resourceId: product._id,
-            changes: null
+            changes: product.toObject() 
         });
     }
 
     return;
 }
+
