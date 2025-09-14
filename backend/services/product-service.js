@@ -5,7 +5,16 @@ const auditService = require('./audit-service');
 // Get all products 
 exports.findAllProduct = async () => {
     const products = await Product.find();
-    return products;
+
+    const productsWithPromoPrize = products.map((product) => {
+
+        const obj = product.toObject();
+        obj.finalPrice = product.getFinalPrice();
+
+        return obj;
+    });
+
+    return productsWithPromoPrize;
 }
 
 // Get product by ID 
@@ -14,12 +23,16 @@ exports.findProductById = async (id) => {
     if (!product) {
         throw createError(404, "Product not found");
     }
-    return product;
+
+    const productWithPromoPrize = product.toObject();
+    productWithPromoPrize.finalPrice = product.getFinalPrice();
+
+    return productWithPromoPrize;
 }
 
 exports.createProduct = async (createData, user) => {
     try {
-        const { product_name, stock_quantity, price, rating, type, product_description, image } = createData;
+        const { product_name, stock_quantity, price, rating, type, product_description, image, promotion} = createData;
         
         const newProduct = await Product.create({
             product_name,
@@ -29,7 +42,8 @@ exports.createProduct = async (createData, user) => {
             type,
             product_description,
             image,
-            vid: user._id 
+            vid: user._id,
+            promotion
         });
 
         if (user) {
@@ -71,7 +85,7 @@ exports.updateProduct = async (id, updateData, user) => {
         }
 
         let isUpdated = false;
-        const fields = ["product_name", "stock_quantity", "price", "rating", "type", "product_description", "image"];
+        const fields = ["product_name", "stock_quantity", "price", "rating", "type", "product_description", "image", "promotion"];
         const dataToUpdate = {};
 
         for (const key of fields) {
