@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import Footer from './Footer/Footer';
+// import Footer from './Footer/Footer';
 function Button1({emoji, text, textSize, textColor, handle}) {
 
   return (

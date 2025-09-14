@@ -1,5 +1,5 @@
-import Footer from '../Footer/Footer';
-import "../Footer/footer.css";
+// import Footer from '../Footer/Footer';
+// import "../Footer/footer.css";
 import { MdAccountCircle } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { LuShoppingBag } from "react-icons/lu";

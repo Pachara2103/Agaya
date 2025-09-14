@@ -4,7 +4,6 @@ import "./index.css";
 import App from "./App.jsx";
 import Signin from "./components/LoginPage/Signin.jsx";
 import Signup from "./components/LoginPage/Signup.jsx";
-import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/Profile.jsx";
 
 
