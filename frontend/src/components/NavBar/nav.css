@@ -101,3 +101,7 @@
 .disabled-link {
   cursor: not-allowed;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* สำหรับ Chrome, Safari */
+}

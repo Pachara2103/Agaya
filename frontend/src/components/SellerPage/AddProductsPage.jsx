@@ -1,8 +1,6 @@
 import ImageUploader from "./ImageUploader";
 import {
-  getProducts,
   createProduct,
-  getProductsById,
   updateProduct,
   deleteProduct,
 } from "../../libs/productService";

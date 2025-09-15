@@ -27,6 +27,7 @@ function App() {
     setShowCookieBanner(false);
   };
 
+
   return (
     <div className="flex flex-col relative">
       <Promotion />
