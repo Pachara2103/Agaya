@@ -1,15 +1,20 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
-import './ChangePasswordForm.css';
 
 function PasswordForm() {
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-        navigate('/set-new-password');
+        if (!password) {
+            setError('กรุณากรอกรหัส');
+            return;
+        }
+
+        navigate('/set-new-password', {state: {oldPassword: password}});
     };
 
     return (
@@ -17,28 +22,34 @@ function PasswordForm() {
             
 
             <main>
-                <div className="form-container">
+                <div className="flex justify-center items-center min-h-[80vh] bg-gray-100">
                     {/* กล่องสีขาวที่ครอบฟอร์มทั้งหมด */}
-                    <div className="form-card">
-                        <div className="card-header">
-                        {/* ในอนาคตเราจะใส่ icon ลูกศรกลับตรงนี้ */}
-                        <button className="back-button"><FaArrowLeft /></button>
+                    <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-sm text-center">
+                        <div className="text-left mb-5">
+                        <button className="flex bg-transparent border-none text-2xl cursor-pointer text-gray-500 w-10 h-5  items-center justify-center">
+                            <FaArrowLeft />
+                        </button>
                         </div>
 
-                        <h2 className="form-title">ใส่รหัสผ่านเดิม</h2>
+                        <h2 className="text-2xl font-semibold text-gray-600 mb-8">
+                            ใส่รหัสผ่านเดิม
+                        </h2>
                         <p className="form-subtitle"></p>
 
                         <div className="input-wrapper">
                             <input
                                 type="password"
-                                className="input-field"
+                                className="w-full py-3 px-4 mb-5 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:border-teal-400"
                                 placeholder="รหัสผ่าน"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
 
-                        <button className="submit-button" onClick={handleSubmit}>
+                        {error && <p className="error-message">{error}</p>}
+
+                        <button className="w-full py-3 bg-teal-400 text-white rounded-md font-bold transition-colors duration-300 hover:bg-teal-500" 
+                         onClick={handleSubmit}>
                         ถัดไป
                         </button>
                     </div>
