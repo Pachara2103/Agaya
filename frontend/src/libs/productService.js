@@ -1,72 +1,85 @@
-import { API_URL } from "./api";
-
-const findAllProduct = async (email) => {
+const getProducts = async (url, token) => {
   try {
-    const res = await fetch(`${API_URL}/pr/email/${email}`);
-    const data = await res.json();
-    return data;
+    const data = await fetch(`${url}/products`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
+    });
+    const products = data.json();
+    return products;
   } catch (err) {
-    throw new Error("Can not get users");
+    throw new Error("Can not get products");
   }
-};
-
-const sendOTP = async (email) => {
+}
+const getProductsById = async (url, token, id) => {
   try {
-    const res = await fetch(`${API_URL}/otp/send-email-otp`, {
+    const data = await fetch(`${url}/products/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
+    });
+    const product = data.json();
+    return product;
+  } catch (err) {
+    throw new Error("Can not get product");
+  }
+}
+
+const createProduct = async (url, token, newProduct ) => {
+  try {
+    console.log(JSON.stringify(newProduct))
+    const res = await fetch(`${url}/products`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({
-        email,
+        ...newProduct,
       }),
     });
-
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    throw new Error("Can not get users");
+    const createdProduct = await res.json();
+    return createdProduct;
+  } catch (e) {
+    console.log(e);
+    throw new Error("Can not create product");
   }
 };
 
-const verifyOTP = async (email, otp) => {
+const updateProduct = async (url, token, id, data) => {
   try {
-    const res = await fetch(`${API_URL}/otp/verify-otp`, {
-      method: "POST",
+    console.log(JSON.stringify(data))
+    const res = await fetch(`${url}/products/${id}`, {
+      method: "PUT",
       headers: {
         "content-type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({
-        email,
-        otp,
+        ...data,
       }),
     });
-
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    throw new Error("Can not get users");
+    const updatedProduct = await res.json();
+    return updatedProduct;
+  } catch (e) {
+    console.log(e);
+    throw new Error("Can not update product");
   }
 };
-
-const setnewPassword = async (email, newPassword) => {
+const deleteProduct = async (url, token, id) => {
   try {
-    const res = await fetch(`${API_URL}/auth/forgot-password`, {
-      method: "POST",
+    const res = await fetch(`${url}/products/${id}`, {
+      method: "DELETE",
       headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        newPassword,
-      }),
+        "Authorization": `Bearer ${token}`,
+      }
     });
-
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    throw new Error("Can not get users");
+    return res.status;
+  } catch (e) {
+    throw new Error("Can not delete product");
   }
-};
+}
 
-export { findByEmail, sendOTP, verifyOTP, setnewPassword };
+export { getProducts, createProduct, getProductsById, updateProduct, deleteProduct }

@@ -16,7 +16,7 @@ const boxStyle1 = (icon, text, number) => {
   );
 };
 
-function UserPage() {
+function DashboardPage() {
   // #64a8e8ff
 
   const numberOfUsers = 75;
@@ -57,4 +57,4 @@ function UserPage() {
   );
 }
 
-export default UserPage;
+export default DashboardPage;

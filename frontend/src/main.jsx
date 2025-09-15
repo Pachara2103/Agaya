@@ -11,8 +11,13 @@ import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSucces
 import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
 import ApplyForm from './components/SellerPage/ApplyForm.jsx';
 import SellerPage from './components/SellerPage/SellerPage.jsx';
+import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
+//test
+import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
+
+
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -28,6 +33,11 @@ let router = createBrowserRouter([
       {
         path: "/signin",
         element: <Signin />,
+      },
+      // TEST
+      {
+        path: "/test",
+        element: <TestFetch />,
       },
       {
         path: "/signup",
@@ -49,6 +59,9 @@ let router = createBrowserRouter([
         path: "/password-recovery",
         element: <PasswordRecovery />,
       },
+        path: "/test",
+        element: <CategoryManagement />
+      },  
       {
         path: "/profile",
         Component: Profile,

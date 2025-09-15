@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { MdAccountCircle } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import DashboardPage from "./DashboardPage";
+import UserPage from "./UserPage";
 import Button1 from "../Button1";
 function AdminPageContainer () {
   const [currentPanel, setCurrrentPanel] = useState("user");
@@ -66,6 +67,7 @@ function AdminPageContainer () {
           className={`w-200 ml-6 mr-12 mt-14 mb-8 h-150 bg-white ${box} flex-shrink-0 cursor-default`}
         >
           {currentPanel === "dashboard" ? <DashboardPage/> : <></>}
+          {currentPanel === "user" ? <UserPage/> : <></>}
         </div>
       </div>
     </div>
