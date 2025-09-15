@@ -1,7 +1,9 @@
 import { CiSearch } from "react-icons/ci";
 import "./nav.css";
+import { useNavigate } from "react-router-dom";
 
 function Nav(){
+  const nav = useNavigate();
     return(
         <nav>
         <div className="header">
@@ -10,7 +12,7 @@ function Nav(){
           </h2>
 
           <ul className="nav medium">
-            <li>เปิดร้านค้าใหม่</li>
+            <li class="cursor-pointer" onClick={()=>{nav("/apply-for-seller")}}>เปิดร้านค้าใหม่</li>
             <li>ช่วยเหลือ</li>
             <li>สมัครใหม่</li>
             <li>เข้าสู่ระบบ</li>

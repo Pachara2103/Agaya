@@ -11,6 +11,9 @@ import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSucces
 import Profile from "./components/ProfilePage/Profile.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
+import ApplyForm from './components/SellerPage/ApplyForm.jsx';
+import SellerPage from './components/SellerPage/SellerPage.jsx';
+
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -54,6 +57,14 @@ let router = createBrowserRouter([
       {
         path: "/productdetail/:id",
         Component: ProductDetail,
+      },
+      {
+        path: "/apply-for-seller",
+        Component: ApplyForm,
+      },
+      {
+        path: "/seller-page",
+        Component: SellerPage,
       },
     ],
   },
