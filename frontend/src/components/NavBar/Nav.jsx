@@ -1,5 +1,7 @@
 import { CiSearch } from "react-icons/ci";
 import "./nav.css";
+import Signin from "../LoginPage/Signin.jsx";
+import signup from "../LoginPage/Signup.jsx";
 import { useNavigate } from "react-router-dom";
 
 function Nav(){
@@ -7,15 +9,21 @@ function Nav(){
     return(
         <nav>
         <div className="header">
-          <h2 class="text-[#000] text-[18px]">
+          <h2 class="text-[#000] text-[18px] cursor-pointer" onClick={()=>{nav("/")}}>
             Agaya
           </h2>
 
           <ul className="nav medium">
-            <li class="cursor-pointer" onClick={()=>{nav("/apply-for-seller")}}>เปิดร้านค้าใหม่</li>
+            <li class="cursor-pointer" onClick={()=>{nav("/apply-for-seller")}}>
+              เปิดร้านค้าใหม่
+              </li>
             <li>ช่วยเหลือ</li>
-            <li>สมัครใหม่</li>
-            <li>เข้าสู่ระบบ</li>
+            <li class="cursor-pointer" onClick={()=>{nav("/signup")}}>
+              สมัครใหม่
+            </li>
+            <li class="cursor-pointer" onClick={()=>{nav("/signin")}}>
+              เข้าสู่ระบบ
+            </li>
           </ul>
 
           <div className="search-box medium">
