@@ -15,7 +15,7 @@ import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 //test
-import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
+import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
 
 
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
@@ -60,9 +60,9 @@ let router = createBrowserRouter([
         element: <PasswordRecovery />,
       },
       {
-        path: "/test2",
-        element: <CategoryManagement />,
-      },  
+        path: "/categorymanagement",
+        element: <CategoryManagement />
+      }, 
       {
         path: "/profile",
         Component: Profile,
