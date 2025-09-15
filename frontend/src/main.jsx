@@ -65,6 +65,7 @@ let router = createBrowserRouter([
         path: "/seller-page",
         Component: SellerPage,
       },
+      {
         path: "/dashboard",
         Component: AdminPageContainer,
       },
