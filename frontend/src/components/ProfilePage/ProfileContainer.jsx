@@ -53,7 +53,15 @@ function ProfileContainer() {
           <div className={`flex flex-col gap-2 ml-8 mr-8 mt-8`}>
             <div className="flex flex-row text-black mb-6">
               <div className={``}>
-                <MdAccountCircle size={50} />
+                {userData?.profileImageUrl ? (
+                  <img
+                    src={userData.profileImageUrl}
+                    alt="Profile"
+                    className="w-12 h-12 object-cover rounded-full border-2 border-gray-200"
+                  />
+                ) : (
+                  <MdAccountCircle size={48} className="text-gray-300" />
+                )}  
               </div>
               <div className={`flex-col ml-4 self-center`}>
                 <div className={`font-[500] mb-1 text-[16px]`}>{userData?.username}</div>

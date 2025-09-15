@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DatePicker.css";
 
-import ImageUploader from "../SellerPage/ImageUploader"; 
+import ProfileImageUploader from "./ProfileImageUploader"; 
 import { updateMe } from "../../libs/authService";
 import { uploadProductImage } from "../../libs/productService";
 // rgba(221, 221, 221, 0.7)
@@ -207,7 +207,7 @@ function Profile({ userData }) {
             {/* <div className={`text-black`}>
               <MdAccountCircle size={120} />
             </div> */}
-            <ImageUploader
+            <ProfileImageUploader
               onFileSelect={handleFileSelect}
               initialImage={userData.profileImageUrl}
             />
