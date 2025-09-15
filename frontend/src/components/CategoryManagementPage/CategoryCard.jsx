@@ -99,7 +99,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
                         </button>
                         <button 
                             onClick={handleDelete}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] flex items-center justify-center inline-block ml-4"
+                            className="!bg-[#B71F3B] text-white px-6 h-full min-w-[100px] flex items-center justify-center inline-block ml-4"
                         >
                             Delete
                         </button>

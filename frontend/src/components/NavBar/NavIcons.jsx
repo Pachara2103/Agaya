@@ -1,23 +1,26 @@
-import { useState } from "react";
 import { CiHeart, CiShoppingCart, CiUser } from "react-icons/ci";
 import ProfileDropdown from "./ProfileDropdown";
 
-function NavIcons({ isLoggedIn, handleLogout }) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+function NavIcons({ user, handleLogout, isDropdownOpen, toggleDropdown, onClose }) {
   return (
     <div className="nav-icons">
       <CiHeart size={28} className="nav-icon" />
       <CiShoppingCart size={28} className="nav-icon" />
 
-      {isLoggedIn && (
+      {user && (
         <div className="profile-container">
           <CiUser
             size={28}
             className="nav-icon"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            onClick={toggleDropdown}
           />
-          {isDropdownOpen && <ProfileDropdown handleLogout={handleLogout} />}
+          {isDropdownOpen && (
+            <ProfileDropdown 
+              user={user} 
+              handleLogout={handleLogout} 
+              onClose={onClose} 
+            />
+          )}
         </div>
       )}
     </div>

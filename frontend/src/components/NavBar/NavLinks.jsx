@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
-function NavLinks({ isLoggedIn }) {
+function NavLinks({ user }) { 
   const nav = useNavigate();
+  const isLoggedIn = !!user; 
 
   return (
     <ul className="nav medium">

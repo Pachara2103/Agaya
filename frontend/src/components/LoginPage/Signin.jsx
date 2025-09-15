@@ -39,6 +39,7 @@ function Signin() {
         });
 
         navigate("/"); 
+        window.location.reload(); 
       } else {
         throw new Error(data.message || "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
       }
