@@ -1,12 +1,12 @@
 import { API_URL } from "./api";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const getAuthHeaders = () => {
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
   if (!token) throw new Error("Authentication token not found");
   return {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   };
 };
 
@@ -16,10 +16,11 @@ export const getProducts = async () => {
 };
 
 export const getProductsById = async (id) => {
-  const res = await fetch(`${API_URL}/products/${id}`, { headers: getAuthHeaders() });
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    headers: getAuthHeaders(),
+  });
   return res.json();
 };
-
 
 export const createProduct = async (newProduct) => {
   const res = await fetch(`${API_URL}/products`, {
@@ -46,33 +47,17 @@ export const deleteProduct = async (id) => {
   });
   return res.status;
 };
-const getProductsByVendorId = async () => {
-  const token = Cookies.get("token");
-  if (!token) {
-    return "Permission is Denied!";
-  }
+
+export const getProductsByVendorId = async () => {
   try {
     const data = await fetch(`${API_URL}/products/vendor/my-products`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     });
     const res = await data.json();
-    console.log("dataaaaaaaaaaaaaaaaa = ", res);
-
     return res;
   } catch (err) {
     console.log(err);
     throw new Error("Can not get product");
   }
 };
-export {
-  getProducts,
-  createProduct,
-  getProductsById,
-  updateProduct,
-  deleteProduct,
-  getProductsByVendorId,
-};
-
