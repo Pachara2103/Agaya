@@ -1,4 +1,3 @@
-import Footer from "../Footer/Footer";
 import { MdAccountCircle } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { LuShoppingBag } from "react-icons/lu";
@@ -65,10 +64,10 @@ function Profile() {
     "border-gray-100 border-1 shadow-[0_0_4px_1px_rgba(221,221,221,0.7)]"; //offsetX, offsetY, blur, spread
   return (
         <>
-          <div className="flex h-20 items-center pl-14 text-[18px] font-[600] text-black">
+          <div className="flex h-20 items-center pl-14 text-[18px] font-[600] text-black bg-gray-100">
             ข้อมูลของฉัน
           </div>
-          <div className="flex h-130 bg-white justify-center">
+          <div className="flex h-130 bg-gray-100 justify-center">
             {" "}
             {/* block */}
             <div className="flex-2 my-6 ml-6 bg-white text-black">

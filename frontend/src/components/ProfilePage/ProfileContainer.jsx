@@ -5,7 +5,9 @@ import { MdOutlineNotifications } from "react-icons/md";
 import { IoMdPerson } from "react-icons/io";
 import Button1 from "../Button1";
 import { useEffect, useState } from "react";
-import Profile from "./Profile";
+import Profile from "./Profile.jsx";
+import Address from "./Address.jsx";
+import ChangePasswordForm from "../ProfilePage/ChangePasswordForm";
 
 // rgba(221, 221, 221, 0.7)
 function ProfileContainer() {
@@ -99,6 +101,8 @@ function ProfileContainer() {
           className={`w-200 ml-6 mr-12 mt-14 mb-8 h-150 bg-white ${box} flex-shrink-0 cursor-default`}
         >
           {currentPanel === "profile" ? <Profile/> : ""}
+          {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
+          {currentPanel === "addresses" ? <Address /> : ""}
         </div>
       </div>
     </div>
