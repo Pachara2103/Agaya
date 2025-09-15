@@ -46,7 +46,7 @@ export const deleteProduct = async (id) => {
   });
   return res.status;
 };
-const getProductsByVendorId = async () => {
+export const getProductsByVendorId = async () => {
   const token = Cookies.get("token");
   if (!token) {
     return "Permission is Denied!";
@@ -54,9 +54,7 @@ const getProductsByVendorId = async () => {
   try {
     const data = await fetch(`${API_URL}/products/vendor/my-products`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     });
     const res = await data.json();
     console.log("dataaaaaaaaaaaaaaaaa = ", res);
@@ -67,12 +65,5 @@ const getProductsByVendorId = async () => {
     throw new Error("Can not get product");
   }
 };
-export {
-  getProducts,
-  createProduct,
-  getProductsById,
-  updateProduct,
-  deleteProduct,
-  getProductsByVendorId,
-};
+
 
