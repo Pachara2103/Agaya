@@ -5,11 +5,17 @@ import './ChangePasswordForm.css';
 
 function PasswordForm() {
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-        navigate('/set-new-password');
+        if (!password) {
+            setError('กรุณากรอกรหัส');
+            return;
+        }
+
+        navigate('/set-new-password', {state: {oldPassword: password}});
     };
 
     return (
@@ -37,6 +43,8 @@ function PasswordForm() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+
+                        {error && <p className="error-message">{error}</p>}
 
                         <button className="submit-button" onClick={handleSubmit}>
                         ถัดไป
