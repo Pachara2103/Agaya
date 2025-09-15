@@ -69,4 +69,15 @@ const setnewPassword = async (email, newPassword) => {
   }
 };
 
-export { findByEmail, sendOTP, verifyOTP, setnewPassword };
+const getMe = async () => {
+  try {
+    const res = await fetch(`${API_URL}/auth/me`);
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    throw new Error("Can not get users");
+  }
+};
+
+export { findByEmail, sendOTP, verifyOTP, setnewPassword, getMe  };

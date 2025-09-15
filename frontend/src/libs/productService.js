@@ -1,61 +1,100 @@
+import { API_URL } from "./api";
+import Cookies from "js-cookie";
+import { getMe } from "./userService";
+
 const getProducts = async (url, token) => {
   try {
     const data = await fetch(`${url}/products`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     const products = data.json();
     return products;
   } catch (err) {
     throw new Error("Can not get products");
   }
-}
-const getProductsById = async (url, token, id) => {
+};
+const getProductsById = async (id) => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return "Permission is Denied!";
+  }
   try {
-    const data = await fetch(`${url}/products/${id}`, {
+    const data = await fetch(`${API_URL}/products/${id}`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    const product = data.json();
-    return product;
+    const res = await data.json();
+    return res;
   } catch (err) {
     throw new Error("Can not get product");
   }
-}
+};
 
-const createProduct = async (url, token, newProduct ) => {
+const getProductsByVendorId = async () => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return "Permission is Denied!";
+  }
   try {
-    console.log(JSON.stringify(newProduct))
-    const res = await fetch(`${url}/products`, {
+    const data = await fetch(`${API_URL}/products/vendor/my-products`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const res = await data.json();
+    console.log("dataaaaaaaaaaaaaaaaa = ", res);
+
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Can not get product");
+  }
+};
+
+const createProduct = async (newProduct) => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return "Permission is Denied!";
+  }
+
+  try {
+    console.log(JSON.stringify(newProduct));
+    const res = await fetch(`${API_URL}/products`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         ...newProduct,
       }),
     });
-    const createdProduct = await res.json();
-    return createdProduct;
+    const data = await res.json();
+    return data;
   } catch (e) {
     console.log(e);
     throw new Error("Can not create product");
   }
 };
 
-const updateProduct = async (url, token, id, data) => {
+const updateProduct = async (id, data) => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return "Permission is Denied!";
+  }
   try {
-    console.log(JSON.stringify(data))
-    const res = await fetch(`${url}/products/${id}`, {
+    console.log(JSON.stringify(data));
+    const res = await fetch(`${API_URL}/products/${id}`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         ...data,
@@ -68,18 +107,29 @@ const updateProduct = async (url, token, id, data) => {
     throw new Error("Can not update product");
   }
 };
-const deleteProduct = async (url, token, id) => {
+const deleteProduct= async (id) => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return "Permission is Denied!";
+  }
   try {
-    const res = await fetch(`${url}/products/${id}`, {
+    const res = await fetch(`${API_URL}/products/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return res.status;
+    return res.json();
   } catch (e) {
     throw new Error("Can not delete product");
   }
-}
+};
 
-export { getProducts, createProduct, getProductsById, updateProduct, deleteProduct }
+export {
+  getProducts,
+  createProduct,
+  getProductsById,
+  updateProduct,
+  deleteProduct,
+  getProductsByVendorId,
+};

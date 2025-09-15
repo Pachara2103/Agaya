@@ -19,6 +19,7 @@ exports.findProductById = async (req, res, next) => {
 };
 
 exports.findProductsByVendor = async (req, res, next) => {
+    console.log('call findProductsByVendor')
     try {
         const products = await productService.findProductsByVendorId(req.user._id);
         res.status(200).json({ success: true, count: products.length, data: products });

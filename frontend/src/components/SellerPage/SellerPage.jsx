@@ -9,32 +9,54 @@ const icon = {
   dashboard: 0,
   สินค้าของฉัน: 1,
   เพิ่มสินค้าใหม่: 2,
+  edit: 3,
 };
 
 function SellerPage() {
   const [pageSelected, setPageSelected] = useState("dashboard");
   const [displaySidebar, setDisplaySidebar] = useState(true);
+  const [editproduct, setEditProduct] = useState(null);
+
+  const editProduct = (p) => {
+    setEditProduct(p);
+  };
+
+  useEffect(() => {
+    console.log("edit = ", editproduct);
+  }, [editproduct]);
+
+  useEffect(() => {
+    if (pageSelected == "เพิ่มสินค้าใหม่" || pageSelected == "edit") {
+      setDisplaySidebar(false);
+    } else setDisplaySidebar(true);
+  }, [pageSelected]);
 
   const userClick = () => {
     switch (icon[pageSelected]) {
       case 0:
         return <DashBoard />;
       case 1:
-        return <MyProductsPage />;
+        return (
+          <MyProductsPage
+            setPageSelected={setPageSelected}
+            setEditProduct={editProduct}
+          />
+        );
       case 2:
         return <AddProductsPage setPageSelected={setPageSelected} />;
+      case 3:
+        return (
+          <AddProductsPage
+            setPageSelected={setPageSelected}
+            product={editproduct}
+            isEdit={true}
+          />
+        );
 
       default:
         return null;
     }
   };
-
-  useEffect(() => {
-    if (pageSelected == "เพิ่มสินค้าใหม่") {
-      console.log(222);
-      setDisplaySidebar(false);
-    } else setDisplaySidebar(true);
-  }, [pageSelected]);
 
   return (
     <div className="flex bg-white font-sans">
