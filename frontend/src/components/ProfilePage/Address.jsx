@@ -13,7 +13,14 @@ function Address() {
 
     const fetchAddresses = async() => {
         try {
-            
+            // const token = localStorage.getItem(authToken);
+            // const response = await axios.get('/api/v1/addresses', {header: {Authorization: `Bearer ${token}`}});
+            // setAddresses(response.data.addresses);
+
+            //dummy
+            setAddresses([
+                {id: 1, fullName: 'ไวลิน สุดหล่อ [dummy]', phoneNumber: '1234567890', addressLine1: '221B Baker street, London'}
+            ]);
         }
         catch (err) {
             setError('ไม่สามารถโหลดข้อมูลที่อยู่ได้');
@@ -29,6 +36,38 @@ function Address() {
     const handleSaveAddress = async (newAddressData) => {
         console.log("กำลังบันทึกที่อยู่ใหม่", newAddressData);
         //this will POST
+        // newAddressData.preventDefault();
+        // seteIsLoading(true);
+        // setError('');
+
+        // const token = localStorage.getItem('authToken');
+        // if (!token) {
+        //     setError("Token ไม่ถูกต้อง");
+        //     seteIsLoading(false);
+        //     return;
+        // }
+
+        // const requestData = {
+            
+        // }
+
+        // const config = { headers: { Authorization: `Bearer ${token}` } };
+
+        // try {
+        //     await axios.put(
+        //         'http://localhost:5000/api/v1/Agaya/auth/change-password', 
+        //         requestData,
+        //         config
+        //     );
+
+        //     console.log("Address updated successfully");
+        //     seteIsLoading(false);
+        // } catch (err) {
+        //     seteIsLoading(false);
+        //     if (err.response) {
+        //         console.log(err.response);
+        //     }
+        // }
 
         setShowAddForm(false);
         fetchAddresses();
@@ -43,7 +82,7 @@ function Address() {
                 <h1 className="text-xl font-semibold text-gray-800">ที่อยู่ของฉัน</h1>
                 {!showAddForm && (
                     <button onClick={() => setShowAddForm(true)}
-                        className="bg-red-500 text-white font-semibold py-2 px-5 w-30 h-10 rounded-md hover:bg-red-700 flex items-center justify-center">
+                        className="bg-red-700 text-white font-semibold py-2 px-5 w-30 h-10 rounded-md hover:bg-red-700 flex items-center justify-center">
                             เพิ่มที่อยู่ใหม่
                     </button>
                 )}
