@@ -42,10 +42,10 @@ function AddAddressForm({onSave, onCancel}) {
                 </div>
             </div>
             <div className="flex justify-end gap-4 mt-6">
-                <button type="button" onClick={onCancel} className="bg-gray-500 text-gray-800 py-2 px-6 rounded-md w-30 h-10 flex items-center justify-center">
+                <button type="button" onClick={onCancel} className="!bg-gray-500 text-gray-800 py-2 px-6 rounded-md w-30 h-10 flex items-center justify-center">
                     ยกเลิก
                 </button>
-                <button type="submit" className="bg-teal-500 text-white py-2 px-6 rounded-md w-30 h-10 flex items-center justify-center">
+                <button type="submit" className="!bg-teal-500 text-white py-2 px-6 rounded-md w-30 h-10 flex items-center justify-center">
                     ยืนยัน
                 </button>
             </div>

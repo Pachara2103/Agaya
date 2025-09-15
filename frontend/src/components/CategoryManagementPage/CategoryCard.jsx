@@ -100,7 +100,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
                         </button>
                         <button 
                             onClick={handleCancel}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block ml-4"
+                            className="!bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block ml-4"
                         >
                             Cancel
                         </button>
@@ -115,7 +115,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
                         </button>
                         <button 
                             onClick={handleDelete}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block ml-4"
+                            className="!bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block ml-4"
                         >
                             Delete
                         </button>
