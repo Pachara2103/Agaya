@@ -59,8 +59,9 @@ let router = createBrowserRouter([
         path: "/password-recovery",
         element: <PasswordRecovery />,
       },
-        path: "/test",
-        element: <CategoryManagement />
+      {
+        path: "/test2",
+        element: <CategoryManagement />,
       },  
       {
         path: "/profile",
