@@ -6,6 +6,7 @@ import UserPage from "./UserPage";
 import Button1 from "../Button1";
 import CategoryManagement from "./CategoryManagement";
 import ApproveVendorPage from "./ApproveVendorPage";
+import ProductManagement from "./ProductManagement";
 
 function AdminPageContainer () {
   const [currentPanel, setCurrrentPanel] = useState("user");
@@ -71,6 +72,7 @@ function AdminPageContainer () {
         >
           {currentPanel === "dashboard" ? <DashboardPage/> : <></>}
           {currentPanel === "user" ? <UserPage/> : <></>}
+          {currentPanel === "product" ? <ProductManagement/> : <></>}
           {currentPanel === "category" ? <CategoryManagement/> : <></>}
           {currentPanel === "approve-vendor" ? <ApproveVendorPage/> : <></>}
         </div>

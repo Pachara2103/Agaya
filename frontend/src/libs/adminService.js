@@ -37,3 +37,31 @@ export const rejectApplication = async (applicationId) => {
   if (!res.ok) throw new Error('Failed to reject application');
   return res.json();
 };
+
+export const getAllUsers = async () => {
+  const res = await fetch(`${API_URL}/users`, {
+    method: 'GET',
+    headers: getAuthHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to fetch users');
+  return res.json();
+};
+
+export const updateUserRole = async (userId, roles) => {
+  const res = await fetch(`${API_URL}/admin/users/${userId}/role`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ roles }) // `roles` should be an array e.g., ['customer', 'vendor']
+  });
+  if (!res.ok) throw new Error('Failed to update user role');
+  return res.json();
+};
+
+export const banUser = async (userId) => {
+  const res = await fetch(`${API_URL}/admin/users/${userId}/ban`, {
+    method: 'PUT',
+    headers: getAuthHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to ban user');
+  return res.json();
+};
