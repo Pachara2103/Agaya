@@ -1,6 +1,17 @@
 import { API_URL } from "./api";
 import Cookies from 'js-cookie';
 
+const getAuthHeaders = () => {
+  const token = Cookies.get('token');
+  if (!token) {
+    return { "Content-Type": "application/json" };
+  }
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
 export const Login = async (email, password) => {
   try {
     const res = await fetch(`${API_URL}/auth/login`, {
@@ -45,4 +56,33 @@ export const getMe = async () => {
     console.error("GetMe failed:", err);
     throw err;
   }
+};
+
+export const createVendorApplication = async (applicationData) => {
+    const res = await fetch(`${API_URL}/vendor-applications`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(applicationData)
+    });
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to submit application');
+    }
+    return res.json();
+};
+
+export const getMyApplicationStatus = async () => {
+    const res = await fetch(`${API_URL}/vendor-applications/status`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+    });
+    // If user has no application, backend should return 404
+    if (res.status === 404) {
+        return { success: true, data: null }; // No application found
+    }
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to get application status');
+    }
+    return res.json();
 };
