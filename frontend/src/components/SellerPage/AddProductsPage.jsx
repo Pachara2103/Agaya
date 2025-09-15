@@ -104,7 +104,6 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
     try {
       let imageUrl = isEdit && product.image ? product.image[0] : null;
 
-      // 🖼️ ขั้นตอนอัปโหลดรูปภาพ
       if (selectedFile) {
         const formData = new FormData();
         formData.append("image", selectedFile); 
