@@ -3,7 +3,7 @@ const DashBoard = () => {
     <div className="max-w-[1100px] justify-center mx-auto p-6 space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
         <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow h-[450px]">
-          <div className="bg-[#e9acb7] text-black text-xl font-bold p-3 rounded-t-lg -m-6 mb-6">
+          <div className="bg-[#e9acb7] text-black text-xl font-bold p-5 rounded-t-lg -m-6 mb-6">
             ที่ต้องทำ
           </div>
           <div className="grid grid-cols-2 gap-6 text-center h-full">
@@ -34,7 +34,7 @@ const DashBoard = () => {
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow h-[450px] flex flex-col">
-          <div className="bg-[#e9acb7] text-xl text-black font-bold p-3 rounded-t-lg -m-6 mb-6">
+          <div className="bg-[#e9acb7] text-xl text-black font-bold p-5 rounded-t-lg -m-6 mb-6">
             สินค้าขายดี
           </div>
           <div className="flex-grow flex items-center justify-center">
@@ -54,7 +54,7 @@ const DashBoard = () => {
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow h-[200px] flex flex-col">
-        <div className="bg-[#ace9c5] text-xl text-black font-bold p-3 rounded-t-lg -m-6 mb-6">
+        <div className="bg-[#ace9c5] text-xl text-black font-bold p-5 rounded-t-lg -m-6 mb-6">
           BUSINESS INSIGHTS
         </div>
         <div className="flex-grow flex items-center justify-center">
