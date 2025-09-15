@@ -56,13 +56,13 @@ let router = createBrowserRouter([
         element: <ChangePasswordSuccess />,
       },
       {
-        path: "/categorymanagement",
-        element: <CategoryManagement />
-      },
-      {
         path: "/password-recovery",
         element: <PasswordRecovery />,
-      },  
+      },
+      {
+        path: "/categorymanagement",
+        element: <CategoryManagement />
+      }, 
       {
         path: "/profile",
         Component: Profile,
