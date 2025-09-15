@@ -6,15 +6,40 @@ import { IoMdPerson } from "react-icons/io";
 import Button1 from "../Button1";
 import { useEffect, useState } from "react";
 import Profile from "./Profile";
+import { getMe } from "../../libs/authService";
 
 // rgba(221, 221, 221, 0.7)
 function ProfileContainer() {
   const [currentPanel, setCurrrentPanel] = useState("profile");
+
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const checkPanel = (panelName, currentPanel) => {
     if (currentPanel === panelName) return "text-pink-600";
     return "text-gray-500";
   };
-  const username = "User00001";
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getMe();
+        if (response.success) setUserData(response.data);
+        else throw new Error("Failed to fetch user data.");
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>; 
+  if (error) return <div>Error: {error}</div>; 
+
+  // const username = "User00001";
   const box =
     "border-gray-100 border-1 shadow-[0_0_4px_1px_rgba(221,221,221,0.7)]"; //offsetX, offsetY, blur, spread
   return (
@@ -31,7 +56,7 @@ function ProfileContainer() {
                 <MdAccountCircle size={50} />
               </div>
               <div className={`flex-col ml-4 self-center`}>
-                <div className={`font-[500] mb-1 text-[16px]`}>{username}</div>
+                <div className={`font-[500] mb-1 text-[16px]`}>{userData?.username}</div>
                 <div className={`font-[100] text-gray-400 text-[13px]`}>
                   แก้ไขข้อมูลส่วนตัว
                 </div>
@@ -98,7 +123,7 @@ function ProfileContainer() {
         <div
           className={`w-200 ml-6 mr-12 mt-14 mb-8 h-150 bg-white ${box} flex-shrink-0 cursor-default`}
         >
-          {currentPanel === "profile" ? <Profile/> : ""}
+          {currentPanel === "profile" && <Profile userData={userData} />}
         </div>
       </div>
     </div>
