@@ -2,21 +2,21 @@ import React, { useEffect, useState } from "react";
 import CategoryMHeader from "./CategoryMHeader";
 import CategoryCard from "./CategoryCard";
 import CreateCategory from "./CrateCategory";
+import { getCategories } from "../../libs/categoryService";
 
 export const CategoryManagement = () => {
 
     const [category, setcategory] = useState(null);
 
     const getData = async () => {
-         try {
-            const res = await fetch(`http://localhost:5000/api/v1/Agaya/category`);
-            if (!res.ok) {
-                 throw new Error("Failed to fetch product");
-            }
-            const data = await res.json();
-            const category = data.data;
+
+        try {
+            const categorydata = await getCategories("http://localhost:5000/api/v1/Agaya");
+            console.log(categorydata);
+            const category = categorydata.data;
             setcategory(category);
         } catch (err) {
+            console.log(err);
             throw new Error("Can not get Data");
         }
     }

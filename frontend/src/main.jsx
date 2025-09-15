@@ -54,7 +54,7 @@ let router = createBrowserRouter([
         element: <ChangePasswordSuccess />,
       },
       {
-        path: "/test",
+        path: "/categorymanagement",
         element: <CategoryManagement />
       },  
       {

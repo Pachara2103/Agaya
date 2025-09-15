@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { createCategory } from "../../libs/categoryService";
 
 export const CreateCategory = ({ onSuccess }) => {
 
     const [name, setName] = useState("");
 
-    const createCategory = async () =>{
+    const addCategory = async () =>{
         try {
-            const response = await fetch("http://localhost:5000/api/v1/Agaya/category", {
-                 method: "POST",
-                 headers: {
-                 "Content-Type": "application/json",
-                },
-                 body: JSON.stringify({category_name: name }), 
-            });
 
-            if (!response.ok) {
-                throw new Error("Failed to create category");
-            }
-            const data = await response.json();
-            console.log("Category created:", data);
+            const response = await createCategory("http://localhost:5000/api/v1/Agaya", {category_name: name});
+            console.log("Category created:", response);
             alert("Category created successfully!");
             if (onSuccess) onSuccess();
             setName("");
@@ -51,7 +42,7 @@ export const CreateCategory = ({ onSuccess }) => {
             {/* Right content */}
             <div className="h-[50px] top-[11px] items-center gap-4">
                 <button 
-                    onClick={createCategory}
+                    onClick={addCategory}
                     className="bg-blue-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center"
                 >
                     Create
