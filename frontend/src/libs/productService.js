@@ -20,6 +20,7 @@ export const getProductsById = async (id) => {
   return res.json();
 };
 
+
 export const createProduct = async (newProduct) => {
   const res = await fetch(`${API_URL}/products`, {
     method: "POST",
@@ -45,3 +46,33 @@ export const deleteProduct = async (id) => {
   });
   return res.status;
 };
+const getProductsByVendorId = async () => {
+  const token = Cookies.get("token");
+  if (!token) {
+    return "Permission is Denied!";
+  }
+  try {
+    const data = await fetch(`${API_URL}/products/vendor/my-products`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const res = await data.json();
+    console.log("dataaaaaaaaaaaaaaaaa = ", res);
+
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Can not get product");
+  }
+};
+export {
+  getProducts,
+  createProduct,
+  getProductsById,
+  updateProduct,
+  deleteProduct,
+  getProductsByVendorId,
+};
+

@@ -1,5 +1,23 @@
-import { products } from "./exProduct";
-const MyProductsPage = () => {
+import { useEffect, useState } from "react";
+import {
+  getProducts,
+  createProduct,
+  getProductsById,
+  updateProduct,
+  deleteProduct,
+  getProductsByVendorId,
+} from "../../libs/productService";
+const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    fetchMyproduct();
+  }, []);
+
+  const fetchMyproduct = async () => {
+    const res = await getProductsByVendorId();
+    console.log(res);
+    setProducts(res.data);
+  };
   return (
     <div className="mt-6 bg-white p-6 rounded-lg shadow">
       <div className="flex justify-between items-center mb-6">
@@ -56,7 +74,7 @@ const MyProductsPage = () => {
       </div>
 
       <div className="border-l border-r border-b rounded-b-lg">
-        {products.map((product) => (
+        {products.map((product, index) => (
           <div
             key={product.id}
             className="grid grid-cols-13 gap-4 items-center p-4 border-b-1 border-[#CCCCCC] last:border-b-1 "
@@ -90,9 +108,16 @@ const MyProductsPage = () => {
               {product.product_description}
             </div>
             <div className="col-span-2 text-right">
-              <button className="button-white w-20">แก้ไข</button>
+              <button
+                className="button-white w-20"
+                onClick={() => {
+                  setEditProduct(products[index]);
+                  setPageSelected("edit");
+                }}
+              >
+                แก้ไข
+              </button>
             </div>
-
           </div>
         ))}
       </div>

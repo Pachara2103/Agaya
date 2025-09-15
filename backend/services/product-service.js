@@ -39,7 +39,6 @@ exports.findProductById = async (id) => {
 
 exports.findProductsByVendorId = async (vendorId) => {
     const products = await Product.find({ vid: vendorId });
-
     return products
 }
 

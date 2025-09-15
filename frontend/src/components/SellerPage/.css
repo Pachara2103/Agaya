@@ -20,6 +20,24 @@
   background-color: #ea002b;
 }
 
+.hidden {
+  display: none;
+}
+.delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: #ea002b;
+  width: 10px;
+  height: 10px;
+  padding: 12px;
+}
+
+/* ////////////////////////////////// */
+
 .button-white {
   background-color: #fff;
   border: solid 1px black;
@@ -38,4 +56,14 @@
 }
 .button-border-red:hover {
   background-color: #ffdde3;
+}
+
+.button-border-green {
+  background-color: #A9FCA9;
+  border: solid 1px #314E31;
+  color: #314E31;
+  cursor: pointer;
+}
+.button-border-green:hover {
+  background-color: #8fd58fd3;
 }
