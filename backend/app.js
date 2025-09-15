@@ -35,6 +35,10 @@ const categoryRouter = require("./routes/category-routes");
 const otpRoutes = require('./routes/otp-routes');
 const vendorAppRoutes = require('./routes/vendor-application-routes');
 const adminRoutes = require('./routes/admin-routes');
+const uploadRoutes = require('./routes/upload-routes');
+
+//Mount upload route
+app.use('/api/v1/Agaya/upload', uploadRoutes);
 
 //Mount routers
 app.use("/api/v1/Agaya/auth", authRouter);  
