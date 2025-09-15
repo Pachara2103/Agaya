@@ -1,22 +1,45 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+
+import { useState, useEffect } from "react";
+import {Outlet} from 'react-router-dom';
 import Promotion from "./components/Promotion/Promotion.jsx";
 import Nav from "./components/NavBar/Nav.jsx";
 import Footer from "./components/Footer/Footer.jsx";
+import CookieBanner from './components/HomePage/CookieBanner.jsx';
 import "./app.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-  let buttonArray = ["Home", " New Arrivals", "Sign in", ""];
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
+
+  useEffect(() => {
+    const consent = localStorage.getItem('cookie_consent');
+    if (!consent) {
+      setShowCookieBanner(true);
+    }
+  }, []);
+
+  const handleAcceptCookie = () => {
+    localStorage.setItem('cookie_consent', 'given');
+    setShowCookieBanner(false);
+  };
+
+  const handleDeclineCookie = () => {
+    localStorage.setItem('cookie_consent', 'declined');
+    setShowCookieBanner(false);
+  };
 
   return (
     <div className="flex flex-col relative">
       <Promotion />
       <Nav />
 
-      <Outlet />
+        <Outlet />
+  
+    
+    <Footer />
 
-      <Footer />
+    {showCookieBanner && (
+      <CookieBanner onAccept={handleAcceptCookie} onDecline={handleDeclineCookie} />
+    )}
     </div>
   );
 }

@@ -9,6 +9,12 @@ function Signup() {
   const [account, setAccount] = useState("");
   const [invalid, setInvalid] = useState(0);
 
+  // อันนี้ช่วยให้กดแล้วลิ้งก์ไปล็อกอินด้วยเมลได้ แต่ยังไม่ได้ทำว่าจะ redirect ไปไหนต่อ
+  // const handleGoogleLogin = () => {
+  //   window.location.href = 'http://localhost:5000/api/v1/Agaya/auth/google';
+  // };
+  // onClick={handleGoogleLogin} เอาอันนี้ไปใส่ที่ปุ่มล็อกอินด้วย google
+
   const navigate = useNavigate();
   const goToSignin = () => {
     navigate("/signin");
@@ -123,6 +129,7 @@ function Signup() {
           )}
 
           {state === "fillOTP" && <CreateAccountProcess account={account} />}
+
         </div>
       </main>
     </div>

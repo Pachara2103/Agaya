@@ -8,13 +8,12 @@ import Signup from "./components/LoginPage/Signup.jsx";
 import ChangePasswordForm from "./components/ProfilePage/ChangePasswordForm.jsx";
 import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
-import Profile from "./components/ProfilePage/Profile.jsx";
-import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
 import ApplyForm from './components/SellerPage/ApplyForm.jsx';
 import SellerPage from './components/SellerPage/SellerPage.jsx';
-
-
+import Profile from "./components/ProfilePage/ProfileContainer.jsx";
+import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
+import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 let router = createBrowserRouter([
@@ -65,6 +64,9 @@ let router = createBrowserRouter([
       {
         path: "/seller-page",
         Component: SellerPage,
+      },
+        path: "/dashboard",
+        Component: AdminPageContainer,
       },
     ],
   },

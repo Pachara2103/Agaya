@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: Date.now()
   },
+  status: {
+    type: String,
+    enum: ['active', 'banned'],
+    default: 'active'
+  },
   provider: {
     type: String,
     enum: ['local', 'google'],
