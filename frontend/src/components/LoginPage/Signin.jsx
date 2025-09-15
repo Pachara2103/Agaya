@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FcGoogle } from "react-icons/fc";
-import { Login } from "../../libs/authUtils.js";
+import { Login } from "../../libs/authService.js";
 import Cookies from 'js-cookie'; 
 
 function Signin() {
