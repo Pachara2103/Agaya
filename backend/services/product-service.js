@@ -37,6 +37,12 @@ exports.findProductById = async (id) => {
     throw createError(404, 'Product not found');
 }
 
+exports.findProductsByVendorId = async (vendorId) => {
+    const products = await Product.find({ vid: vendorId });
+
+    return products
+}
+
 exports.createProduct = async (createData, user) => {
     try {
         const { product_name, stock_quantity, price, rating, type, product_description, image, promotion} = createData;
