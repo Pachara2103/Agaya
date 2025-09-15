@@ -14,7 +14,7 @@ import SellerPage from './components/SellerPage/SellerPage.jsx';
 import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import Address from "./components/ProfilePage/Address.jsx";
-import AddAddressPage from "./components/ProfilePage/AddAddressPage.jsx";
+import AddAddressForm from "./components/ProfilePage/AddAddressForm.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 //test
 import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
@@ -74,8 +74,8 @@ let router = createBrowserRouter([
         Component: Address,
       },
       {
-        path: "/add-address-page",
-        Component: AddAddressPage
+        path: "/add-address-form",
+        Component: AddAddressForm
       },
       {
         path: "/productdetail/:id",
