@@ -77,3 +77,31 @@ exports.getMe = (req, res, next) => {
   // The user object is attached to the request by the 'protect' middleware
   res.status(200).json({ success: true, data: req.user });
 };
+
+// @desc    Update current user profile
+// @route   PUT /api/v1/agaya/auth/me
+// @access  Private
+exports.updateMe = async (req, res, next) => {
+  try {
+    const { username, phoneNumber, dateOfBirth, gender, profileImageUrl } = req.body;
+    // มันมีใน user-routes เหมือนกันแต่เลือกใช้อันใหม่ดีกว่า ให้มันอยู่ด้วยกันแล้วค่อยจัดการที่เหลือจะดีกว่า
+    // เดะไว้ refactor แยก controller กับ service อีกที
+    const updatedFields = {
+      username,
+      phoneNumber,
+      dateOfBirth,
+      gender,
+      profileImageUrl
+    };
+
+    const user = await User.findByIdAndUpdate(req.user.id, updatedFields, {
+      new: true, 
+      runValidators: true 
+    });
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    next(error);
+  }
+};
+
