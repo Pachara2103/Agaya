@@ -1,33 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashBoard from "./DashBoard";
 import Sidebar from "./SideBar";
 import MyProductsPage from "./MyProductsPage";
+import AddProductsPage from "./AddProductsPage";
+import "./.css";
 
 const icon = {
   dashboard: 0,
   สินค้าของฉัน: 1,
+  เพิ่มสินค้าใหม่: 2,
 };
 
 function SellerPage() {
-  const [shopname, setShopName] = useState(null);
   const [pageSelected, setPageSelected] = useState("dashboard");
+  const [displaySidebar, setDisplaySidebar] = useState(true);
 
   const userClick = () => {
     switch (icon[pageSelected]) {
       case 0:
         return <DashBoard />;
       case 1:
-        return <MyProductsPage />
+        return <MyProductsPage />;
+      case 2:
+        return <AddProductsPage setPageSelected={setPageSelected} />;
 
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    if (pageSelected == "เพิ่มสินค้าใหม่") {
+      console.log(222);
+      setDisplaySidebar(false);
+    } else setDisplaySidebar(true);
+  }, [pageSelected]);
+
   return (
     <div className="flex bg-white font-sans">
       <div className="flex-1 flex flex-col">
         <header className="flex justify-between items-center px-10 py-3 border-b shadow-blue-2">
-          <h1 className="text-xl font-bold text-gray-800 cursor-pointer" onClick={()=>{setPageSelected("dashboard")}}>
+          <h1
+            className="text-xl font-bold text-gray-800 cursor-pointer"
+            onClick={() => {
+              setPageSelected("dashboard");
+            }}
+          >
             Agaya{" "}
             <span className="font-normal text-gray-500">Seller Centre</span>
           </h1>
@@ -43,7 +61,11 @@ function SellerPage() {
         </header>
 
         <div className="flex-1 flex flex-row">
-          <Sidebar setPageSelected={setPageSelected} pageSelected={pageSelected}/>
+          <Sidebar
+            setPageSelected={setPageSelected}
+            pageSelected={pageSelected}
+            display={displaySidebar}
+          />
 
           <main className="flex-1 p-6 bg-gray-100 overflow-y-auto ">
             {userClick()}
