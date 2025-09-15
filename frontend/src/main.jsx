@@ -11,7 +11,7 @@ import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSucces
 // import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
-
+import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 let router = createBrowserRouter([
@@ -21,7 +21,7 @@ let router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Homepage />
+        element: <Homepage />,
       },
       {
         path: "/signin",
@@ -33,30 +33,30 @@ let router = createBrowserRouter([
       },
       {
         path: "/change-password-form",
-        element: <ChangePasswordForm />
+        element: <ChangePasswordForm />,
       },
       {
         path: "/set-new-password",
-        element: <SetNewPassword />
+        element: <SetNewPassword />,
       },
       {
         path: "/change-password-success",
-        element: <ChangePasswordSuccess />
+        element: <ChangePasswordSuccess />,
       },
-        {
-     path: "/profile",
-    Component: Profile,
+      {
+        path: "/profile",
+        Component: Profile,
+      },
+      {
+        path: "/productdetail/:id",
+        Component: ProductDetail,
+      },
+      {
+        path: "/dashboard",
+        Component: AdminPageContainer,
+      },
+    ],
   },
-  {
-     path: "/productdetail/:id",
-    Component: ProductDetail,
-  }
-        
-        
-        
-    ]
-  },
-
 ]);
 
 createRoot(document.getElementById("root")).render(
