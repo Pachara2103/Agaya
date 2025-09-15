@@ -3,7 +3,8 @@ import { API_URL } from "./api";
 const findByEmail = async (email) => {
   try {
     const res = await fetch(`${API_URL}/users/email/${email}`);
-    return res.json();
+    const data = await res.json();
+    return data;
   } catch (err) {
     throw new Error("Can not get users");
   }
@@ -20,7 +21,9 @@ const sendOTP = async (email) => {
         email,
       }),
     });
-    return res.json();
+
+    const data = await res.json();
+    return data;
   } catch (err) {
     throw new Error("Can not get users");
   }
@@ -34,13 +37,36 @@ const verifyOTP = async (email, otp) => {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        email, otp
+        email,
+        otp,
       }),
     });
-    return res.json();
+
+    const data = await res.json();
+    return data;
   } catch (err) {
     throw new Error("Can not get users");
   }
 };
 
-export { findByEmail, sendOTP, verifyOTP };
+const setnewPassword = async (email, newPassword) => {
+  try {
+    const res = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        newPassword,
+      }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    throw new Error("Can not get users");
+  }
+};
+
+export { findByEmail, sendOTP, verifyOTP, setnewPassword };

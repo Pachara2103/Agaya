@@ -8,9 +8,9 @@ import Signup from "./components/LoginPage/Signup.jsx";
 import ChangePasswordForm from "./components/ProfilePage/ChangePasswordForm.jsx";
 import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
-import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/Profile.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
+import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -21,7 +21,7 @@ let router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Homepage />
+        element: <Homepage />,
       },
       {
         path: "/signin",
@@ -33,30 +33,30 @@ let router = createBrowserRouter([
       },
       {
         path: "/change-password-form",
-        element: <ChangePasswordForm />
+        element: <ChangePasswordForm />,
       },
       {
         path: "/set-new-password",
-        element: <SetNewPassword />
+        element: <SetNewPassword />,
       },
       {
         path: "/change-password-success",
-        element: <ChangePasswordSuccess />
+        element: <ChangePasswordSuccess />,
       },
-        {
-     path: "/profile",
-    Component: Profile,
+      {
+        path: "/password-recovery",
+        element: <PasswordRecovery />,
+      },
+      {
+        path: "/profile",
+        Component: Profile,
+      },
+      {
+        path: "/productdetail/:id",
+        Component: ProductDetail,
+      },
+    ],
   },
-  {
-     path: "/productdetail/:id",
-    Component: ProductDetail,
-  }
-        
-        
-        
-    ]
-  },
-
 ]);
 
 createRoot(document.getElementById("root")).render(

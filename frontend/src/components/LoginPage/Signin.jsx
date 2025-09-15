@@ -1,10 +1,5 @@
-import CreateAccountProcess from "./CreateAccountProcess";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import Footer from "../Footer/Footer";
-import Promotion from "../Promotion/Promotion.jsx";
-import Nav from "../NavBar/Nav.jsx";
 
 import { FcGoogle } from "react-icons/fc";
 import { Login } from "../../libs/authUtils.js";
@@ -37,7 +32,7 @@ function Signin() {
     } catch (err) {
       console.log("Login error:", err.message);
       setInvalid(true);
-      setAleart("อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง"); 
+      setAleart("อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
     }
   };
 
@@ -51,15 +46,12 @@ function Signin() {
 
   ////
 
-  const goToChangPasswordPage = () => {
-    navigate("/");
+  const goToForgetPasswordPage = () => {
+    navigate("/password-recovery");
   };
 
   return (
-    <div className="flex flex-col relative min-h-screen overflow-x-hidden">
-      <Promotion />
-      <Nav />
-
+    <div className="flex flex-col min-h-screen overflow-x-hidden">
       <main>
         <div className="flex flex-row justify-center items-center h-[75vh] w-full px-[10vw] pr-[12vw] box-border">
           <div className="flex flex-row items-center justify-center w-full h-full mr-[5vw] gap-10">
@@ -109,13 +101,12 @@ function Signin() {
               </div>
 
               <div className="flex justify-start items-center text-gray-500 text-sm">
-                <span class="text-[#1E5294] cursor-pointer">ลืมรหัสผ่าน</span>
+                <span class="text-[#1E5294] cursor-pointer" onClick={goToForgetPasswordPage}>ลืมรหัสผ่าน</span>
               </div>
             </div>
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

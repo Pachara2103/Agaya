@@ -1,13 +1,8 @@
 import CreateAccountProcess from "./CreateAccountProcess";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import Footer from "../Footer/Footer";
-import Promotion from "../Promotion/Promotion.jsx";
-import Nav from "../NavBar/Nav.jsx";
-
 import { FcGoogle } from "react-icons/fc";
-import { findByEmail, sendOTP} from "../../libs/userService.js";
+import { findByEmail, sendOTP } from "../../libs/userService.js";
 
 function Signup() {
   const [state, setState] = useState("fillUseraccount");
@@ -32,11 +27,9 @@ function Signup() {
   const changState = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    let account_user = account;
-
     if (emailRegex.test(account)) {
       const res = await findByEmail(account.trim());
-      console.log(res.data)
+      console.log(res.data);
       if (res.data.length == 1) {
         setInvalid(1);
         return;
@@ -54,11 +47,9 @@ function Signup() {
       setState("fillUseraccount");
     }
 
-     const send = await sendOTP(account);
-     console.log(send.message)
-    navigate(`/signup?step=verify-identity`, {
-      state: { account_user },
-    });
+    const send = await sendOTP(account);
+    console.log(send.message);
+    navigate(`/signup?step=verify-identity`);
   };
 
   useEffect(() => {
@@ -70,10 +61,7 @@ function Signup() {
   }, [invalid]);
 
   return (
-
     <div className="flex flex-col relative min-h-screen overflow-x-hidden">
-      <Promotion />
-      <Nav />
       <main>
         <div className="flex flex-row justify-center items-center h-[75vh] w-full px-[10vw] pr-[12vw] box-border">
           {state === "fillUseraccount" && (
@@ -134,10 +122,9 @@ function Signup() {
             </div>
           )}
 
-          {state === "fillOTP" && <CreateAccountProcess />}
+          {state === "fillOTP" && <CreateAccountProcess account={account} />}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

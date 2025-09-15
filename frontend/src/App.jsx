@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {Outlet} from 'react-router-dom';
+import { Outlet } from "react-router-dom";
 import Promotion from "./components/Promotion/Promotion.jsx";
 import Nav from "./components/NavBar/Nav.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -10,15 +10,13 @@ function App() {
   let buttonArray = ["Home", " New Arrivals", "Sign in", ""];
 
   return (
-    <div className="app-container">
+    <div className="flex flex-col relative">
       <Promotion />
       <Nav />
 
-      <main className="main-content">
-        <Outlet />
-      </main>
-    
-    <Footer />
+      <Outlet />
+
+      <Footer />
     </div>
   );
 }
