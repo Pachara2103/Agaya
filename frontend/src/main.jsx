@@ -8,8 +8,10 @@ import Signup from "./components/LoginPage/Signup.jsx";
 import ChangePasswordForm from "./components/ProfilePage/ChangePasswordForm.jsx";
 import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
+import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
+import ApplyForm from './components/SellerPage/ApplyForm.jsx';
+import SellerPage from './components/SellerPage/SellerPage.jsx';
 import TestFetch from "./components/TestFetch.jsx";
-// import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 //test
@@ -54,6 +56,9 @@ let router = createBrowserRouter([
         element: <ChangePasswordSuccess />,
       },
       {
+        path: "/password-recovery",
+        element: <PasswordRecovery />,
+      },
         path: "/test",
         element: <CategoryManagement />
       },  
@@ -64,6 +69,14 @@ let router = createBrowserRouter([
       {
         path: "/productdetail/:id",
         Component: ProductDetail,
+      },
+      {
+        path: "/apply-for-seller",
+        Component: ApplyForm,
+      },
+      {
+        path: "/seller-page",
+        Component: SellerPage,
       },
       {
         path: "/dashboard",

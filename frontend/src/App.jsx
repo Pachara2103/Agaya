@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import {Outlet} from 'react-router-dom';
 import Promotion from "./components/Promotion/Promotion.jsx";
@@ -27,13 +28,12 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="flex flex-col relative">
       <Promotion />
       <Nav />
 
-      <main className="main-content">
         <Outlet />
-      </main>
+  
     
     <Footer />
 
