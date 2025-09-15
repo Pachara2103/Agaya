@@ -41,6 +41,7 @@ function App() {
       <CookieBanner onAccept={handleAcceptCookie} onDecline={handleDeclineCookie} />
     )}
     </div>
+    
   );
 }
 

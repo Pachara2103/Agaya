@@ -12,6 +12,10 @@ import TestFetch from "./components/TestFetch.jsx";
 // import OTP from "./components/LoginPage/OTP.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
+//test
+import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
+
+
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -49,6 +53,10 @@ let router = createBrowserRouter([
         path: "/change-password-success",
         element: <ChangePasswordSuccess />,
       },
+      {
+        path: "/test",
+        element: <CategoryManagement />
+      },  
       {
         path: "/profile",
         Component: Profile,
