@@ -1,30 +1,46 @@
-import { CiSearch } from "react-icons/ci";
 import "./nav.css";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
-function Nav(){
+import NavLinks from "./NavLinks";
+import NavIcons from "./NavIcons";
+import SearchBar from "./SearchBar";
+
+function Nav() {
   const nav = useNavigate();
-    return(
-        <nav>
-        <div className="header">
-          <h2 class="text-[#000] text-[18px]">
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    setIsLoggedIn(false);
+    nav("/signin");
+    window.location.reload();
+  };
+
+  return (
+    <nav>
+      <div className="header">
+        <div className="header-left">
+          <h2 className="text-[#000] text-[18px] cursor-pointer font-bold" onClick={() => nav("/")}>
             Agaya
           </h2>
-
-          <ul className="nav medium">
-            <li class="cursor-pointer" onClick={()=>{nav("/apply-for-seller")}}>เปิดร้านค้าใหม่</li>
-            <li>ช่วยเหลือ</li>
-            <li>สมัครใหม่</li>
-            <li>เข้าสู่ระบบ</li>
-          </ul>
-
-          <div className="search-box medium">
-            <input type="text" placeholder="ค้นหาสินค้าและร้านค้า" />
-            <CiSearch size={28} />
-          </div>
         </div>
-      </nav>
 
-    );
+        <div className="header-right">
+          <NavLinks isLoggedIn={isLoggedIn} />
+          <SearchBar />
+          <NavIcons isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        </div>
+      </div>
+    </nav>
+  );
 }
 export default Nav;

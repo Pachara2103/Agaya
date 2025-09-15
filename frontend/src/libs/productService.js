@@ -1,40 +1,51 @@
 import { API_URL } from "./api";
-import Cookies from "js-cookie";
-import { getMe } from "./userService";
+import Cookies from 'js-cookie';
 
-const getProducts = async (url, token) => {
-  try {
-    const data = await fetch(`${url}/products`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const products = data.json();
-    return products;
-  } catch (err) {
-    throw new Error("Can not get products");
-  }
-};
-const getProductsById = async (id) => {
-  const token = Cookies.get("token");
-  if (!token) {
-    return "Permission is Denied!";
-  }
-  try {
-    const data = await fetch(`${API_URL}/products/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const res = await data.json();
-    return res;
-  } catch (err) {
-    throw new Error("Can not get product");
-  }
+const getAuthHeaders = () => {
+  const token = Cookies.get('token');
+  if (!token) throw new Error("Authentication token not found");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
 };
 
+export const getProducts = async () => {
+  const res = await fetch(`${API_URL}/products`, { headers: getAuthHeaders() });
+  return res.json();
+};
+
+export const getProductsById = async (id) => {
+  const res = await fetch(`${API_URL}/products/${id}`, { headers: getAuthHeaders() });
+  return res.json();
+};
+
+
+export const createProduct = async (newProduct) => {
+  const res = await fetch(`${API_URL}/products`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(newProduct),
+  });
+  return res.json();
+};
+
+export const updateProduct = async (id, data) => {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+export const deleteProduct = async (id) => {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return res.status;
+};
 const getProductsByVendorId = async () => {
   const token = Cookies.get("token");
   if (!token) {
@@ -56,75 +67,6 @@ const getProductsByVendorId = async () => {
     throw new Error("Can not get product");
   }
 };
-
-const createProduct = async (newProduct) => {
-  const token = Cookies.get("token");
-  if (!token) {
-    return "Permission is Denied!";
-  }
-
-  try {
-    console.log(JSON.stringify(newProduct));
-    const res = await fetch(`${API_URL}/products`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...newProduct,
-      }),
-    });
-    const data = await res.json();
-    return data;
-  } catch (e) {
-    console.log(e);
-    throw new Error("Can not create product");
-  }
-};
-
-const updateProduct = async (id, data) => {
-  const token = Cookies.get("token");
-  if (!token) {
-    return "Permission is Denied!";
-  }
-  try {
-    console.log(JSON.stringify(data));
-    const res = await fetch(`${API_URL}/products/${id}`, {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...data,
-      }),
-    });
-    const updatedProduct = await res.json();
-    return updatedProduct;
-  } catch (e) {
-    console.log(e);
-    throw new Error("Can not update product");
-  }
-};
-const deleteProduct= async (id) => {
-  const token = Cookies.get("token");
-  if (!token) {
-    return "Permission is Denied!";
-  }
-  try {
-    const res = await fetch(`${API_URL}/products/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.json();
-  } catch (e) {
-    throw new Error("Can not delete product");
-  }
-};
-
 export {
   getProducts,
   createProduct,
@@ -133,3 +75,4 @@ export {
   deleteProduct,
   getProductsByVendorId,
 };
+
