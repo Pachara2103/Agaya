@@ -42,7 +42,7 @@ export const CategoryManagement = () => {
           <div className="w-[1000px] bg-white px-[63px] py-[30px] flex flex-col gap-4">
             <CategoryMHeader />
             {category.map((cat, index) => (
-                <CategoryCard key={index} Category={cat} />
+                <CategoryCard key={index} Category={cat} onSuccess={getData}/>
             ))}
 
             <CreateCategory onSuccess={getData}/>
