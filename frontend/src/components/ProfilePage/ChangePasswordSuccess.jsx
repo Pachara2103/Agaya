@@ -1,7 +1,6 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {BsCheckCircleFill} from "react-icons/bs";
-import './ChangePasswordSuccess.css';
 
 function ChangePasswordSuccess() {
     const navigate = useNavigate();
@@ -14,22 +13,23 @@ function ChangePasswordSuccess() {
         <div class="flex flex-col relative">
 
             <main>
-                <div className="form-container">
-                    <div className="form-card text-center">
-                        <div className="success-icon">
+                <div className="flex justify-center items-center min-h-[80vh] bg-gray-100">
+                    <div className="bg-white py-[40px] px-[50px] rounded-lg shdaow-lg w-full max-w-[420px] text-center">
+                        <div className="text-[#4CAF50] mb-5 flex justify-center">
                             <BsCheckCircleFill size={70} />
                         </div>
 
-                        <h2 className="form-title">ตั้งรหัสผ่านใหม่สำเร็จแล้ว</h2>
+                        <h2 className="text-2xl font-semibold mb-5">ตั้งรหัสผ่านใหม่สำเร็จแล้ว</h2>
 
-                        <p className="success-message">
+                        <p className="text-base text-gray-800 mb-2">
                             เปลี่ยนรหัสผ่านบัญชีนี้สำเร็จ
                         </p>
-                        <p className="success-submessage">
+                        <p className="text-sm text-gray-600 mb-8">
                             คุณจะย้ายไปล็อกอินเข้าสู่ระบบภายใน 3 วินาที
                         </p>
 
-                        <button className="submit-button" onClick={handleConfirm}>
+                        <button className="w-full py-3 bg-[#80cbc4] text-white rounded-md text-base font-bold cursor-pointer transition-colors duration-300 hover:bg-[#4db6ac]" 
+                         onClick={handleConfirm}>
                             ตกลง
                         </button>
                     </div>
