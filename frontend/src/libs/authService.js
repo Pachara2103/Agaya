@@ -58,6 +58,15 @@ export const getMe = async () => {
   }
 };
 
+export const updateMe = async (updatedData) => {
+  const res = await fetch(`${API_URL}/auth/me`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(updatedData),
+  });
+  return res.json();
+};
+
 export const createVendorApplication = async (applicationData) => {
     const res = await fetch(`${API_URL}/vendor-applications`, {
         method: 'POST',
