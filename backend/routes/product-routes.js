@@ -4,15 +4,18 @@ const router = express.Router();
 const {
   findAllProduct,
   findProductById,
-    createProduct,
-    updateProduct,
-    deleteProduct
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  findProductsByVendor
 } = require("../controllers/product-controller");
 
 const { protect, authorize } = require("../middleware/auth");
 // const checkOwnership = require("../middleware/checkOwnerShip");
 
 const Product = require("../models/product");
+
+router.get("/vendor/my-products", protect, authorize("vendor", "admin"), findProductsByVendor);
 
 router.get("/", protect, findAllProduct);
 router.get("/:id", protect, findProductById);
