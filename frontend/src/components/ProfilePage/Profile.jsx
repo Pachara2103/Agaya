@@ -9,6 +9,10 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DatePicker.css";
+
+import ImageUploader from "../SellerPage/ImageUploader"; 
+import { updateMe } from "../../libs/authService";
+import { uploadProductImage } from "../../libs/productService";
 // rgba(221, 221, 221, 0.7)
 function Profile({ userData }) {
   // const { email, name, phoneNumber, dob } = {
@@ -26,6 +30,8 @@ function Profile({ userData }) {
     gender: originalGender,
   } = userData;
   const originalDob = originalDobString ? new Date(originalDobString) : null;
+
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [updatedData, setUpdatedData] = useState(false);
   const [updatedName, setUpdatedName] = useState(originalName || "");
@@ -66,6 +72,49 @@ function Profile({ userData }) {
   const genderRadioStyle =
     "w-3.5 h-3.5 bg-black border-3 border-black rounded-full self-center";
   const labelStyle = `self-center text-right text-gray-700`;
+
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+    setUpdatedData(true); 
+  };
+
+  const handleSave = async () => {
+    if (!updatedData) return; 
+
+    try {
+      let imageUrl = userData.profileImageUrl;
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+        const uploadRes = await uploadProductImage(formData); 
+        if (uploadRes.success) {
+          imageUrl = uploadRes.imageUrl;
+        } else {
+          throw new Error("Profile image upload failed");
+        }
+      }
+      
+      const dataToUpdate = {
+        username: updatedName,
+        phoneNumber: updatedPhoneNumber,
+        gender: updatedGender,
+        dateOfBirth: dateOfBirthDate,
+        profileImageUrl: imageUrl, 
+      };
+
+      const res = await updateMe(dataToUpdate);
+      if (res.success) {
+        alert("อัปเดตข้อมูลสำเร็จ!");
+        window.location.reload();
+      } else {
+        alert("อัปเดตข้อมูลไม่สำเร็จ: " + (res.message || ""));
+      }
+    } catch (error) {
+      console.error(error);
+      alert("เกิดข้อผิดพลาด: " + error.message);
+    }
+  };
 
   const username = "User00001";
   const box =
@@ -155,9 +204,13 @@ function Profile({ userData }) {
         </div>
         <div className="flex flex-col flex-1 text-black my-6 mr-6 bg-white">
           <div className="flex flex-col flex-1 bg-white items-center justify-start gap-2">
-            <div className={`text-black`}>
+            {/* <div className={`text-black`}>
               <MdAccountCircle size={120} />
-            </div>
+            </div> */}
+            <ImageUploader
+              onFileSelect={handleFileSelect}
+              initialImage={userData.profileImageUrl}
+            />
             <div
               className={`h-12 w-36 flex items-center justify-center rounded-md text-black shadow-[0_0_2px_1px_rgba(200,200,200,0.8)] cursor-pointer`}
             >
@@ -169,6 +222,7 @@ function Profile({ userData }) {
             </div>
           </div>
           <div
+            onClick={handleSave}
             className={`h-12 w-36 mb-10 ${
               updatedData
                 ? "bg-[#48B3AF] cursor-pointer"

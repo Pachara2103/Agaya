@@ -1,7 +1,7 @@
 // backend/routes/auth.routes.js
 const express = require('express');
 const passport = require('passport');
-const { register, login, logout, getMe, changePassword, googleCallback, forgotPassword } = require('../controllers/auth-controller');
+const { register, login, logout, getMe, updateMe ,changePassword, googleCallback, forgotPassword } = require('../controllers/auth-controller');
 const { protect } = require('../middleware/auth');
 const router = express.Router();
 
