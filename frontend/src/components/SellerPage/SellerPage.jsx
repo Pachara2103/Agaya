@@ -14,7 +14,7 @@ const icon = {
 
 function SellerPage() {
   const [pageSelected, setPageSelected] = useState("dashboard");
-  const [displaySidebar, setDisplaySidebar] = useState(true);
+  // const [displaySidebar, setDisplaySidebar] = useState(true);
   const [editproduct, setEditProduct] = useState(null);
 
   const editProduct = (p) => {
@@ -25,11 +25,13 @@ function SellerPage() {
     console.log("edit = ", editproduct);
   }, [editproduct]);
 
-  useEffect(() => {
-    if (pageSelected == "เพิ่มสินค้าใหม่" || pageSelected == "edit") {
-      setDisplaySidebar(false);
-    } else setDisplaySidebar(true);
-  }, [pageSelected]);
+  // useEffect(() => {
+  //   if (pageSelected == "เพิ่มสินค้าใหม่" || pageSelected == "edit") {
+  //     setDisplaySidebar(false);
+  //   } else setDisplaySidebar(true);
+  // }, [pageSelected]);
+
+  const displaySidebar = pageSelected !== "เพิ่มสินค้าใหม่" && pageSelected !== "edit";
 
   const userClick = () => {
     switch (icon[pageSelected]) {
