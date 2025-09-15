@@ -8,13 +8,17 @@ import Signup from "./components/LoginPage/Signup.jsx";
 import ChangePasswordForm from "./components/ProfilePage/ChangePasswordForm.jsx";
 import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
-// import OTP from "./components/LoginPage/OTP.jsx";
+import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
+import ApplyForm from './components/SellerPage/ApplyForm.jsx';
+import SellerPage from './components/SellerPage/SellerPage.jsx';
+import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 //test
 import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
 
 
+import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 let router = createBrowserRouter([
@@ -24,11 +28,16 @@ let router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Homepage />
+        element: <Homepage />,
       },
       {
         path: "/signin",
         element: <Signin />,
+      },
+      // TEST
+      {
+        path: "/test",
+        element: <TestFetch />,
       },
       {
         path: "/signup",
@@ -36,34 +45,45 @@ let router = createBrowserRouter([
       },
       {
         path: "/change-password-form",
-        element: <ChangePasswordForm />
+        element: <ChangePasswordForm />,
       },
       {
         path: "/set-new-password",
-        element: <SetNewPassword />
+        element: <SetNewPassword />,
       },
       {
         path: "/change-password-success",
-        element: <ChangePasswordSuccess />
+        element: <ChangePasswordSuccess />,
       },
-        {
-     path: "/profile",
-    Component: Profile,
+      {
+        path: "/password-recovery",
+        element: <PasswordRecovery />,
+      },
+        path: "/test",
+        element: <CategoryManagement />
+      },  
+      {
+        path: "/profile",
+        Component: Profile,
+      },
+      {
+        path: "/productdetail/:id",
+        Component: ProductDetail,
+      },
+      {
+        path: "/apply-for-seller",
+        Component: ApplyForm,
+      },
+      {
+        path: "/seller-page",
+        Component: SellerPage,
+      },
+      {
+        path: "/dashboard",
+        Component: AdminPageContainer,
+      },
+    ],
   },
-  {
-     path: "/productdetail/:id",
-    Component: ProductDetail,
-  },
-    {
-      path: "/test",
-      element: <CategoryManagement />
-    }
-        
-        
-        
-    ]
-  },
-
 ]);
 
 createRoot(document.getElementById("root")).render(

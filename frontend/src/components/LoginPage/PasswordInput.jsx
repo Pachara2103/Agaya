@@ -6,19 +6,17 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
 import { createUser } from "../../libs/fetchUserUtils";
-import { useLocation, useNavigate } from "react-router-dom";
+import { setnewPassword } from "../../libs/userService";
 
-const PasswordInput = ({ onNext }) => {
+const PasswordInput = ({ onNext, onBack, type, account, details }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const [format1, setFormat1] = useState(true);
   const [format2, setFormat2] = useState(false);
   const [format3, setFormat3] = useState(false);
   const [format4, setFormat4] = useState(false);
   const [disable, setDisable] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const account = location.state?.account;
 
   useEffect(() => {
     const check = {
@@ -41,32 +39,50 @@ const PasswordInput = ({ onNext }) => {
     { text: "ความยาวเกิน 8 ตัวอักษร", display: format4 },
   ];
 
-  const fillPassword = (e) => {
-    setPassword(e.target.value);
-  };
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  const submitPassword = async () => {
+    console.log(type);
+    if (type == "register") {
+      await register();
+    } else if (type == "forgetpassword") {
+      await forgetPassword();
+    }
+  };
+
   const register = async () => {
-    const res = await createUser({
-      email: account,
-      password: password,
-    });
-    console.log(res);
-    navigate("/signup?step=done");
-    onNext();
+    try {
+      const res = await createUser({
+        email: account,
+        password: password,
+      });
+      console.log(res);
+      onNext();
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const forgetPassword = async () => {
+    try {
+      const res = await setnewPassword(account, password);
+      console.log(res);
+      onNext();
+    } catch (e) {
+      console.log("error: ", e);
+    }
   };
 
   return (
     <div className="otp-input-box">
       <div className="relative flex flex-col justify-center items-center text-[#000] gap-2 mt-3">
-        <BackButton />
+        <BackButton onBack={()=>onBack()} />
 
-        <h1 className="text-[18px] font-bold">ตั้งรหัสผ่าน</h1>
+        <h1 className="text-[18px] font-bold mt-1.5">ตั้งรหัสผ่าน</h1>
         <p class="flex flex-col items-center justify-center font-medium gap-[5px] text-[14px]">
-          คุณมาถึงขั้นตอนสุดท้ายแล้ว กรุณาตั้งรหัสผ่าน
+          {details}
         </p>
       </div>
 
@@ -76,14 +92,15 @@ const PasswordInput = ({ onNext }) => {
             type={showPassword ? "text" : "password"}
             placeholder="รหัสผ่าน"
             class="w-full h-[40px] outline-none border-2 border-[#c9c9c9] text-[#c9c9c9] bg-white my-[10px] pl-[10px] focus:text-black focus:border-black"
-            onChange={fillPassword}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             onKeyDown={(e) => {
               if (e.key == "Enter" && !disable) {
-                register();
+                submitPassword();
               }
             }}
           />
-
           {showPassword && (
             <FaRegEye
               onClick={toggleShowPassword}
@@ -115,7 +132,7 @@ const PasswordInput = ({ onNext }) => {
         ))}
 
         <button
-          onClick={() => register()}
+          onClick={() => submitPassword()}
           className={disable ? "button-disable mt-5" : "mt-5"}
           disabled={disable}
         >

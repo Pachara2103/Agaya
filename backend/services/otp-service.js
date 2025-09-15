@@ -47,10 +47,8 @@ exports.verifyOtp = async (email, otp) => {
   //delete found otp in database
   if (otpEntry) {
     await Otp.deleteOne({ _id: otpEntry._id });
-    console.log("found");
     return true;
   }
-  console.log("not found");
 
   return false;
 };
