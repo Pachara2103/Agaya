@@ -51,7 +51,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
 
   return (
     <div>
-        <div className="top-0 left-0 w-full h-[72px] bg-white shadow-[0px_0px_4px_1px_#0000001a] rounded-b border-b border-gray-300 flex items-center justify-between px-4 z-50">
+        <div className="relative top-0 left-0 w-full h-[72px] bg-white shadow-[0px_0px_4px_1px_#0000001a] rounded-b border-1 border-gray-200 flex items-center justify-between p-4 z-50">
             {/* Left content */}
             <div className="flex items-center gap-4 text-black font-title-16px-regular">
                  {isEditing ? (
@@ -67,23 +67,24 @@ export const CategoryCard = ({Category, onSuccess}) => {
             </div>
 
             {/* Middle content */}
-            <div className="absolute left-[45%] items-center text-black font-title-16px-regular">
+            <div className="absolute left-[300px] text-black font-title-16px-regular">
                 0
             </div>
 
             {/* Right content */}
-            <div className="h-[50px] top-[11px] items-center gap-4">
+            <div className="h-[42px] top-[15px] items-center gap-4">
                 {(isEditing || isDelete)? (
                     <>
                         <button 
                             onClick={() => handleConfirm({mode : isEditing ? 1 : 2})}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block"
+                            className="bg-red-500 text-white px-6 h-full min-w-[100px] flex items-center justify-center inline-block"
+                            
                         >
                             Confirm
                         </button>
                         <button 
                             onClick={handleCancel}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block ml-4"
+                            className="bg-red-500 text-white px-6 h-full min-w-[100px] flex items-center justify-center inline-block ml-4"
                         >
                             Cancel
                         </button>
@@ -92,13 +93,13 @@ export const CategoryCard = ({Category, onSuccess}) => {
                      <>
                         <button 
                             onClick={handleEdit}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block"
+                            className="bg-red-500 text-white px-6 h-full min-w-[100px] flex items-center justify-center inline-block"
                         >
                             Edit
                         </button>
                         <button 
                             onClick={handleDelete}
-                            className="bg-red-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center inline-block ml-4"
+                            className="bg-red-500 text-white px-6 h-full min-w-[100px] flex items-center justify-center inline-block ml-4"
                         >
                             Delete
                         </button>

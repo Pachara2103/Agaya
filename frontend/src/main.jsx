@@ -15,7 +15,7 @@ import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 //test
-import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
+import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
 
 
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
