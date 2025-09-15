@@ -71,3 +71,15 @@ export const getProductsByVendorId = async () => {
     throw new Error("Can not get product");
   }
 };
+
+export const uploadProductImage = async (formData) => {
+  const token = Cookies.get("token");
+  const res = await fetch(`${API_URL}/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+  return res.json();
+};

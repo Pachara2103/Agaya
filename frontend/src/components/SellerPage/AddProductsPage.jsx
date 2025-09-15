@@ -3,47 +3,10 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
 } from "../../libs/productService";
 import { useEffect, useState } from "react";
-
-const AddProductSidebar = () => {
-  const steps = [
-    "เพิ่มรูปภาพสินค้า",
-    "ตั้งชื่อสินค้าความยาวไม่เกิน 255 ตัวอักษร",
-    "กำหนดหมวดหมู่ของสินค้า",
-    "เขียนรายละเอียดของสินค้าความยาวไม่เกิน 200 ตัวอักษร",
-    "กำหนดราคาสินค้า",
-    "กำหนดจำนวนสินค้าในคลังสินค้า",
-  ];
-
-  return (
-    <aside className="w-1/4">
-      <div className="bg-red-200 text-red-800 font-bold p-4 rounded-t-lg">
-        การปรับปรุงที่แนะนำ
-      </div>
-      <div className="bg-white p-4 rounded-b-lg shadow">
-        <ul className="space-y-4">
-          {steps.map((step, index) => (
-            <li key={index} className="flex items-center">
-              <input
-                id={`step-${index}`}
-                type="radio"
-                name="product-step"
-                className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500"
-              />
-              <label
-                htmlFor={`step-${index}`}
-                className="ml-3 text-sm text-gray-700"
-              >
-                {step}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </aside>
-  );
-};
+import AddProductSidebar from "./AddProductSidebar";
 
 const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   const [name, setName] = useState("");
@@ -52,6 +15,8 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [confirmdelete, setConfirmDelete] = useState(false);
+
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const clickDelete = () => {
     setConfirmDelete(true);
@@ -84,41 +49,101 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   useEffect(() => {
     console.log(" AddProductsPage nameeeee = ", name);
   }, [name]);
+  //callback
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+  };
 
+  // const submit = async () => {
+  //   const quantity = parseInt(stock, 10) || 0;
+  //   const productData = {
+  //     product_name: name,
+  //     type: category,
+  //     product_description: description,
+  //     price: parseFloat(price) || 0, // แปลงเป็นตัวเลข
+  //     stock_quantity: quantity, // แปลงเป็นเลขจำนวนเต็ม
+  //   };
+
+  //   if (!name || !category || !description || !price || !stock) {
+  //     alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+  //     return;
+  //   }
+  //   try {
+  //     if (!isEdit) {
+  //       const res = await createProduct(productData);
+  //       if (res.success) {
+  //         alert("เพิ่มสินค้าสำเร็จ");
+  //         setPageSelected("สินค้าของฉัน");
+  //         return;
+  //       }
+  //       alert("เพิ่มสินค้าไม่สำเร็จ กรุณาลองใหม่");
+  //     } else {
+  //       const res = await updateProduct(product._id, productData);
+  //       if (res.success) {
+  //         alert("อัพเดตสินค้าสำเร็จ");
+  //         setPageSelected("สินค้าของฉัน");
+  //         return;
+  //       }
+  //       alert("อัพเดตสินค้าไม่สำเร็จ กรุณาลองใหม่");
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
   const submit = async () => {
-    const quantity = parseInt(stock, 10) || 0;
-    const productData = {
-      product_name: name,
-      type: category,
-      product_description: description,
-      price: parseFloat(price) || 0, // แปลงเป็นตัวเลข
-      stock_quantity: quantity, // แปลงเป็นเลขจำนวนเต็ม
-    };
-
     if (!name || !category || !description || !price || !stock) {
       alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
       return;
     }
+
+    if (!isEdit && !selectedFile) {
+        alert("กรุณาเพิ่มรูปภาพสินค้า");
+        return;
+    }
+
     try {
-      if (!isEdit) {
-        const res = await createProduct(productData);
-        if (res.success) {
-          alert("เพิ่มสินค้าสำเร็จ");
-          setPageSelected("สินค้าของฉัน");
-          return;
+      let imageUrl = isEdit && product.image ? product.image[0] : null;
+
+      // 🖼️ ขั้นตอนอัปโหลดรูปภาพ
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("image", selectedFile); 
+        
+        const uploadRes = await uploadProductImage(formData);
+        
+        if (uploadRes.success) {
+          imageUrl = uploadRes.imageUrl; // ได้ URL จาก Cloudinary แล้ว
+        } else {
+          throw new Error("Image upload failed");
         }
-        alert("เพิ่มสินค้าไม่สำเร็จ กรุณาลองใหม่");
-      } else {
-        const res = await updateProduct(product._id, productData);
-        if (res.success) {
-          alert("อัพเดตสินค้าสำเร็จ");
-          setPageSelected("สินค้าของฉัน");
-          return;
-        }
-        alert("อัพเดตสินค้าไม่สำเร็จ กรุณาลองใหม่");
       }
+
+      const productData = {
+        product_name: name,
+        type: category,
+        product_description: description,
+        price: parseFloat(price) || 0,
+        stock_quantity: parseInt(stock, 10) || 0,
+        image: imageUrl ? [imageUrl] : [], 
+      };
+
+      let res;
+      if (!isEdit) {
+        res = await createProduct(productData);
+      } else {
+        res = await updateProduct(product._id, productData);
+      }
+
+      if (res.success) {
+        alert(isEdit ? "อัพเดตสินค้าสำเร็จ" : "เพิ่มสินค้าสำเร็จ");
+        setPageSelected("สินค้าของฉัน");
+      } else {
+         alert(res.message || "เกิดข้อผิดพลาด กรุณาลองใหม่");
+      }
+
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      alert("เกิดข้อผิดพลาด: " + e.message);
     }
   };
   return (
@@ -172,7 +197,10 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                 <label className="text-sm text-gray-600 mb-2">ภาพสินค้า</label>
 
                 <div className="w-32 h-32 border-2 border-dashed rounded-md flex flex-col items-center justify-center text-red-500 cursor-pointer hover:bg-red-50">
-                  <ImageUploader></ImageUploader>
+                  <ImageUploader 
+                    onFileSelect={handleFileSelect} 
+                    initialImage={isEdit && product && product.image ? product.image[0] : null}
+                  />
                 </div>
               </div>
 
