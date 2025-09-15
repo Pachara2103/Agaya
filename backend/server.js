@@ -1,7 +1,9 @@
 const http = require("http");
-const dotenv = require('dotenv') 
+const dotenv = require('dotenv');
 const app = require("./app.js");
 const connectDB = require('./config/db')
+
+dotenv.config({ path: './.env' });
 
 connectDB();
 

@@ -5,9 +5,16 @@ const cookieParser = require("cookie-parser");
 const errorHandler = require('./middleware/errorHandler');
 const cors = require("cors");
 
+const corsOptions = {
+    origin: ['http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 
 //Session middleware
 app.use(session({
@@ -15,12 +22,10 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
-app.use(errorHandler);
 
 //Passport.js middleware
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cookieParser());
 
 //Route files
 const userRouter = require("./routes/user-routes");
@@ -28,8 +33,8 @@ const authRouter = require("./routes/auth-routes");
 const productRouter = require("./routes/product-routes");
 const categoryRouter = require("./routes/category-routes");
 const otpRoutes = require('./routes/otp-routes');
-
-
+const vendorAppRoutes = require('./routes/vendor-application-routes');
+const adminRoutes = require('./routes/admin-routes');
 
 //Mount routers
 app.use("/api/v1/Agaya/auth", authRouter);  
@@ -37,9 +42,12 @@ app.use("/api/v1/Agaya/users", userRouter);
 app.use("/api/v1/Agaya/products", productRouter);
 app.use("/api/v1/Agaya/category", categoryRouter);
 app.use('/api/v1/Agaya/otp', otpRoutes);
-
+app.use('/api/v1/Agaya/vendor-applications', vendorAppRoutes);
+app.use('/api/v1/Agaya/admin', adminRoutes);
 
 //Import Passport strategies (Google)
 require('./config/passport');
+
+app.use(errorHandler);
 
 module.exports = app;

@@ -1,0 +1,15 @@
+.react-datepicker__year-read-view {
+  background: #333 !important;
+  padding: 4px 4px !important;
+  margin-top: 6px;
+
+}
+.react-datepicker__year-option {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    border: none !important;  /* เอากรอบออก */
+    background: transparent !important;
+}
