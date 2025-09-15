@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { FcGoogle } from "react-icons/fc";
 import { Login } from "../../libs/authUtils.js";
+import Cookies from 'js-cookie'; 
 
 function Signin() {
   const [email, setEmail] = useState("");
@@ -27,8 +28,20 @@ function Signin() {
     }
     try {
       const data = await Login(email, password);
-      console.log("Login success:", data);
-      navigate("/");
+      
+      if (data.success && data.token) {
+        console.log("Login success, saving token...");
+
+        Cookies.set('token', data.token, { 
+          expires: 7, 
+          secure: true, 
+          sameSite: 'strict' 
+        });
+
+        navigate("/"); 
+      } else {
+        throw new Error(data.message || "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
+      }
     } catch (err) {
       console.log("Login error:", err.message);
       setInvalid(true);
