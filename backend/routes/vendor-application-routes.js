@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createApplication, getMyApplicationStatus } = require('../controllers/vendor-application.controller');
+const { createApplication, getMyApplicationStatus } = require('../controllers/vendor-application-controller');
 const { protect } = require('../middleware/auth'); 
 
 // @route   POST /api/v1/Agaya/vendor-applications
