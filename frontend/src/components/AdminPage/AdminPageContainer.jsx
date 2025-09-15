@@ -4,6 +4,7 @@ import { VscAccount } from "react-icons/vsc";
 import DashboardPage from "./DashboardPage";
 import UserPage from "./UserPage";
 import Button1 from "../Button1";
+import CategoryManagement from "./CategoryManagement";
 function AdminPageContainer () {
   const [currentPanel, setCurrrentPanel] = useState("user");
   const checkPanel = (panelName, currentPanel, header = 0) => {
@@ -68,6 +69,7 @@ function AdminPageContainer () {
         >
           {currentPanel === "dashboard" ? <DashboardPage/> : <></>}
           {currentPanel === "user" ? <UserPage/> : <></>}
+          {currentPanel === "category" ? <CategoryManagement/> : <></>}
         </div>
       </div>
     </div>

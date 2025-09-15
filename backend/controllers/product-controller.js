@@ -2,8 +2,18 @@ const productService = require('../services/product-service');
 
 exports.findAllProduct = async (req, res, next) => {
     try {
-        const products = await productService.findAllProduct();
-        res.status(200).json({ success: true, count: products.length, data: products });
+        const result = await productService.findAllProduct(req.query);
+        
+        res.status(200).json({ 
+            success: true, 
+            count: result.products.length,
+            pagination: {
+                total: result.totalProducts,
+                totalPages: result.totalPages,
+                currentPage: result.currentPage
+            },
+            data: result.products 
+        });
     } catch (err) {
         next(err);
     }

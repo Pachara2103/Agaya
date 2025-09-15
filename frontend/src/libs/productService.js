@@ -53,6 +53,7 @@ export const getProductsByVendorId = async () => {
     const data = await fetch(`${API_URL}/products/vendor/my-products`, {
       method: "GET",
       headers: getAuthHeaders(),
+      headers: getAuthHeaders(),
     });
     const res = await data.json();
     return res;
