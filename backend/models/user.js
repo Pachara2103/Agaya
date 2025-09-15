@@ -62,6 +62,10 @@ const userSchema = new mongoose.Schema({
     enum: ['active', 'banned'],
     default: 'active'
   },
+  profileImageUrl: {
+    type: String,
+    default: null
+  },
   provider: {
     type: String,
     enum: ['local', 'google'],
