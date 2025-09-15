@@ -10,8 +10,17 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getProducts = async () => {
-  const res = await fetch(`${API_URL}/products`, { headers: getAuthHeaders() });
+export const getProducts = async (value) => {
+  let res;
+  if (value) {
+    res = await fetch(`${API_URL}/products/?keyword=${value}`, {
+      headers: getAuthHeaders(),
+    });
+  } else {
+    res = await fetch(`${API_URL}/products/`, {
+      headers: getAuthHeaders(),
+    });
+  }
   return res.json();
 };
 

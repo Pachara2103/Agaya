@@ -17,7 +17,7 @@ import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 import ResultSearch from "./components/ProductPage/ResultSearch.jsx";
 
 //test
-import CategoryManagement from "./components/CategoryManagementPage/CategoryManagement.jsx";
+import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
 
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";

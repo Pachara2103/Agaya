@@ -24,7 +24,7 @@ const ResultSearch = () => {
   };
 
   return (
-    <div class="min-h-screen overflow-y-auto overflow-x-hidden">
+    <div class="min-h-screen h-auto overflow-x-hidden hide-scrollbar">
       {!show && (
         <ProductGrid products={products} onShow={onShow} onBack={onBack} />
       )}

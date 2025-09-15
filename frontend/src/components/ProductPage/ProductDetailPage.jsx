@@ -67,7 +67,7 @@ const ProductDetail = ({ product, onBack }) => {
             <img
               src={selectedImage}
               alt={product.product_name}
-              className="w-full h-auto object-contain rounded-lg bg-gray-100"
+              className="w-full max-h-120 object-contain rounded-lg bg-gray-100"
             />
           </div>
 
