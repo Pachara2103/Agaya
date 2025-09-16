@@ -62,7 +62,6 @@ export const getProductsByVendorId = async () => {
     const data = await fetch(`${API_URL}/products/vendor/my-products`, {
       method: "GET",
       headers: getAuthHeaders(),
-      headers: getAuthHeaders(),
     });
     const res = await data.json();
     return res;
@@ -74,6 +73,8 @@ export const getProductsByVendorId = async () => {
 
 export const uploadProductImage = async (formData) => {
   const token = Cookies.get("token");
+  if (!token) throw new Error("Authentication token not found");
+  console.log("form image= ", formData.get("image"));
   const res = await fetch(`${API_URL}/upload`, {
     method: "POST",
     headers: {

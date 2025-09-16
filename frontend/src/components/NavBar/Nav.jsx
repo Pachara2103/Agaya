@@ -1,4 +1,6 @@
 import "./nav.css";
+import Signin from "../LoginPage/Signin.jsx";
+import signup from "../LoginPage/Signup.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";

@@ -3,7 +3,10 @@ const router = express.Router();
 const upload = require('../config/cloudinary'); 
 const { protect } = require('../middleware/auth'); 
 
-router.post('/', protect, upload.single('image'), (req, res) => {
+router.post('/', protect, upload.single('image'), (req, res, formData) => {
+  console.log(req)
+    console.log('formm= ', formData)
+
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No file uploaded.' });
   }

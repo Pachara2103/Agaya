@@ -117,9 +117,9 @@ const Pending = ({ application }) => {
 };
 
 const ApplyForm = () => {
-  const [shopname, setShopName] = useState(null);
+  const [shopName, setShopName] = useState(null);
   const [product, setProduct] = useState(null);
-  const [address, setAddeess] = useState(null);
+  const [address, setAddress] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [confirm, setConfirm] = useState(false);
 

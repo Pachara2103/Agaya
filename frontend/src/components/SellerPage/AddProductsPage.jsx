@@ -51,6 +51,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   }, [name]);
   //callback
   const handleFileSelect = (file) => {
+    console.log('file = ', file)
     setSelectedFile(file);
   };
 
@@ -107,6 +108,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       if (selectedFile) {
         const formData = new FormData();
         formData.append("image", selectedFile); 
+        console.log('select file = ', selectedFile)
         
         const uploadRes = await uploadProductImage(formData);
         

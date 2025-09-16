@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const StarIcon = ({ filled }) => (
   <svg
@@ -31,7 +32,7 @@ const ProductDetail = ({ product, onBack }) => {
   if (!product) {
     return <div>Loading product...</div>;
   }
-
+  
   const [selectedImage, setSelectedImage] = useState(
     product.image && product.image.length > 0
       ? product.image[0]
@@ -146,9 +147,7 @@ const ProductDetail = ({ product, onBack }) => {
               </button> 
             </div> */}
 
-            <button className="flex-1 ">
-              Buy Now
-            </button>
+            <button className="flex-1 ">Buy Now</button>
 
             {/* <a className="p-3 border rounded-md hover:bg-gray-100 bg-amber-600">
               <HeartIcon />
@@ -159,7 +158,9 @@ const ProductDetail = ({ product, onBack }) => {
             <div className="p-4 flex items-center border-black border-2 ">
               {/* Icon */}
               <p className="ml-4">
-                <span className="font-semibold block text-black">Free Delivery</span>
+                <span className="font-semibold block text-black">
+                  Free Delivery
+                </span>
                 <span className="text-sm text-black">
                   Enter your postal code for Delivery Availability
                 </span>
@@ -169,7 +170,9 @@ const ProductDetail = ({ product, onBack }) => {
             <div className="p-4 flex items-center border-black border-2 ">
               {/* Icon */}
               <p className="ml-4">
-                <span className="font-semibold block text-black">Return Delivery</span>
+                <span className="font-semibold block text-black">
+                  Return Delivery
+                </span>
                 <span className="text-sm text-gray-500">
                   Free 30 Days Delivery Returns. Details
                 </span>
