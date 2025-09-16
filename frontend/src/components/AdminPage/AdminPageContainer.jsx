@@ -9,8 +9,6 @@ import ApproveVendorPage from "./ApproveVendorPage";
 import ProductManagement from "./ProductManagement";
 
 function AdminPageContainer () {
-  const navigate = useNavigate();
-
   const [currentPanel, setCurrentPanel] = useState("user");
   const checkPanel = (panelName, currentPanel, header = 0) => {
     if (currentPanel === panelName && header === 0) return "text-pink-600";
