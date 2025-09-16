@@ -4,3 +4,13 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* สำหรับ Chrome, Safari */
 }
+
+.button-white {
+  background-color: #fff;
+  border: solid 1px black;
+  color: black;
+  cursor: pointer;
+}
+.button-white:hover {
+  background-color: #e6e6e6;
+}

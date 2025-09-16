@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { createCategory } from "../../libs/categoryService";
 
 export const CreateCategory = ({ onSuccess }) => {
 
     const [name, setName] = useState("");
 
-    const createCategory = async () =>{
+    const addCategory = async () =>{
         try {
-            const response = await fetch("http://localhost:5000/api/v1/Agaya/category", {
-                 method: "POST",
-                 headers: {
-                 "Content-Type": "application/json",
-                },
-                 body: JSON.stringify({category_name: name }), 
-            });
 
-            if (!response.ok) {
-                throw new Error("Failed to create category");
-            }
-            const data = await response.json();
-            console.log("Category created:", data);
+            const response = await createCategory("http://localhost:5000/api/v1/Agaya", {category_name: name});
+            console.log("Category created:", response);
             alert("Category created successfully!");
             if (onSuccess) onSuccess();
             setName("");
@@ -30,7 +21,7 @@ export const CreateCategory = ({ onSuccess }) => {
 
   return (
     <div>
-        <div className="top-0 left-0 w-full h-[72px] bg-white shadow-[0px_0px_4px_1px_#0000001a] rounded-b border-b border-gray-300 flex items-center justify-between px-4 z-50">
+        <div className="top-0 left-0 w-full h-[72px] bg-white shadow-[0px_0px_4px_1px_#0000001a] rounded-b border-1 border-gray-200 flex items-center justify-between px-4 z-50">
             {/* Left content */}
             <div className="flex items-center gap-4 text-black font-title-16px-regular">
                 <input 
@@ -43,16 +34,16 @@ export const CreateCategory = ({ onSuccess }) => {
                 />
             </div>
 
-            {/* Middle content */}
+            {/* Middle content 
             <div className="absolute left-[45%] justify-center items-center text-black font-title-16px-regular">
                 0
-            </div>
+            </div>*/}
 
             {/* Right content */}
-            <div className="h-[50px] top-[11px] items-center gap-4">
+            <div className="h-[42px] top-[15px] items-center gap-4">
                 <button 
-                    onClick={createCategory}
-                    className="bg-blue-500 text-white px-6 h-full min-w-[100px] rounded flex items-center justify-center"
+                    onClick={addCategory}
+                    className="bg-blue-500 text-white px-6 h-full min-w-[100px] flex items-center justify-center"
                 >
                     Create
                 </button>

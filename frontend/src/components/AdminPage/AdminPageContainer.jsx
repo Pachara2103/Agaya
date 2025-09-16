@@ -4,8 +4,9 @@ import { VscAccount } from "react-icons/vsc";
 import DashboardPage from "./DashboardPage";
 import UserPage from "./UserPage";
 import Button1 from "../Button1";
-import CategoryManagement from "../CategoryManagementPage/CategoryManagement.jsx";
-import { useNavigate } from "react-router-dom";
+import CategoryManagement from "./CategoryManagement";
+import ApproveVendorPage from "./ApproveVendorPage";
+import ProductManagement from "./ProductManagement";
 
 function AdminPageContainer () {
   const navigate = useNavigate();
@@ -74,7 +75,9 @@ function AdminPageContainer () {
         >
           {currentPanel === "dashboard" ? <DashboardPage/> : <></>}
           {currentPanel === "user" ? <UserPage/> : <></>}
-          {currentPanel === "category" ? <CategoryManagement /> : <></>}
+          {currentPanel === "product" ? <ProductManagement/> : <></>}
+          {currentPanel === "category" ? <CategoryManagement/> : <></>}
+          {currentPanel === "approve-vendor" ? <ApproveVendorPage/> : <></>}
         </div>
       </div>
     </div>

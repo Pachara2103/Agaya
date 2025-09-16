@@ -1,38 +1,78 @@
-import { CiSearch } from "react-icons/ci";
 import "./nav.css";
 import Signin from "../LoginPage/Signin.jsx";
 import signup from "../LoginPage/Signup.jsx";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
+import { getMe } from "../../libs/authService"; 
 
-function Nav(){
+import NavLinks from "./NavLinks";
+import NavIcons from "./NavIcons";
+import SearchBar from "./SearchBar";
+
+function Nav() {
   const nav = useNavigate();
-    return(
-        <nav>
-        <div className="header">
-          <h2 class="text-[#000] text-[18px] cursor-pointer" onClick={()=>{nav("/")}}>
+  const [user, setUser] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null); 
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      getMe().then(data => {
+        if (data.success) {
+          setUser(data.data);
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    setUser(null);
+    setIsDropdownOpen(false);
+    nav("/signin");
+    window.location.reload();
+  };
+  
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const closeDropdown = () => setIsDropdownOpen(false);
+
+  return (
+    <nav>
+      <div className="header">
+        <div className="header-left">
+          <h2 className="text-[#000] text-[18px] cursor-pointer font-bold" onClick={() => nav("/")}>
             Agaya
           </h2>
+        </div>
 
-          <ul className="nav medium">
-            <li class="cursor-pointer" onClick={()=>{nav("/apply-for-seller")}}>
-              เปิดร้านค้าใหม่
-              </li>
-            <li>ช่วยเหลือ</li>
-            <li class="cursor-pointer" onClick={()=>{nav("/signup")}}>
-              สมัครใหม่
-            </li>
-            <li class="cursor-pointer" onClick={()=>{nav("/signin")}}>
-              เข้าสู่ระบบ
-            </li>
-          </ul>
+        <div className="header-right">
+          <NavLinks user={user} />
+          <SearchBar />
 
-          <div className="search-box medium">
-            <input type="text" placeholder="ค้นหาสินค้าและร้านค้า" />
-            <CiSearch size={28} />
+          <div ref={dropdownRef}>
+            <NavIcons 
+              user={user} 
+              handleLogout={handleLogout}
+              isDropdownOpen={isDropdownOpen}
+              toggleDropdown={toggleDropdown}
+              onClose={closeDropdown} 
+            />
           </div>
         </div>
-      </nav>
-
-    );
+      </div>
+    </nav>
+  );
 }
 export default Nav;

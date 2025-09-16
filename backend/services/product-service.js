@@ -5,18 +5,45 @@ const auditService = require('./audit-service');
 
 
 // Get all products
-exports.findAllProduct = async () => {
-    const products = await Product.find();
+exports.findAllProduct = async (queryParams) => {
+    const { keyword, category, page = 1, limit = 12 } = queryParams;
+
+    let query = {};
+
+    if (keyword) {
+        query.product_name = { $regex: keyword, $options: 'i' };
+    }
+
+    if (category) {
+        query.type = category;
+    }
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const products = await Product.find(query)
+        .limit(limitNumber)
+        .skip(skip)
+        .sort({ createdAt: -1 }); 
 
     const productsWithPromoPrize = products.map((product) => {
-
         const obj = product.toObject();
         obj.finalPrice = product.getFinalPrice();
-
         return obj;
     });
 
-    return productsWithPromoPrize;
+    console.log('keyword = ', keyword)
+
+    const totalProducts = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / limitNumber);
+
+    return {
+        products: productsWithPromoPrize,
+        currentPage: pageNumber,
+        totalPages: totalPages,
+        totalProducts: totalProducts
+    };
 }
 
 // Get product by ID 
@@ -39,7 +66,6 @@ exports.findProductById = async (id) => {
 
 exports.findProductsByVendorId = async (vendorId) => {
     const products = await Product.find({ vid: vendorId });
-
     return products
 }
 

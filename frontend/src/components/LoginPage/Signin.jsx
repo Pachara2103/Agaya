@@ -2,16 +2,22 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FcGoogle } from "react-icons/fc";
-import { Login } from "../../libs/authUtils.js";
+import { Login } from "../../libs/authService.js";
 import Cookies from 'js-cookie'; 
+import { API_URL } from "../../libs/api.js";
 
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [aleart, setAleart] = useState("อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
   const [invalid, setInvalid] = useState(false);
-
+  
   const navigate = useNavigate();
+
+  const handleGoogleLogin = () => {
+    // ลิงก์นี้ต้องตรงกับ backend route ของคุณ
+    window.location.href = `${API_URL}/auth/google`;
+  };
 
   const fillEmail = (e) => {
     setEmail(e.target.value);
@@ -39,6 +45,7 @@ function Signin() {
         });
 
         navigate("/"); 
+        window.location.reload(); 
       } else {
         throw new Error(data.message || "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
       }
@@ -108,7 +115,7 @@ function Signin() {
 
               <button onClick={login}>เข้าสู่ระบบ</button>
 
-              <div className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
+              <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                 <FcGoogle size={30} />
                 <p className="text-[14px] text-gray-800">Sign up with Google</p>
               </div>

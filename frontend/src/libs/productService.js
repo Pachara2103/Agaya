@@ -1,85 +1,85 @@
-const getProducts = async (url, token) => {
-  try {
-    const data = await fetch(`${url}/products`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      }
+import { API_URL } from "./api";
+import Cookies from "js-cookie";
+
+const getAuthHeaders = () => {
+  const token = Cookies.get("token");
+  if (!token) throw new Error("Authentication token not found");
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+export const getProducts = async (value) => {
+  let res;
+  if (value) {
+    res = await fetch(`${API_URL}/products/?keyword=${value}`, {
+      headers: getAuthHeaders(),
     });
-    const products = data.json();
-    return products;
-  } catch (err) {
-    throw new Error("Can not get products");
+  } else {
+    res = await fetch(`${API_URL}/products/`, {
+      headers: getAuthHeaders(),
+    });
   }
-}
-const getProductsById = async (url, token, id) => {
+  return res.json();
+};
+
+export const getProductsById = async (id) => {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    headers: getAuthHeaders(),
+  });
+  return res.json();
+};
+
+export const createProduct = async (newProduct) => {
+  const res = await fetch(`${API_URL}/products`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(newProduct),
+  });
+  return res.json();
+};
+
+export const updateProduct = async (id, data) => {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+export const deleteProduct = async (id) => {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return res.status;
+};
+
+export const getProductsByVendorId = async () => {
   try {
-    const data = await fetch(`${url}/products/${id}`, {
+    const data = await fetch(`${API_URL}/products/vendor/my-products`, {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      }
+      headers: getAuthHeaders(),
+      headers: getAuthHeaders(),
     });
-    const product = data.json();
-    return product;
+    const res = await data.json();
+    return res;
   } catch (err) {
+    console.log(err);
     throw new Error("Can not get product");
   }
-}
-
-const createProduct = async (url, token, newProduct ) => {
-  try {
-    console.log(JSON.stringify(newProduct))
-    const res = await fetch(`${url}/products`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...newProduct,
-      }),
-    });
-    const createdProduct = await res.json();
-    return createdProduct;
-  } catch (e) {
-    console.log(e);
-    throw new Error("Can not create product");
-  }
 };
 
-const updateProduct = async (url, token, id, data) => {
-  try {
-    console.log(JSON.stringify(data))
-    const res = await fetch(`${url}/products/${id}`, {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...data,
-      }),
-    });
-    const updatedProduct = await res.json();
-    return updatedProduct;
-  } catch (e) {
-    console.log(e);
-    throw new Error("Can not update product");
-  }
+export const uploadProductImage = async (formData) => {
+  const token = Cookies.get("token");
+  const res = await fetch(`${API_URL}/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+  return res.json();
 };
-const deleteProduct = async (url, token, id) => {
-  try {
-    const res = await fetch(`${url}/products/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      }
-    });
-    return res.status;
-  } catch (e) {
-    throw new Error("Can not delete product");
-  }
-}
-
-export { getProducts, createProduct, getProductsById, updateProduct, deleteProduct }

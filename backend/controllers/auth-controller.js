@@ -77,3 +77,25 @@ exports.getMe = (req, res, next) => {
   // The user object is attached to the request by the 'protect' middleware
   res.status(200).json({ success: true, data: req.user });
 };
+
+// @desc    Update current user profile
+// @route   PUT /api/v1/agaya/auth/me
+// @access  Private
+exports.updateMe = async (req, res, next) => {
+  try {
+    const updateData = {
+      username: req.body.username,
+      phoneNumber: req.body.phoneNumber,
+      dateOfBirth: req.body.dateOfBirth,
+      gender: req.body.gender,
+      profileImageUrl: req.body.profileImageUrl,
+    };
+    
+    const user = await authService.updateProfile(req.user.id, updateData);
+    
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    next(error);
+  }
+};
+
