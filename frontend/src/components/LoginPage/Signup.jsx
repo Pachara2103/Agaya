@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { findByEmail, sendOTP } from "../../libs/userService.js";
+import { API_URL } from "../../libs/api.js";  
 
 function Signup() {
   const [state, setState] = useState("fillUseraccount");
@@ -10,9 +11,9 @@ function Signup() {
   const [invalid, setInvalid] = useState(0);
 
   // อันนี้ช่วยให้กดแล้วลิ้งก์ไปล็อกอินด้วยเมลได้ แต่ยังไม่ได้ทำว่าจะ redirect ไปไหนต่อ
-  // const handleGoogleLogin = () => {
-  //   window.location.href = 'http://localhost:5000/api/v1/Agaya/auth/google';
-  // };
+  const handleGoogleLogin = () => {
+    window.location.href = `${API_URL}/auth/google`;
+  };
   // onClick={handleGoogleLogin} เอาอันนี้ไปใส่ที่ปุ่มล็อกอินด้วย google
 
   const navigate = useNavigate();
@@ -108,7 +109,7 @@ function Signup() {
 
                 <button onClick={changState}>สร้างบัญชีผู้ใช้</button>
 
-                <div className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
+                <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                   <FcGoogle size={30} />
                   <p className="text-[14px] text-gray-800">
                     Sign up with Google

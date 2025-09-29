@@ -33,6 +33,8 @@ exports.findAllProduct = async (queryParams) => {
         return obj;
     });
 
+    console.log('keyword = ', keyword)
+
     const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / limitNumber);
 

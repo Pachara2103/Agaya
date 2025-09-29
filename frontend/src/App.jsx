@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import {Outlet} from 'react-router-dom';
+import { Outlet, useLocation} from 'react-router-dom';
 import Promotion from "./components/Promotion/Promotion.jsx";
 import Nav from "./components/NavBar/Nav.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -9,6 +9,9 @@ import "./app.css";
 
 function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const location = useLocation();
+
+  const showNav = !location.pathname.startsWith('/seller-page')
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie_consent');
@@ -27,15 +30,14 @@ function App() {
     setShowCookieBanner(false);
   };
 
+
   return (
     <div className="flex flex-col relative">
       <Promotion />
-      <Nav />
+      {showNav && <Nav />}
 
-        <Outlet />
-  
-    
-    <Footer />
+      <Outlet />
+      <Footer />
 
     {showCookieBanner && (
       <CookieBanner onAccept={handleAcceptCookie} onDecline={handleDeclineCookie} />

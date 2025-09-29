@@ -8,15 +8,16 @@ import Signup from "./components/LoginPage/Signup.jsx";
 import ChangePasswordForm from "./components/ProfilePage/ChangePasswordForm.jsx";
 import SetNewPassword from "./components/ProfilePage/SetNewPassword.jsx";
 import ChangePasswordSuccess from "./components/ProfilePage/ChangePasswordSuccess.jsx";
-import PasswordRecovery from './components/LoginPage/PasswordRecovery.jsx';
-import ApplyForm from './components/SellerPage/ApplyForm.jsx';
-import SellerPage from './components/SellerPage/SellerPage.jsx';
+import PasswordRecovery from "./components/LoginPage/PasswordRecovery.jsx";
+import ApplyForm from "./components/SellerPage/ApplyForm.jsx";
+import SellerPage from "./components/SellerPage/SellerPage.jsx";
 import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
+import ResultSearch from "./components/ProductPage/ResultSearch.jsx";
+
 //test
 import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
-
 
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -61,8 +62,8 @@ let router = createBrowserRouter([
       },
       {
         path: "/categorymanagement",
-        element: <CategoryManagement />
-      }, 
+        element: <CategoryManagement />,
+      },
       {
         path: "/profile",
         Component: Profile,
@@ -82,6 +83,10 @@ let router = createBrowserRouter([
       {
         path: "/dashboard",
         Component: AdminPageContainer,
+      },
+      {
+        path: "/result-search",
+        Component: ResultSearch,
       },
     ],
   },

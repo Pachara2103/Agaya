@@ -11,13 +11,13 @@ const ApplicationCard = ({ application, onApprove, onReject }) => {
       </div>
       <div className="flex-1 flex gap-2 items-center justify-end">
         <button 
-          onClick={() => onApprove(application._id)}
+          onClick={() => onApprove(application._id, application.storeName)}
           className="flex h-10 w-24 !bg-[#48B3AF] text-white items-center justify-center"
         >
           อนุมัติ
         </button>
         <button 
-          onClick={() => onReject(application._id)}
+          onClick={() => onReject(application._id, application.storeName)}
           className="flex h-10 w-24 !bg-[#B71F3B] text-white items-center justify-center"
         >
           ไม่อนุมัติ
@@ -34,7 +34,6 @@ function ApproveVendorPage() {
 
   const fetchApplications = async () => {
     try {
-      setLoading(true);
       const response = await getPendingApplications();
       if (response.success) {
         setApplications(response.data);
@@ -50,21 +49,27 @@ function ApproveVendorPage() {
     fetchApplications();
   }, []);
 
-  const handleApprove = async (id) => {
-    try {
-      await approveApplication(id);
-      setApplications(prev => prev.filter(app => app._id !== id));
-    } catch (err) {
-      alert("อนุมัติไม่สำเร็จ: " + err.message);
+  const handleApprove = async (id, storeName) => {
+    if (window.confirm(`คุณแน่ใจหรือไม่ว่าต้องการอนุมัติร้าน "${storeName}"?`)) {
+      try {
+        await approveApplication(id);
+        alert(`อนุมัติร้าน "${storeName}" สำเร็จ`);
+        fetchApplications(); 
+      } catch (err) {
+        alert("อนุมัติไม่สำเร็จ: " + err.message);
+      }
     }
   };
 
-  const handleReject = async (id) => {
-    try {
-      await rejectApplication(id);
-      setApplications(prev => prev.filter(app => app._id !== id));
-    } catch (err) {
-      alert("ปฏิเสธไม่สำเร็จ: " + err.message);
+  const handleReject = async (id, storeName) => {
+    if (window.confirm(`คุณแน่ใจหรือไม่ว่าต้องการปฏิเสธร้าน "${storeName}"?`)) {
+      try {
+        await rejectApplication(id);
+        alert(`ปฏิเสธร้าน "${storeName}" สำเร็จ`);
+        fetchApplications(); 
+      } catch (err) {
+        alert("ปฏิเสธไม่สำเร็จ: " + err.message);
+      }
     }
   };
 
@@ -76,20 +81,29 @@ function ApproveVendorPage() {
       <div className="flex h-20 items-center pl-14 text-[24px] font-[700] text-black">
         Approve Vendor
       </div>
-      <div className="p-8">
-        <div className="flex flex-col gap-4">
-          {applications.length > 0 ? (
-            applications.map(app => (
-              <ApplicationCard 
-                key={app._id} 
-                application={app}
-                onApprove={handleApprove}
-                onReject={handleReject}
-              />
-            ))
-          ) : (
-            <p className="text-gray-500">ไม่มีใบสมัครที่รอการอนุมัติ</p>
-          )}
+      <img
+            className="w-full h-[1px] top-[115px] left-[51px] px-[63px]"
+            alt="Line"
+            src = "https://i.postimg.cc/ZKYXghDG/black-1.png"
+          />
+      <div className="flex h-130 bg-white justify-center">
+        <div className="flex-1 my-6 mx-12 bg-white p-1 text-black">
+            {/* <h2 className="text-lg font-semibold">Pending Applications</h2>
+            <hr className="my-4"/> */}
+            <div className="flex flex-col gap-4 mt-6 overflow-y-auto h-100">
+                {applications.length > 0 ? (
+                applications.map(app => (
+                    <ApplicationCard 
+                        key={app._id} 
+                        application={app}
+                        onApprove={handleApprove}
+                        onReject={handleReject}
+                    />
+                ))
+                ) : (
+                <p className="text-gray-500">ไม่มีใบสมัครที่รอการอนุมัติ</p>
+                )}
+            </div>
         </div>
       </div>
     </>

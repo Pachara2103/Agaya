@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./.css";
+import { createVendorApplication, getMyApplicationStatus } from "../../libs/authService";
 
 const Form = ({
   fileInputRef,
@@ -9,7 +10,7 @@ const Form = ({
   shopname,
   product,
   address,
-  sendConfirm,
+  onSubmit,
 }) => {
   return (
     <div>
@@ -90,20 +91,20 @@ const Form = ({
         </div>
       </div>
 
-      <div className="text-center mt-10" onClick={() => sendConfirm()}>
+      <div className="text-center mt-10" onClick={() => onSubmit()}>
         <button className="w-[20%]">ยืนยัน</button>
       </div>
     </div>
   );
 };
 
-const Pending = ({ shopname, product, address }) => {
+const Pending = ({ application }) => {
   return (
     <div className="border border-gray-200 rounded-lg p-6 flex justify-between flex-row">
       <div >
-        <h2 className="font-semibold text-lg text-gray-800">{shopname}</h2>
-        <p className="text-gray-500 mt-1">{product}</p>
-        <p className="text-gray-500 mt-2 break-words w-140">{address}</p>
+        <h2 className="font-semibold text-lg text-gray-800">{application.storeName}</h2>
+        <p className="text-gray-500 mt-1">{application.sampleProducts}</p>
+        <p className="text-gray-500 mt-2 break-words w-140">{application.address}</p>
       </div>
 
       <div class="flex justify-center items-center">
@@ -122,10 +123,55 @@ const ApplyForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [confirm, setConfirm] = useState(false);
 
-  const sendConfirm = () => {
-    if (!shopname || !product || !address) return;
-    setConfirm(true);
+  // state
+  const [application, setApplication] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getMyApplicationStatus()
+      .then(response => {
+        if (response.success && response.data) {
+          setApplication(response.data);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching application status:", err);
+        setError("Could not fetch application status.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  const handleSubmit = async () => {
+    if (!shopName || !product) {
+      alert("Please fill in Store Name and Sample Products.");
+      return;
+    }
+    try {
+      const applicationData = {
+        storeName: shopName,
+        sampleProducts: product,
+        address: address,
+      };
+      const response = await createVendorApplication(applicationData);
+      if (response.success) {
+        setApplication(response.data);
+      }
+    } catch (err) {
+      console.error("Application submission failed:", err);
+      setError(err.message);
+      alert(`Error: ${err.message}`);
+    }
   };
+
+  
+
+  // const sendConfirm = () => {
+  //   if (!shopname || !product || !address) return;
+  //   setConfirm(true);
+  // };
 
   const fileInputRef = useRef(null);
 
@@ -139,6 +185,10 @@ const ApplyForm = () => {
     fileInputRef.current.click();
   };
 
+  if (isLoading) {
+    return <div className="text-center p-12">Loading...</div>;
+  }
+
   return (
     <div class="flex justify-center py-5 w-screen h-[85vh]">
       <div className="bg-white p-8 md:p-12 rounded-lg shadow-lg w-full max-w-4xl">
@@ -146,7 +196,7 @@ const ApplyForm = () => {
           กรอกใบสมัครขอเป็นผู้ขาย
         </h1>
         <hr className="mb-8" />
-        {!confirm && (
+        {!application ? (
           <Form
             handleUploadButtonClick={handleUploadButtonClick}
             fileInputRef={fileInputRef}
@@ -154,12 +204,11 @@ const ApplyForm = () => {
             imagePreview={imagePreview}
             shopname={setShopName}
             product={setProduct}
-            address={setAddeess}
-            sendConfirm={sendConfirm}
+            address={setAddress}
+            onSubmit={handleSubmit}
           />
-        )}
-        {confirm && (
-          <Pending shopname={shopname} product={product} address={address} />
+        ) : (
+          <Pending application={application} />
         )}
       </div>
     </div>

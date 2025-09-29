@@ -102,3 +102,26 @@ exports.forgotPassword = async (email, newPassword) => {
   user.password = newPassword;
   await user.save();
 };
+
+exports.updateProfile = async (userId, updateData) => {
+  const { username, phoneNumber, dateOfBirth, gender, profileImageUrl } = updateData;
+
+  const updatedFields = {
+    username,
+    phoneNumber,
+    dateOfBirth,
+    gender,
+    profileImageUrl,
+  };
+
+  const user = await User.findByIdAndUpdate(userId, updatedFields, {
+    new: true, // Return the modified document
+    runValidators: true, // Ensure schema validations are run
+  });
+
+  if (!user) {
+    throw createError(404, "User not found.");
+  }
+
+  return user;
+};

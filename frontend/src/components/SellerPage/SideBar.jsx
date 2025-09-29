@@ -1,118 +1,83 @@
+import { 
+  FaBoxOpen, FaShoppingCart, FaPlusSquare, 
+  FaStore, FaChartLine, FaCog, FaHeadset 
+} from 'react-icons/fa';
+
+const MenuItem = ({ text, isSelected, onClick }) => (
+  <li>
+    <a
+      href="#"
+      onClick={onClick}
+      className={`block px-3 py-2 rounded-md text-lg ${ 
+        isSelected 
+          ? 'bg-red-50 text-red-700 font-semibold'
+          : 'hover:bg-gray-100 text-gray-600'
+      }`}
+    >
+      {text}
+    </a>
+  </li>
+);
+
 function SideBar({ setPageSelected, pageSelected, display }) {
+  if (!display) {
+    return null;
+  }
+
   return (
-    <aside>
-      {display && (
-        <div className="w-64 bg-gray-50 text-gray-600 p-6 flex-shrink-0">
-          <nav className="space-y-9">
-            <div>
-              <h3 className="font-semibold text-gray-800">คำสั่งซื้อ</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    คำสั่งซื้อของฉัน
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    ขอยกเลิก/คืนเงิน/คืนสินค้า
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    ตั้งค่าการจัดส่ง
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800">สินค้า</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a
-                    href="#สินค้าของฉัน"
-                    className={
-                      pageSelected == "สินค้าของฉัน"
-                        ? "text-[#b71f3b]"
-                        : "hover:text-gray-900"
-                    }
-                    onClick={() => setPageSelected("สินค้าของฉัน")}
-                  >
-                    สินค้าของฉัน
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#เพิ่มสินค้าใหม่"
-                    className={
-                      pageSelected == "เพิ่มสินค้าใหม่"
-                        ? "text-[#b71f3b]"
-                        : "hover:text-gray-900"
-                    }
-                    onClick={() => setPageSelected("เพิ่มสินค้าใหม่")}
-                  >
-                    เพิ่มสินค้าใหม่
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800">การบริการลูกค้า</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    จัดการแชท
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    จัดการรีวิว
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800">สินค้า</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    รายรับของฉัน
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    Seller Balance
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    บัญชีธนาคาร
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800">ร้านค้า</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    รายละเอียดร้านค้า
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    การตกแต่งหน้าร้าน
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-gray-900">
-                    ตั้งค่าหน้าร้านค้า
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+    <aside className="w-[325px] bg-[#F7F7F7] p-5 border-r border-gray-200 flex-shrink-0">
+      <nav>
+        <div>
+          <h3 className="px-3 text-base font-bold text-gray-800">คำสั่งซื้อ</h3>
+          <ul className="mt-2 space-y-1">
+            <MenuItem text="คำสั่งซื้อของฉัน" />
+            <MenuItem text="ขอยกเลิก/คืนเงิน/คืนสินค้า" />
+            <MenuItem text="ตั้งค่าการจัดส่ง" />
+          </ul>
         </div>
-      )}
+
+        <div className="mt-6">
+          <h3 className="px-3 text-base font-bold text-gray-800">สินค้า</h3>
+          <ul className="mt-2 space-y-1">
+            <MenuItem
+              text="สินค้าของฉัน"
+              isSelected={pageSelected === "สินค้าของฉัน"}
+              onClick={() => setPageSelected("สินค้าของฉัน")}
+            />
+            <MenuItem
+              text="เพิ่มสินค้าใหม่"
+              isSelected={pageSelected === "เพิ่มสินค้าใหม่"}
+              onClick={() => setPageSelected("เพิ่มสินค้าใหม่")}
+            />
+          </ul>
+        </div>
+        
+        <div className="mt-6">
+          <h3 className="px-3 text-base font-bold text-gray-800">การบริการลูกค้า</h3>
+          <ul className="mt-2 space-y-1">
+            <MenuItem text="จัดการแชท" />
+            <MenuItem text="จัดการรีวิว" />
+          </ul>
+        </div>
+        
+        <div className="mt-6">
+          <h3 className="px-3 text-base font-bold text-gray-800">การเงิน</h3>
+          <ul className="mt-2 space-y-1">
+            <MenuItem text="รายรับของฉัน" />
+            <MenuItem text="Seller Balance" />
+            <MenuItem text="บัญชีธนาคาร" />
+          </ul>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="px-3 text-base font-bold text-gray-800">ร้านค้า</h3>
+          <ul className="mt-2 space-y-1">
+            <MenuItem text="รายละเอียดร้านค้า" />
+            <MenuItem text="การตกแต่งหน้าร้าน" />
+            <MenuItem text="ตั้งค่าหน้าร้านค้า" />
+          </ul>
+        </div>
+      </nav>
     </aside>
   );
 }

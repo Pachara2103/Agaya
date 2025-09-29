@@ -1,11 +1,25 @@
 import { useNavigate } from "react-router-dom";
 
-function NavLinks({ isLoggedIn }) {
+function NavLinks({ user }) { 
   const nav = useNavigate();
+  const isLoggedIn = !!user; 
+
+  const handleApplyClick = () => {
+    if (!isLoggedIn) {
+      nav("/signin");
+      return;
+    }
+
+    if (user.userType && user.userType.includes("vendor")) {
+      nav("/seller-page");
+    } else {
+      nav("/apply-for-seller");
+    }
+  };
 
   return (
     <ul className="nav medium">
-      <li className="cursor-pointer" onClick={() => nav("/apply-for-seller")}>
+      <li className="cursor-pointer" onClick={handleApplyClick}>
         เปิดร้านค้าใหม่
       </li>
       <li>ช่วยเหลือ</li>
