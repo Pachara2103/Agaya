@@ -29,7 +29,7 @@ exports.checkoutOrder = async(req, res) => {
         let totalAmount = 0;
 
         for(let item of cartItems){
-
+            console.log(item);
             const product = await Product.findOne({ _id : item.pid }).session(session);
             if (!product) throw new Error(`Product ${item.pid} not found`);
             if (product.stock_quantity < item.quantity){
@@ -106,3 +106,21 @@ exports.updateOrderStatus = async (req, res) => {
     }
 
 }
+
+exports.getOrdersByCustomer = async (req, res) => {
+  try {
+    const { cid } = req.params; // customer ID
+
+    // Find all orders for this customer
+    const orders = await Order.find({ cid }).sort({ order_date: -1 });
+    console.log("orderId:", cid);
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found" });
+    }
+
+    res.status(200).json({ orders });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
