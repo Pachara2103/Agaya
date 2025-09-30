@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  oid: {
+  /*oid: {
     type: String,
     required: true,
     unique: true,
     maxlength: 100
-  },
+  },*/
   order_date: {
     type: Date,
     required: true,
@@ -19,13 +19,13 @@ const orderSchema = new mongoose.Schema({
     maxlength: 32
   },
   cart_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Cart' // อ้างอิง Cart
   },
   cid: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Customer' // อ้างอิง Customer
