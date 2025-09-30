@@ -103,16 +103,16 @@ exports.forgotPassword = async (email, newPassword) => {
   await user.save();
 };
 
-exports.updateProfile = async (userId, updateData) => {
-  const { username, phoneNumber, dateOfBirth, gender, profileImageUrl } = updateData;
+exports.updateProfile = async (userId, userData) => {
+  const allowFields = ["username", "phoneNumber", "dateOfBirth", "gender", "profileImageUrl"]
+  const updatedFields = {}
 
-  const updatedFields = {
-    username,
-    phoneNumber,
-    dateOfBirth,
-    gender,
-    profileImageUrl,
-  };
+  for (const field of allowFields) {
+    if (!userData[field] !== undefined) {
+      updatedFields[field] = userData[field]
+      // it will make change only there is some data
+    }
+  }
 
   const user = await User.findByIdAndUpdate(userId, updatedFields, {
     new: true, // Return the modified document

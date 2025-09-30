@@ -3,6 +3,7 @@ const { sendTokenResponse } = require("../utils/authUtils");
 
 // @desc    Register user
 // @route   POST /api/v1/agaya/auth/register
+// @access  Public
 exports.register = async (req, res, next) => {
   try {
     const user = await authService.register(req.body);
@@ -14,6 +15,7 @@ exports.register = async (req, res, next) => {
 
 // @desc    Login user
 // @route   POST /api/v1/agaya/auth/login
+// @access  Public
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -26,6 +28,7 @@ exports.login = async (req, res, next) => {
 
 // @desc    Log user out
 // @route   GET /api/v1/agaya/auth/logout
+// @access  Private
 exports.logout = async (req, res, next) => {
   try {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -40,6 +43,7 @@ exports.logout = async (req, res, next) => {
 
 // @desc    Change password
 // @route   PUT /api/v1/agaya/auth/change-password
+// @access  Private
 exports.changePassword = async (req, res, next) => {
   try {
     const { oldPassword, newPassword } = req.body;
@@ -52,8 +56,9 @@ exports.changePassword = async (req, res, next) => {
   }
 };
 
-// @desc    Change password
+// @desc    Forgot password
 // @route   POST /api/v1/agaya/auth/forgot-password
+// @access  Private
 exports.forgotPassword = async (req, res, next) => {
   try {
     const { email, newPassword } = req.body;
@@ -66,6 +71,7 @@ exports.forgotPassword = async (req, res, next) => {
 
 // @desc    Google OAuth Callback
 // @route   GET /api/v1/agaya/auth/google/callback
+// @access  Public
 exports.googleCallback = (req, res) => {
   // req.user is populated by Passport.js after successful authentication
   sendTokenResponse(req.user, 200, res);
@@ -73,6 +79,7 @@ exports.googleCallback = (req, res) => {
 
 // @desc    Get current logged-in user
 // @route   GET /api/v1/agaya/auth/me
+// @access  Private
 exports.getMe = (req, res, next) => {
   // The user object is attached to the request by the 'protect' middleware
   res.status(200).json({ success: true, data: req.user });
@@ -83,15 +90,7 @@ exports.getMe = (req, res, next) => {
 // @access  Private
 exports.updateMe = async (req, res, next) => {
   try {
-    const updateData = {
-      username: req.body.username,
-      phoneNumber: req.body.phoneNumber,
-      dateOfBirth: req.body.dateOfBirth,
-      gender: req.body.gender,
-      profileImageUrl: req.body.profileImageUrl,
-    };
-    
-    const user = await authService.updateProfile(req.user.id, updateData);
+    const user = await authService.updateProfile(req.user.id, req.body);
     
     res.status(200).json({ success: true, data: user });
   } catch (error) {
