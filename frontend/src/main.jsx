@@ -13,6 +13,8 @@ import ApplyForm from "./components/SellerPage/ApplyForm.jsx";
 import SellerPage from "./components/SellerPage/SellerPage.jsx";
 import TestFetch from "./components/TestFetch.jsx";
 import Profile from "./components/ProfilePage/ProfileContainer.jsx";
+import Address from "./components/ProfilePage/Address.jsx";
+import AddAddressForm from "./components/ProfilePage/AddAddressForm.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 import ResultSearch from "./components/ProductPage/ResultSearch.jsx";
 
@@ -67,6 +69,14 @@ let router = createBrowserRouter([
       {
         path: "/profile",
         Component: Profile,
+      },
+      {
+        path: "/address",
+        Component: Address,
+      },
+      {
+        path: "/add-address-form",
+        Component: AddAddressForm
       },
       {
         path: "/productdetail/:id",

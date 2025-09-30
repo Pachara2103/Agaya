@@ -9,7 +9,7 @@ import ApproveVendorPage from "./ApproveVendorPage";
 import ProductManagement from "./ProductManagement";
 
 function AdminPageContainer () {
-  const [currentPanel, setCurrrentPanel] = useState("user");
+  const [currentPanel, setCurrentPanel] = useState("user");
   const checkPanel = (panelName, currentPanel, header = 0) => {
     if (currentPanel === panelName && header === 0) return "text-pink-600";
     if (currentPanel === panelName && header === 1) return "text-pink-800 font-[600]";
@@ -41,29 +41,30 @@ function AdminPageContainer () {
               text="การจัดการ"
               textColor={checkPanel("dashboard", currentPanel, 1)}
               textSize={20}
-              handle={() => setCurrrentPanel("dashboard")}
+              handle={() => setCurrentPanel("dashboard")}
             />
             <Button1
               text="&emsp;ผู้ใช้งาน"
               textColor={checkPanel("user", currentPanel)}
-              handle={() => setCurrrentPanel("user")}
+              handle={() => setCurrentPanel("user")}
             />
             <Button1
               text="&emsp;สินค้า"
               textColor={checkPanel("product", currentPanel)}
               handle={() => {
-                setCurrrentPanel("product");
+                setCurrentPanel("product");
               }}
             />
             <Button1
               text="&emsp;ประเภทสินค้า"
               textColor={checkPanel("category", currentPanel)}
-              handle={() => setCurrrentPanel("category")}
+              handle={() => setCurrentPanel("category")}
+              
             />
             <Button1
               text="&emsp;การอนุมัติผู้ขาย"
               textColor={checkPanel("approve-vendor", currentPanel)}
-              handle={() => setCurrrentPanel("approve-vendor")}
+              handle={() => setCurrentPanel("approve-vendor")}
             />
           </div>
         </div>

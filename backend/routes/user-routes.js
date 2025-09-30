@@ -5,12 +5,11 @@ const {
   findById,
   findByEmail,
   update,
-  deleteUser,
+  deleteUser
 } = require("../controllers/user-controller");
 
 router.route("/").get(findAll);
 router.route("/:id").get(findById).put(update).delete(deleteUser);
 router.route("/email/:email").get(findByEmail);
-
 
 module.exports = router;

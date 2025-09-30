@@ -1,14 +1,15 @@
 import { API_URL } from "./api";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const getAuthHeaders = () => {
   const token = Cookies.get('token');
+  // const token = localStorage.getItem("authToken");
   if (!token) {
     return { "Content-Type": "application/json" };
   }
   return {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   };
 };
 
@@ -42,15 +43,16 @@ export const register = async (newUser) => {
 
 export const getMe = async () => {
   try {
-    const token = Cookies.get('token');
-    if (!token) throw new Error("No token found");
+    // const token = Cookies.get('token');
+    // const token = localStorage.getItem('authToken');
+    // if (!token) throw new Error("No token found");
 
     const res = await fetch(`${API_URL}/auth/me`, {
       method: "GET",
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Failed to fetch profile");
-    
+
     return await res.json();
   } catch (err) {
     console.error("GetMe failed:", err);
@@ -60,7 +62,7 @@ export const getMe = async () => {
 
 export const updateMe = async (updatedData) => {
   const res = await fetch(`${API_URL}/auth/me`, {
-    method: 'PUT',
+    method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(updatedData),
   });
@@ -68,30 +70,30 @@ export const updateMe = async (updatedData) => {
 };
 
 export const createVendorApplication = async (applicationData) => {
-    const res = await fetch(`${API_URL}/vendor-applications`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(applicationData)
-    });
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Failed to submit application');
-    }
-    return res.json();
+  const res = await fetch(`${API_URL}/vendor-applications`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(applicationData),
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to submit application");
+  }
+  return res.json();
 };
 
 export const getMyApplicationStatus = async () => {
-    const res = await fetch(`${API_URL}/vendor-applications/status`, {
-        method: 'GET',
-        headers: getAuthHeaders()
-    });
-    // If user has no application, backend should return 404
-    if (res.status === 404) {
-        return { success: true, data: null }; // No application found
-    }
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Failed to get application status');
-    }
-    return res.json();
+  const res = await fetch(`${API_URL}/vendor-applications/status`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  // If user has no application, backend should return 404
+  if (res.status === 404) {
+    return { success: true, data: null }; // No application found
+  }
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to get application status");
+  }
+  return res.json();
 };
