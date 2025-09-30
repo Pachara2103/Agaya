@@ -59,7 +59,8 @@ exports.logout = async (token) => {
   await TokenBlacklist.create({ token, expiresAt });
 };
 
-exports.changePassword = async (userId, oldPassword, newPassword) => {
+exports.changePassword = async (userId, userData) => {
+  const { oldPassword, newPassword} = userData
   // Validate the new password
   const errors = validatePassword(newPassword);
   if (errors.length > 0) {

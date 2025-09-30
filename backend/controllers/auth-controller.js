@@ -45,11 +45,8 @@ exports.logout = async (req, res, next) => {
 // @access  Private
 exports.changePassword = async (req, res, next) => {
   try {
-    const { oldPassword, newPassword } = req.body;
-    await authService.changePassword(req.user.id, oldPassword, newPassword);
-    res
-      .status(200)
-      .json({ success: true, message: "Password updated successfully" });
+    await authService.changePassword(req.user.id, req.body);
+    res.status(200).json({ success: true, message: "Password updated successfully" });
   } catch (error) {
     next(error);
   }
