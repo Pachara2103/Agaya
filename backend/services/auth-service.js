@@ -86,14 +86,12 @@ exports.changePassword = async (userId, userData) => {
   await user.save();
 };
 
-exports.forgotPassword = async (email, newPassword) => {
+exports.forgotPassword = async (userData) => {
+  const { email, newPassword } = userData
   // Validate the new password
   const errors = validatePassword(newPassword);
   if (errors.length > 0) {
-    throw createError(
-      400,
-      "New password validation failed: " + errors.join(", ")
-    );
+    throw createError(400, "New password validation failed: " + errors.join(", "));
   }
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
