@@ -18,8 +18,7 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const user = await authService.login(email, password);
+    const user = await authService.login(req.body);
     sendTokenResponse(user, 200, res);
   } catch (error) {
     next(error);

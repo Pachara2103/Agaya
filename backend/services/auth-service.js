@@ -29,7 +29,8 @@ exports.register = async (userData) => {
   return user;
 };
 
-exports.login = async (email, password) => {
+exports.login = async (userData) => {
+  const { email, password} = userData
   if (!email || !password) {
     throw createError(400, "Please provide an email and password.");
   }
