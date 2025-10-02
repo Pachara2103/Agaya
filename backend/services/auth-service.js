@@ -29,7 +29,8 @@ exports.register = async (userData) => {
   return user;
 };
 
-exports.login = async (email, password) => {
+exports.login = async (userData) => {
+  const { email, password} = userData
   if (!email || !password) {
     throw createError(400, "Please provide an email and password.");
   }
@@ -58,7 +59,8 @@ exports.logout = async (token) => {
   await TokenBlacklist.create({ token, expiresAt });
 };
 
-exports.changePassword = async (userId, oldPassword, newPassword) => {
+exports.changePassword = async (userId, userData) => {
+  const { oldPassword, newPassword} = userData
   // Validate the new password
   const errors = validatePassword(newPassword);
   if (errors.length > 0) {
@@ -84,14 +86,12 @@ exports.changePassword = async (userId, oldPassword, newPassword) => {
   await user.save();
 };
 
-exports.forgotPassword = async (email, newPassword) => {
+exports.forgotPassword = async (userData) => {
+  const { email, newPassword } = userData
   // Validate the new password
   const errors = validatePassword(newPassword);
   if (errors.length > 0) {
-    throw createError(
-      400,
-      "New password validation failed: " + errors.join(", ")
-    );
+    throw createError(400, "New password validation failed: " + errors.join(", "));
   }
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
@@ -103,16 +103,16 @@ exports.forgotPassword = async (email, newPassword) => {
   await user.save();
 };
 
-exports.updateProfile = async (userId, updateData) => {
-  const { username, phoneNumber, dateOfBirth, gender, profileImageUrl } = updateData;
+exports.updateProfile = async (userId, userData) => {
+  const allowFields = ["username", "phoneNumber", "dateOfBirth", "gender", "profileImageUrl"]
+  const updatedFields = {}
 
-  const updatedFields = {
-    username,
-    phoneNumber,
-    dateOfBirth,
-    gender,
-    profileImageUrl,
-  };
+  for (const field of allowFields) {
+    if (!userData[field] !== undefined) {
+      updatedFields[field] = userData[field]
+      // it will make change only there is some data
+    }
+  }
 
   const user = await User.findByIdAndUpdate(userId, updatedFields, {
     new: true, // Return the modified document

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import axios from 'axios';
 import {FaEye, FaEyeSlash, FaArrowLeft, FaCheck, FaTimes} from 'react-icons/fa';
+import Cookies from 'js-cookie'
 
 function SetNewPasswordPage() {
     // State Management
@@ -47,7 +48,7 @@ function SetNewPasswordPage() {
         setIsLoading(true);
         setError('');
 
-        const token = localStorage.getItem('authToken');
+        const token = Cookies.get("token");
         if (!token) {
             setError("Token ไม่ถูกต้อง");
             setIsLoading(false);
