@@ -8,8 +8,9 @@ function Address() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
-
+    
     const [showAddForm, setShowAddForm] = useState(false);
+    const [editingAddress, setEditingAddress] = useState(null);
 
     const fetchAddresses = async () => {
         setIsLoading(true);
@@ -100,28 +101,45 @@ function Address() {
         }
     };
 
+    const handleUpdateAddress = async(updatedAddressData) => {
+        console.log("กำลังอัปเดตที่อยู่");
+        //const response = await axios.put(`/api/v1/user/addresses/${editingAddress._id}`, updatedAddressData, ...`);
+        setEditingAddress(null);
+        fetchAddresses();
+    }
+
     if (isLoading) return <div>Loading...</div>
     if (error) return <div className="text-red-500">{error}</div>
+
+    const isFormVisible = showAddForm || editingAddress != null;
 
     return (
         <div className="bg-white p-8 rounded-md shadow-sm">
             <div className="flex justify-between items-center pb-4 border-b">
                 <h1 className="text-xl font-semibold text-gray-800">ที่อยู่ของฉัน</h1>
-                {!showAddForm && (
-                    <button onClick={() => setShowAddForm(true)}
-                        className="!bg-red-700 text-white font-semibold py-2 px-5 w-30 h-10 rounded-md hover:bg-red-700 flex items-center justify-center">
-                            เพิ่มที่อยู่ใหม่
-                    </button>
-                )}
             </div>
 
-            {showAddForm ? (
+            {!isFormVisible && (
+                <button onClick={() => setShowAddForm(true)}
+                    className="!bg-red-700 text-white font-semibold py-2 px-5 w-30 h-10 rounded-md hover:bg-red-700 flex items-center justify-center">
+                        เพิ่มที่อยู่ใหม่
+                </button>
+            )}
+
+            {isFormVisible ? (
                 <AddAddressForm
-                    onSave={handleSaveAddress}
-                    onCancel={() => setShowAddForm(false)}
+                    initialData={editingAddress}
+                    onSave={editingAddress ? handleUpdateAddress : handleSaveAddress}
+                    onCancel={() => {
+                        setShowAddForm(false);
+                        setEditingAddress(null);
+                    }}
                 />
             ) : (
-                <AddressList addresses={addresses} />
+                <AddressList 
+                    addresses={addresses} 
+                    onEdit={(address) => setEditingAddress(address)}
+                />
             )}
         </div>
     );
