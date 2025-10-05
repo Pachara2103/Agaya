@@ -42,13 +42,13 @@ const Footer = () => {
             <p class="text-white">สมัครสมาชิก</p>
             <p class="text-[12px] pt-2">รับส่วนลด 10% สำหรับการสั่งซื้อครั้งแรกของคุณ</p>
             
-            <form class="flex items-center border border-white rounded-md mt-6" onSubmit={(e) => e.preventDefault()}>
+            <form class="flex border border-white rounded-md mt-6" onSubmit={(e) => e.preventDefault()}>
               <input 
                 type="email" 
                 placeholder="กรอกอีเมลของคุณ" 
                 class="bg-transparent w-full p-2 focus:outline-none placeholder-gray-500 text-sm"
               />
-              <button type="submit" class="p-2" aria-label="Subscribe">
+              <button type="submit" class="" aria-label="Subscribe">
                 <SendIcon />
               </button>
             </form>

@@ -43,7 +43,7 @@ const CategoryAndTitle = ({ title, details }) => {
         <span class="text-3xl text-[#000] font-bold">{details}</span>
       </div>
 
-      <div class="flex items-center justify-center w-full mt-4 ">
+      <div class="mx-5 my-2 w-full flex flex-row gap-15 overflow-x-auto items-start hide-scrollbar border-l-gray-100 border-r-gray-100  border-2">
         <Category />
       </div>
     </div>

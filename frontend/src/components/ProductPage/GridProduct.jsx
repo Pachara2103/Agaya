@@ -21,9 +21,9 @@ const GridProductAndTitle = ({ title, products, details }) => {
 
 export const ProductGrid = ({ products, onShow, onBack }) => {
   return (
-    <div class="flex items-center justify-center w-screen mb-20 ">
-      <div class="w-[80vw] h-[40vh] p-10">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 ">
+    <div class="flex items-center justify-center w-screen">
+      <div class="p-10">
+        <div class="grid grid-cols-5 max-[1380px]:grid-cols-4 max-[1200px]:grid-cols-3 min-w-[600px] gap-x-8 gap-y-12  overflow-x-auto hide-scrollbar">
           {products.map((product) => (
             <ProductCard
               key={product.id}

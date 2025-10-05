@@ -14,6 +14,7 @@ function Home() {
       <main>
         <div class="flex flex-col gap-10 px-30">
           <Advertisement />
+          <div class="">
 
           <RowProductAndTitle
             title="Today's"
@@ -41,6 +42,7 @@ function Home() {
           />
 
           <Service />
+          </div>
         </div>
       </main>
 

@@ -67,11 +67,11 @@ const Advertisement = () => {
         <div class="border-r-2 border-[#c9c9c9] "></div>
       </aside>
 
-      <main class="w-full h-full p-10  flex items-center justify-center">
-        <div class="relative text-white h-[384px] w-200 rounded-lg overflow-hidden flex items-center justify-center">
+      <main class="w-full h-full min-w-[700px]  p-10  flex items-center justify-center">
+        <div class="aspect-video relative text-white h-[384px] w-200 rounded-lg overflow-hidden flex items-center justify-center">
           <img
             src={AdsImg[index]}
-            class="h-full w-full object-fill"
+            class=""
           />
 
           <div class="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-3 flex-row">
