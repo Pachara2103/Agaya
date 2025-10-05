@@ -104,7 +104,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     const hasRole = (user, roles) =>
       user.userType.some((role) => roles.includes(role));
-    console.log(req.user);
+    //console.log(req.user);
 
     if (hasRole(req.user, ["admin"])) {
     }
@@ -145,7 +145,7 @@ exports.getOrdersByCustomer = async (req, res) => {
 
     // Find all orders for this customer
     const customerId = new mongoose.Types.ObjectId(cid);
-    console.log(customerId);
+    //console.log(customerId);
     const orders = await Order.aggregate([
       //  Match only orders of this customer
       { $match: { cid: customerId } },
