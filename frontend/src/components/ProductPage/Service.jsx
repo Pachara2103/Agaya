@@ -34,7 +34,7 @@ const Service = () => {
   ];
 
   return (
-    <div class="py-5 w-full mt-80 mb-10">
+    <div class="py-5 w-full mb-10"> 
       <div className="flex flex-row justify-center gap-35">
         {features.map((feature, index) => (
           <Item
