@@ -141,14 +141,17 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.getOrdersByCustomer = async (req, res) => {
   try {
-    const { cid } = req.params; // customer ID
+    const hasRole = (user, roles) =>
+      user.userType.some((role) => roles.includes(role));
 
+    let {cid} = req.params; // customer ID
     // Find all orders for this customer
-    const customerId = new mongoose.Types.ObjectId(cid);
+    cid = new mongoose.Types.ObjectId(cid);
+     if(!hasRole(req.user,["admin"])) cid = req.user._id;
     //console.log(customerId);
     const orders = await Order.aggregate([
       //  Match only orders of this customer
-      { $match: { cid: customerId } },
+      { $match: { cid } },
 
       //  Join contains collection
       {
@@ -201,9 +204,8 @@ exports.getOrdersByCustomer = async (req, res) => {
 
       { $sort: { order_date: -1 } },
     ]);
-    console.log("orderId:", cid);
     if (!orders.length) {
-      return res.status(404).json({ message: "No orders found" });
+      return res.status(404).json({ message: `No orders belong to user ${cid}` });
     }
 
     res.status(200).json({ orders });
