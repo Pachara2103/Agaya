@@ -182,6 +182,7 @@ exports.getOrdersByCustomer = async (req, res) => {
           _id: "$_id",
           order_status: { $first: "$order_status" },
           order_date: { $first: "$order_date" },
+          customer_id: { $first: "$cid" },
           contains: {
             $push: {
               product_id: "$product._id",
