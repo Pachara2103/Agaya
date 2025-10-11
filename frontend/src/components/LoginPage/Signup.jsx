@@ -107,7 +107,7 @@ function Signup() {
                   </p>
                 )}
 
-                <button onClick={changState}>สร้างบัญชีผู้ใช้</button>
+                <button className="mb-2.5" onClick={changState}>สร้างบัญชีผู้ใช้</button>
 
                 <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                   <FcGoogle size={30} />
