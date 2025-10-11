@@ -17,6 +17,8 @@ import Address from "./components/ProfilePage/Address.jsx";
 import AddAddressForm from "./components/ProfilePage/AddAddressForm.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
 import ResultSearch from "./components/ProductPage/ResultSearch.jsx";
+import Cart from "./components/CartPage/Cart.jsx";
+
 
 //test
 import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
@@ -97,6 +99,10 @@ let router = createBrowserRouter([
       {
         path: "/result-search",
         Component: ResultSearch,
+      },
+      {
+        path: "/cart",
+        Component: Cart,
       },
     ],
   },

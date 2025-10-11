@@ -18,7 +18,7 @@ const Done = ({ countdown }) => {
         <p class="">เปลี่ยนรหัสผ่านบัญชีนี้สำเร็จ</p>
         <p class="">คุณจะย้ายไปยังหน้าเข้าสู่ระบบภายใน {countdown} วินาที</p>
 
-        <button onClick={redirectToHomePage}>ตกลง</button>
+        <button className="button1" onClick={redirectToHomePage}>ตกลง</button>
       </div>
     </div>
   );
