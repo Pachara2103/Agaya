@@ -83,7 +83,7 @@ function Signup() {
               ></div>
 
               {/* register form */}
-              <div className="flex flex-col justify-center w-[20vw]">
+              <div className="flex flex-col justify-center w-[20vw] relative">
                 <h1 className="text-[35px] font-bold text-black mb-4">
                   สมัครใหม่
                 </h1>
@@ -93,16 +93,16 @@ function Signup() {
                   placeholder="กรุณาใส่อีเมล"
                   onChange={fillAccount}
                   onKeyDown={pressEnter}
-                  className="bg-white h-[45px] border-b border-gray-400 mb-2 px-2 outline-none text-gray-500 focus:text-black"
+                  className="bg-white h-[45px] border-b border-gray-400 mb-8 px-2 outline-none text-gray-500 focus:text-black"
                 />
 
                 {invalid == 2 && (
-                  <p className="text-red-500 mb-2 text-sm">
+                  <p className="text-red-500 mb-2 text-sm absolute bottom-35">
                     กรุณาใส่ อีเมล ให้ถูกต้อง
                   </p>
                 )}
                 {invalid == 1 && (
-                  <p className="text-red-500 mb-2 text-sm">
+                  <p className="text-red-500 mb-2 text-sm absolute bottom-35">
                     อีเมลนี้ลงทะเบียนเเล้ว กรุณาใช้ email อื่น
                   </p>
                 )}
