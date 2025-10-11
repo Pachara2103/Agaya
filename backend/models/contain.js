@@ -23,5 +23,5 @@ const containSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Contain', containSchema);
+module.exports = mongoose.models.Contain || mongoose.model('Contain', containSchema);
 

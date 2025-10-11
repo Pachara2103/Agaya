@@ -1,6 +1,6 @@
 const Order = require("../models/order");
 const Addto = require("../models/addto");
-const Contain = require("../models/Contain");
+const Contain = require("../models/contain");
 const Product = require("../models/product");
 const Transaction = require("../models/transaction");
 const Cart = require("../models/cart");
