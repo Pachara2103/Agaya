@@ -133,11 +133,9 @@ function Address() {
                 headers: {Authorization: `Bearer ${token}`}
             });
 
-            if (response.data.success) {
-                alert('อัปเดตที่อยู่สำเร็จ');
-                setEditingAddress(null); //leave editing session
-                fetchAddresses();
-            }
+            alert('อัปเดตที่อยู่สำเร็จ');
+            setEditingAddress(null); //leave editing session
+            fetchAddresses();
         } catch (err) {
             console.error("Failed to update address:", err.response?.data || err.message);
             alert('เกิดข้อผิดพลาดในการอัปเดตที่อยู่');
