@@ -15,22 +15,22 @@ exports.checkoutOrder = async (orderData, user) => {
   session.startTransaction();
 
   try {
-    orderData.cid = user._id;
-    const { cart_id, cid, payment_method } = orderData;
+    orderData.customerId = user._id;
+    const { cartId, customerId, payment_method } = orderData;
 
-    const carts = await Cart.findOne({ uid: cid, _id: cart_id });
+    const carts = await Cart.findOne({ uid: customerId, _id: cartId });
     if (!carts)
       throw new createError(
-        404, `There no cart with id of ${cart_id} that belong to customer ${cid}`
+        404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
       );
 
-    if (!cart_id || !cid || !payment_method) {
+    if (!cartId || !customerId || !payment_method) {
       throw new createError(
         400, "Missing required fields"
       );
     }
 
-    const cartItems = await Addto.find({ cart_id }).session(session); // Find product
+    const cartItems = await Addto.find({ cartId }).session(session); // Find product
     if (!cartItems.length) {
       throw new createError(400, "Cart is empty");
     }
@@ -44,16 +44,16 @@ exports.checkoutOrder = async (orderData, user) => {
         throw new createError(400, `Not enough stock for product ${item.pid}`);
       }
       // Saperate item by vendor  
-      const vid =  product.vid.toString();
-      if(!itemsByVendor[vid]) itemsByVendor[vid] = [];
-      itemsByVendor[vid].push({item, product});
+      const vendorId =  product.vendorId.toString();
+      if(!itemsByVendor[vendorId]) itemsByVendor[vendorId] = [];
+      itemsByVendor[vendorId].push({item, product});
     }
 
     const createdOrders = [];
     
-    for(const [vid, vendorItem] of Object.entries(itemsByVendor)){
+    for(const [vendorId, vendorItem] of Object.entries(itemsByVendor)){
       let totalAmount = 0;
-      const order = new Order({ order_status: "NOT_PAID", cart_id, cid, vid });
+      const order = new Order({ orderStatus: "NOT_PAID", cartId, customerId, vendorId });
       await order.save({ session });
 
       for(const {item, product} of vendorItem) {
@@ -80,7 +80,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
     }
 
-    await Addto.deleteMany({ cart_id }).session(session);
+    await Addto.deleteMany({ cartId }).session(session);
 
     await session.commitTransaction();
     session.endSession();
@@ -122,9 +122,9 @@ exports.updateOrderStatus = async (orderId, status, user) => {
     else if (
       hasRole(user, ["customer"]) &&
       status === "PAID" &&
-      order.order_status === "NOT_PAID"
+      order.orderStatus === "NOT_PAID"
     ) {
-      if (order.cid.toString() !== user._id.toString()) {
+      if (order.customerId.toString() !== user._id.toString()) {
         throw new createError(
           403, "Unauthorized to update this order"
         );
@@ -134,7 +134,7 @@ exports.updateOrderStatus = async (orderId, status, user) => {
     else if (
       hasRole(user, ["vendor"]) &&
       status === "COMPLETED" &&
-      order.order_status === "PAID"
+      order.orderStatus === "PAID"
     ) {
     } else {
       throw new createError(
@@ -142,7 +142,7 @@ exports.updateOrderStatus = async (orderId, status, user) => {
       );
     }
 
-    order.order_status = status;
+    order.orderStatus = status;
     await order.save();
 
     return order;
@@ -195,10 +195,10 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
       {
         $group: {
           _id: "$_id",
-          order_status: { $first: "$order_status" },
-          order_date: { $first: "$order_date" },
-          customer_id: { $first: "$cid" },
-          vendor_id: { $first: "$vid" },
+          orderStatus: { $first: "$orderStatus" },
+          orderDate: { $first: "$orderDate" },
+          customer_id: { $first: "$customerId" },
+          vendor_id: { $first: "$vendorId" },
           contains: {
             $push: {
               product_id: "$product._id",
@@ -213,7 +213,7 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
       {
         $addFields: { order_total: { $sum: "$contains.total_price" } },
       },
-      { $sort: { order_date: -1 } },
+      { $sort: { orderDate: -1 } },
       { $skip: skip },
       { $limit: limit },
     ]);
@@ -233,11 +233,11 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
 };
 
 // Exported helper functions
-exports.getOrdersByCustomer = async (cid, user, queryParams) =>
-  getOrders({ field: "cid", id: cid, user, queryParams });
+exports.getOrdersByCustomer = async (customerId, user, queryParams) =>
+  getOrders({ field: "customerId", id: customerId, user, queryParams });
 
-exports.getOrdersByVendor = async (vid, user, queryParams) =>
-  getOrders({ field: "vid", id: vid, user, queryParams });
+exports.getOrdersByVendor = async (vendorId, user, queryParams) =>
+  getOrders({ field: "vendorId", id: vendorId, user, queryParams });
 
 /* Output example
 {
@@ -245,8 +245,8 @@ exports.getOrdersByVendor = async (vid, user, queryParams) =>
     "orders": [
         {
             "_id": "68e22c2338854b09f61b5ed7",
-            "order_status": "PAID",
-            "order_date": "2025-10-05T08:28:19.168Z",
+            "orderStatus": "PAID",
+            "orderDate": "2025-10-05T08:28:19.168Z",
             "customer_id": "68e227cec54f687261180ce9",
             "contains": [
                 {

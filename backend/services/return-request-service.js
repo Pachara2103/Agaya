@@ -10,19 +10,19 @@ const hasRole = (user, roles) =>
 
 exports.requestReturn = async (requestBody, user) => {
     try {
-        const { oid, pid, quantity, reason } = requestBody;
-        const cid = user._id;
+        const { orderId, productId, quantity, reason } = requestBody;
+        const customerId = user._id;
 
         if (!reason) throw new createError(400, "Plese provide reason");
 
-        const order = await Order.findOne({ _id: oid });
+        const order = await Order.findOne({ _id: orderId });
         if (!order) throw new createError(404, "order not found");
-        if (order.cid.toString() !== cid.toString()) throw new createError(403, "Unauthorized request");
+        if (order.customerId.toString() !== customerId.toString()) throw new createError(403, "Unauthorized request");
 
-        const contain_product = await Contain.findOne({ oid, pid });
-        if (!contain_product) throw new createError(400, `No product ${pid} in order ${oid}`);
+        const contain_product = await Contain.findOne({ orderId, productId });
+        if (!contain_product) throw new createError(400, `No product ${productId} in order ${orderId}`);
         if (quantity > contain_product.quantity) {
-            throw new createError(400, `Return quantity exceeds purchased amount for product ${pid}`);
+            throw new createError(400, `Return quantity exceeds purchased amount for product ${productId}`);
         }
 
         if (!["PAID", "COMPLETE"].includes(order.order_status)) {
@@ -34,13 +34,13 @@ exports.requestReturn = async (requestBody, user) => {
         const orderDuration = (now - orderDate) / (24 * 60 * 60 * 1000);
         if (orderDuration > 30) throw new createError(400, "Order older than 30 day cant be return");
 
-        const existRequest = await ReturnRequest.findOne({ oid, pid, status: { $in: ["PENDING", "APPROVED", "REFUNDED"] } });
+        const existRequest = await ReturnRequest.findOne({ orderId, productId, status: { $in: ["PENDING", "APPROVED", "REFUNDED"] } });
         if (existRequest) throw new createError(400, "Return request of this product already exist");
 
         const returnRequest = new ReturnRequest({
-            oid,
-            cid,
-            pid,
+            orderId,
+            customerId,
+            productId,
             quantity,
             reason,
             status: "PENDING",
@@ -67,7 +67,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
 
         const returnReq = await ReturnRequest.findById(returnId);
         if (!returnReq) throw new createError(404, "Request not found");
-        const product = await Product.findById(returnReq.pid);
+        const product = await Product.findById(returnReq.productId);
 
 
         const now = new Date();
@@ -81,7 +81,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
                     returnReq.status = status;
                     if (!response) throw new createError(400, "Plese provide reason for rejection");
                     returnReq.response = response;
-                    returnReq.resolved_date = now;
+                    returnReq.resolvedDate = now;
                 }
                 else throw new createError(400, "This request can only change status to APPROVED or REJECTED");
                 await returnReq.save();
@@ -97,15 +97,15 @@ exports.processReturn = async (returnId, requestBody, user) => {
                     await product.save();
 
                     const transaction = new Transaction({
-                        oid: returnReq.oid,
+                        orderId: returnReq.orderId,
                         payment_method: "Refund",
                         amount: totalRefunded,
                     });
                     await transaction.save();
                     returnReq.status = "COMPLETED"
-                    returnReq.refund_amount = totalRefunded;
+                    returnReq.refundAmount = totalRefunded;
                     returnReq.response = `A refund of ${totalRefunded}$ was issued to your original payment method on ${now.toString()}.`;
-                    returnReq.resolved_date = now;
+                    returnReq.resolvedDate = now;
                     await returnReq.save();
                     return { returnReq, transactionId: transaction._id };
                 }
@@ -120,7 +120,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
 }
 exports.getReturnReqs = async (user, query = {}) => {
     try {
-        const filter = hasRole(user, ["admin"]) ? {} : { cid: user._id };
+        const filter = hasRole(user, ["admin"]) ? {} : { customerId: user._id };
         let page = parseInt(query.page) > 0 ? parseInt(query.page) : 1;
         const limit = parseInt(query.limit) > 0 ? parseInt(query.limit) : 10;
         const totalRequest = await ReturnRequest.countDocuments(filter);
@@ -130,7 +130,7 @@ exports.getReturnReqs = async (user, query = {}) => {
 
         const skip = (page - 1) * limit;
         const returnReqs = await ReturnRequest.find(filter)
-            .populate("oid pid")
+            .populate("orderId productId")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);

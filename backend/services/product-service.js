@@ -11,7 +11,7 @@ exports.findAllProduct = async (queryParams) => {
     let query = {};
 
     if (keyword) {
-        query.product_name = { $regex: keyword, $options: 'i' };
+        query.productName = { $regex: keyword, $options: 'i' };
     }
 
     if (category) {
@@ -65,23 +65,23 @@ exports.findProductById = async (id) => {
 }
 
 exports.findProductsByVendorId = async (vendorId) => {
-    const products = await Product.find({ vid: vendorId });
+    const products = await Product.find({ vendorId: vendorId });
     return products
 }
 
 exports.createProduct = async (createData, user) => {
     try {
-        const { product_name, stock_quantity, price, rating, type, product_description, image, promotion} = createData;
+        const { productName, stockQuantity, price, rating, type, productDescription, image, promotion} = createData;
         
         const newProduct = await Product.create({
-            product_name,
-            stock_quantity,
+            productName,
+            stockQuantity,
             price,
             rating,
             type,
-            product_description,
+            productDescription,
             image,
-            vid: user._id,
+            vendorId: user._id,
             promotion
         });
 
@@ -117,14 +117,14 @@ exports.updateProduct = async (id, updateData, user) => {
 
         // Move here
         const isAdmin = user.userType.includes('admin');
-        const isOwner = product.vid.toString() === user._id.toString();
+        const isOwner = product.vendorId.toString() === user._id.toString();
 
         if (!isAdmin && !isOwner) {
             throw createError(403, "You do not have permission to modify this product.");
         }
 
         let isUpdated = false;
-        const fields = ["product_name", "stock_quantity", "price", "rating", "type", "product_description", "image", "promotion"];
+        const fields = ["productName", "stockQuantity", "price", "rating", "type", "productDescription", "image", "promotion"];
         const dataToUpdate = {};
 
         for (const key of fields) {
@@ -170,7 +170,7 @@ exports.deleteProduct = async (id, user) => {
     }
     // Check permmission here
     const isAdmin = user.userType.includes('admin');
-    const isOwner = product.vid.toString() === user._id.toString();
+    const isOwner = product.vendorId.toString() === user._id.toString();
 
     if (!isAdmin && !isOwner) {
         throw createError(403, "You do not have permission to delete this product.");

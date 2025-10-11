@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
     maxlength: 100,
     ref: 'Customer' // อ้างอิง Customer
   },
-  vid: {
+  vendorId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
