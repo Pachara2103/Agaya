@@ -50,6 +50,7 @@ function CreateAccountProcess({ account }) {
     if (state != 2) return;
     if (countdown <= 0) {
       navigate("/");
+      window.location.reload(); 
       return;
     }
     const timer = setTimeout(() => {
