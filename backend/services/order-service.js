@@ -149,10 +149,10 @@ exports.getOrdersByCustomer = async (cid, user, queryParams = {}) => {
 
     //Pagination
     
-    const page = parseInt(queryParams.page) > 0 ? parseInt(queryParams.page) : 1;
+    let page = parseInt(queryParams.page) > 0 ? parseInt(queryParams.page) : 1;
     const limit = parseInt(queryParams.limit) > 0 ? parseInt(queryParams.limit) : 10;
     const totalOrders = await Order.countDocuments({ cid });
-    const totalPages = Math.ceil(totalOrders / limit);
+    const totalPages = Math.ceil(totalOrders / limit) || 1;
 
     if (page > totalPages) page = totalPage
 
@@ -219,11 +219,11 @@ exports.getOrdersByCustomer = async (cid, user, queryParams = {}) => {
       { $limit : limit }
     ]);
 
-    if (!orders.length) {
+    /*if (!orders.length) {
       throw new createError(
         404, `No orders belong to user ${cid}`
       );
-    }
+    }*/
 
     return { 
       orders,
