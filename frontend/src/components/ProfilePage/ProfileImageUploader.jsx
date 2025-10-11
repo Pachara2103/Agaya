@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import { FaUserCircle, FaCamera } from "react-icons/fa"; 
-const ProfileImageUploader = ({ onFileSelect, initialImage }) => {
+
+const ProfileImageUploader = forwardRef(({ onFileSelect, initialImage }, ref) => {
   const [imagePreview, setImagePreview] = useState(initialImage || null);
   const fileInputRef = useRef(null);
 
@@ -20,6 +21,12 @@ const ProfileImageUploader = ({ onFileSelect, initialImage }) => {
   const handleImageClick = () => {
     fileInputRef.current.click();
   };
+
+  useImperativeHandle(ref, () => ({
+    triggerClick() {
+      handleImageClick();
+    }
+  }));
 
   return (
     <>
@@ -54,6 +61,6 @@ const ProfileImageUploader = ({ onFileSelect, initialImage }) => {
       </div>
     </>
   );
-};
+});
 
 export default ProfileImageUploader;

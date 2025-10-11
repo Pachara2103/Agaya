@@ -4,7 +4,7 @@ import { LuShoppingBag } from "react-icons/lu";
 import { MdOutlineNotifications } from "react-icons/md";
 import { IoMdPerson } from "react-icons/io";
 import Button1 from "../Button1";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DatePicker.css";
@@ -115,6 +115,13 @@ function Profile({ userData }) {
     }
   };
 
+  const uploaderRef = useRef(null);
+  const handleSelectImageClick = () => {
+    if (uploaderRef.current) {
+      uploaderRef.current.triggerClick();
+    }
+  };
+
   const username = "User00001";
   const box =
     "border-gray-100 border-1 shadow-[0_0_4px_1px_rgba(221,221,221,0.7)]"; //offsetX, offsetY, blur, spread
@@ -207,10 +214,12 @@ function Profile({ userData }) {
               <MdAccountCircle size={120} />
             </div> */}
             <ProfileImageUploader
+              ref={uploaderRef}
               onFileSelect={handleFileSelect}
               initialImage={userData.profileImageUrl}
             />
             <div
+              onClick={handleSelectImageClick}
               className={`h-12 w-36 flex items-center justify-center rounded-md text-black shadow-[0_0_2px_1px_rgba(200,200,200,0.8)] cursor-pointer`}
             >
               เลือกรูป
