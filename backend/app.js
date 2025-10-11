@@ -58,6 +58,8 @@ app.use('/api/v1/Agaya/orders', orderRoutes);
 app.use('/api/v1/Agaya/addto', addToRoutes);
 app.use('/api/v1/Agaya/cart', cartRoutes);
 app.use('/api/v1/Agaya/return', returnRoutes);
+app.use('/api/v1/Agaya/addto', addToRoutes);
+app.use('/api/v1/Agaya/cart', cartRoutes);
 
 //Import Passport strategies (Google)
 require('./config/passport');
