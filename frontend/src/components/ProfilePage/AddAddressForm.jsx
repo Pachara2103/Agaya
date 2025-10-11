@@ -1,13 +1,23 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
 
-function AddAddressForm({onSave, onCancel}) {
-    const navigate = useNavigate();
+function AddAddressForm({onSave, onCancel, initialData}) {
     const [formData, setFormData] = useState({
         fullName: '',
         phoneNumber: '',
         addressLine1: ''
     });
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                fullName: initialData.name,
+                phoneNumber: initialData.phoneNumber,
+                addressLine1: initialData.address
+            });
+        } else {
+            setFormData({fullName: '', phoneNumber: '', addressLine1: ''});
+        }
+    }, [initialData]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
