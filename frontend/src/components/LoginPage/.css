@@ -5,13 +5,12 @@ body {
   padding: 0;
 }
  
-button{
+.button1{
   background-color: #48B3AF;
   color: white;
   font-size: 14px;
   padding: 16px 0;
   border-radius: 3px;
-  /* margin-bottom: 12px; */
   cursor: pointer;
 }
 
