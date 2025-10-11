@@ -35,11 +35,7 @@ exports.checkoutOrder = async (orderData, user) => {
       throw new createError(400, "Cart is empty");
     }
 
-    const order = new Order({ order_status: "NOT_PAID", cart_id, cid });
-    await order.save({ session });
-
-    let totalAmount = 0;
-
+    const itemsByVendor = {};
     for (let item of cartItems) {
       console.log(item);
       const product = await Product.findOne({ _id: item.pid }).session(session);
@@ -47,32 +43,49 @@ exports.checkoutOrder = async (orderData, user) => {
       if (product.stock_quantity < item.quantity) {
         throw new createError(400, `Not enough stock for product ${item.pid}`);
       }
-
-      totalAmount += item.quantity * product.price;
-      product.stock_quantity -= item.quantity;
-      await product.save({ session });
-
-      const contain = new Contain({
-        pid: item.pid,
-        oid: order._id,
-        quantity: item.quantity,
-      });
-      await contain.save({ session });
+      // Saperate item by vendor  
+      const vid =  product.vid.toString();
+      if(!itemsByVendor[vid]) itemsByVendor[vid] = [];
+      itemsByVendor[vid].push({item, product});
     }
 
-    await Addto.deleteMany({ cart_id }).session(session);
+    const createdOrders = [];
+    
+    for(const [vid, vendorItem] of Object.entries(itemsByVendor)){
+      let totalAmount = 0;
+      const order = new Order({ order_status: "NOT_PAID", cart_id, cid, vid });
+      await order.save({ session });
 
-    const transaction = new Transaction({
-      oid: order._id,
-      payment_method: payment_method,
-      amount: totalAmount.toFixed(2),
-    });
-    await transaction.save({ session });
+      for(const {item, product} of vendorItem) {
+        totalAmount += item.quantity * product.price;
+        product.stock_quantity -= item.quantity;
+        await product.save({ session });
+        
+        const contain = new Contain({
+          pid: item.pid,
+          oid: order._id,
+          quantity: item.quantity,
+        });
+        await contain.save({ session });
+      } 
+
+      const transaction = new Transaction({
+        oid: order._id,
+        payment_method: payment_method,
+        amount: totalAmount.toFixed(2),
+      });
+
+      await transaction.save({ session });
+      createdOrders.push({order, transaction});
+
+    }
+
+    //await Addto.deleteMany({ cart_id }).session(session);
 
     await session.commitTransaction();
     session.endSession();
 
-    return {orderId: order._id, transactionId: transaction._id};
+    return createdOrders;
 
   } catch (err) {
     await session.abortTransaction();
@@ -139,30 +152,28 @@ exports.updateOrderStatus = async (orderId, status, user) => {
   }
 };
 
-exports.getOrdersByCustomer = async (cid, user, queryParams = {}) => {
+const getOrders = async ({ field, id, user, queryParams = {} }) => {
   try {
+    let filterId = new mongoose.Types.ObjectId(id);
 
-    // Find all orders for this customer
-    cid = new mongoose.Types.ObjectId(cid);
-    if(!hasRole(user,["admin"])) cid = user._id;
-    //console.log(customerId);
+    // If user is not admin, force filter to their own id
+    if (!hasRole(user, ["admin"])) {
+      filterId = user._id;
+    }
 
-    //Pagination
-    
+    // Pagination
     let page = parseInt(queryParams.page) > 0 ? parseInt(queryParams.page) : 1;
     const limit = parseInt(queryParams.limit) > 0 ? parseInt(queryParams.limit) : 10;
-    const totalOrders = await Order.countDocuments({ cid });
-    const totalPages = Math.ceil(totalOrders / limit) || 1;
 
-    if (page > totalPages) page = totalPage
+    const totalOrders = await Order.countDocuments({ [field]: filterId });
+    const totalPages = Math.ceil(totalOrders / limit) || 1;
+    if (page > totalPages) page = totalPages;
 
     const skip = (page - 1) * limit;
 
+    // Aggregation pipeline
     const orders = await Order.aggregate([
-      //  Match only orders of this customer
-      { $match: { cid } },
-
-      //  Join contains collection
+      { $match: { [field]: filterId } },
       {
         $lookup: {
           from: "contains",
@@ -171,10 +182,7 @@ exports.getOrdersByCustomer = async (cid, user, queryParams = {}) => {
           as: "contains",
         },
       },
-
       { $unwind: "$contains" },
-
-      //join product
       {
         $lookup: {
           from: "products",
@@ -183,61 +191,54 @@ exports.getOrdersByCustomer = async (cid, user, queryParams = {}) => {
           as: "product",
         },
       },
-
       { $unwind: "$product" },
-
       {
         $group: {
           _id: "$_id",
           order_status: { $first: "$order_status" },
           order_date: { $first: "$order_date" },
           customer_id: { $first: "$cid" },
+          vendor_id: { $first: "$vid" },
           contains: {
             $push: {
               product_id: "$product._id",
               name: "$product.product_name",
               price: "$product.price",
               quantity: "$contains.quantity",
-              total_price: {
-                $multiply: ["$product.price", "$contains.quantity"],
-              },
+              total_price: { $multiply: ["$product.price", "$contains.quantity"] },
             },
           },
         },
       },
-
       {
-        $addFields: {
-          order_total: { $sum: "$contains.total_price" },
-        },
+        $addFields: { order_total: { $sum: "$contains.total_price" } },
       },
-
       { $sort: { order_date: -1 } },
-
-      { $skip : skip },
-
-      { $limit : limit }
+      { $skip: skip },
+      { $limit: limit },
     ]);
 
-    /*if (!orders.length) {
-      throw new createError(
-        404, `No orders belong to user ${cid}`
-      );
-    }*/
-
-    return { 
+    return {
       orders,
       pagination: {
         currentPage: page,
         totalPages,
         totalOrders,
-        limit
-      }
+        limit,
+      },
     };
   } catch (err) {
     throw err;
   }
 };
+
+// Exported helper functions
+exports.getOrdersByCustomer = async (cid, user, queryParams) =>
+  getOrders({ field: "cid", id: cid, user, queryParams });
+
+exports.getOrdersByVendor = async (vid, user, queryParams) =>
+  getOrders({ field: "vid", id: vid, user, queryParams });
+
 /* Output example
 {
     "success": true,

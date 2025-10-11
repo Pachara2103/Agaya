@@ -1,10 +1,10 @@
-const {checkoutOrder, updateOrderStatus, getOrdersByCustomer} = require("../services/order-service");
+const {checkoutOrder, updateOrderStatus, getOrdersByCustomer, getOrdersByVendor} = require("../services/order-service");
 
 //POST /api/v1/agaya/orders/checkout
 exports.checkoutOrder = async (req, res, next) => {
   try{
-    const {orderId, transactionId} = await checkoutOrder(req.body, req.user);
-    res.status(201).json({success:true, message: "Checkout successful", data:{orderId, transactionId}});
+    const createdOrders = await checkoutOrder(req.body, req.user);
+    res.status(201).json({success:true, message: "Checkout successful", data:createdOrders});
   } catch (err) {
     next(err);
   }
@@ -25,6 +25,15 @@ exports.getOrdersByCustomer = async (req, res, next) => {
   try {
     const orderByCustomer = await getOrdersByCustomer(req.params.cid, req.user, req.query)
     res.status(200).json({success:true, data: orderByCustomer });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getOrdersByVendor = async (req, res, next) => {
+  try {
+    const orderByVendor = await getOrdersByVendor(req.params.vid, req.user, req.query)
+    res.status(200).json({success:true, data: orderByVendor });
   } catch (err) {
     next(err);
   }
