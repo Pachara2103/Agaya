@@ -9,6 +9,7 @@ import Profile from "./Profile.jsx";
 import Address from "./Address.jsx";
 import ChangePasswordForm from "../ProfilePage/ChangePasswordForm";
 import { getMe } from "../../libs/authService";
+import "./scrollbar.css";
 
 // rgba(221, 221, 221, 0.7)
 function ProfileContainer() {
@@ -51,7 +52,7 @@ function ProfileContainer() {
       >
         {" "}
         {/* block */}
-        <div className={`w-64 ml-10 mr-6 mt-14 mb-8 h-150 bg-white ${box}`}>
+        <div className={`w-72 ml-10 mr-6 mt-14 mb-8 h-150 bg-white ${box} overflow-y-scroll scrollbar` }>
           <div className={`flex flex-col gap-2 ml-8 mr-8 mt-8`}>
             <div className="flex flex-row text-black mb-6">
               <div className={``}>
@@ -72,11 +73,12 @@ function ProfileContainer() {
                 </div>
               </div>
             </div>
+            {/* My account */}
             <Button1
               emoji={<VscAccount size={22} />}
               text="บัญชีของฉัน"
               textSize={20}
-              handle={() => alert(`${currentPanel}`)}
+              handle={() => setCurrrentPanel("profile")}
             />
             <Button1
               text="&emsp;ประวัติ"
@@ -110,24 +112,52 @@ function ProfileContainer() {
               textColor={checkPanel("notification-setting", currentPanel)}
               handle={() => setCurrrentPanel("notification-setting")}
             />
+            {/* My purchase */}
             <Button1
               emoji={<LuShoppingBag size={20} />}
               text="การซื้อของฉัน"
               textSize={20}
-              handle={() => setCurrrentPanel("my-purchase")}
+              handle={() => setCurrrentPanel("to-ship")}
             />
+            <Button1
+              text="&emsp;ที่ต้องจัดส่ง"
+              textColor={checkPanel("to-ship", currentPanel)}
+              handle={() => setCurrrentPanel("to-ship")}
+            />
+            <Button1
+              text="&emsp;ที่ต้องได้รับ"
+              textColor={checkPanel("to-receive", currentPanel)}
+              handle={() => setCurrrentPanel("to-receive")}
+            />
+            <Button1
+              text="&emsp;จัดส่งสำเร็จ"
+              textColor={checkPanel("complete", currentPanel)}
+              handle={() => setCurrrentPanel("complete")}
+            />
+            <Button1
+              text="&emsp;การคืนสินค้า/คืนเงิน"
+              textColor={checkPanel("return-refund", currentPanel)}
+              handle={() => setCurrrentPanel("return-refund")}
+            />
+            <Button1
+              text="&emsp;การยกเลิกคำสั่งซื้อ"
+              textColor={checkPanel("cancelled", currentPanel)}
+              handle={() => setCurrrentPanel("cancelled")}
+            />
+            {/* Notification */}
             <Button1
               emoji={<MdOutlineNotifications size={20} />}
               text="การแจ้งเตือน"
               textSize={20}
               handle={() => setCurrrentPanel("notifications")}
             />
+            {/* My discount */}
             <Button1
               emoji={<IoMdPerson size={20} />}
               text="ส่วนลดของฉัน"
               textSize={20}
               handle={() => setCurrrentPanel("my-vouchers")}
-            />
+            />  
           </div>
         </div>
         <div

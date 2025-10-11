@@ -38,6 +38,8 @@ const vendorAppRoutes = require('./routes/vendor-application-routes');
 const adminRoutes = require('./routes/admin-routes');
 const orderRoutes = require('./routes/order-routes')
 const uploadRoutes = require('./routes/upload-routes');
+const addToRoutes = require('./routes/addto-routes');
+const cartRoutes = require('./routes/cart-routes');
 
 //Mount upload route
 app.use('/api/v1/Agaya/upload', uploadRoutes);
@@ -52,6 +54,8 @@ app.use('/api/v1/Agaya/otp', otpRoutes);
 app.use('/api/v1/Agaya/vendor-applications', vendorAppRoutes);
 app.use('/api/v1/Agaya/admin', adminRoutes);
 app.use('/api/v1/Agaya/orders', orderRoutes);
+app.use('/api/v1/Agaya/addto', addToRoutes);
+app.use('/api/v1/Agaya/cart', cartRoutes);
 
 //Import Passport strategies (Google)
 require('./config/passport');

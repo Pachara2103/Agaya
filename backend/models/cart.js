@@ -7,12 +7,6 @@ const cartSchema = new mongoose.Schema({
     maxlength: 100,
     ref: 'Customer' // อ้างอิง Customer
   },
-  cart_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true,
-    maxlength: 100
-  }
 }, {
   timestamps: true
 });
