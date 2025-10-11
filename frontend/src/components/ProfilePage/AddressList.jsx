@@ -1,6 +1,6 @@
 import React from 'react';
 
-function AddressList({addresses = []}) {
+function AddressList({addresses = [], onEdit, onDelete}) {
     if (addresses.length === 0) {
         return <p className="text-gray-500 mt-4">ยังไม่มีที่อยู่ที่บันทึกไว้</p>;
     }
@@ -8,15 +8,24 @@ function AddressList({addresses = []}) {
     return (
         <div className="space-y-4 mt-6">
             {addresses.map((address) => (
-                <div key={address.id} className="border p-4 rounded-md flex justify-between items-start">
-                    <div>
-                        <p className="text-black font-semibold py-3">{address.name}</p>
-                        <p className="text-gray-600 text-sm">{address.phoneNumber}</p>
-                        <p className="text-gray-600 text-sm">{address.address}</p>
+                <div key={address._id} className="border border-gray-300 p-4 rounded-md flex justify-between items-start shadow-sm">
+                    <div className="flex-grow pr-4 space-y-3">
+                        <div className="grid grid-cols-5 gap-x-4 items-center">
+                            <p className="text-black font-semibold col-span-2">{address.name}</p>
+                            <p className="text-black text-sm col-span-3">{address.phoneNumber}</p>
+                        </div>
+                        <div className="mt-1">
+                            <p className="text-gray-600 text-sm">{address.address}</p>
+                        </div>
                     </div>
+
                     <div>
-                        <button className="text-blue-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">แก้ไข</button>
-                        <button className="text-red-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">ลบ</button>
+                        <button-white onClick={() => onEdit(address)} className="text-blue-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">
+                            แก้ไข
+                        </button-white>
+                        <button-white onClick={() => onDelete(address._id)} className="text-red-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">
+                            ลบ
+                        </button-white>
                     </div>
                 </div>
             ))}

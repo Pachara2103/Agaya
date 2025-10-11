@@ -140,7 +140,12 @@ function DisputePage() {
           "04/10/2568",
           "04:47:56"
         )}
-        {disputeBox()}
+        {disputeBox(
+          "CUS00000000000000000",
+          "PENDING",
+          "04/10/2568",
+          "04:47:56"
+        )}
       </div>
     </>
   );
