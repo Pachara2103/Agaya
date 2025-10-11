@@ -7,14 +7,29 @@ import Button1 from "../Button1";
 import CategoryManagement from "./CategoryManagement";
 import ApproveVendorPage from "./ApproveVendorPage";
 import ProductManagement from "./ProductManagement";
+import DisputePage from "./disputePage";
 
-function AdminPageContainer () {
+function AdminPageContainer() {
   const [currentPanel, setCurrentPanel] = useState("user");
   const checkPanel = (panelName, currentPanel, header = 0) => {
     if (currentPanel === panelName && header === 0) return "text-pink-600";
-    if (currentPanel === panelName && header === 1) return "text-pink-800 font-[600]";
-    if(header === 1) return "text-black";
+    if (currentPanel === panelName && header === 1)
+      return "text-pink-800 font-[600]";
+    if (header === 1) return "text-black";
     return "text-gray-500";
+  };
+
+  const displaySubpage = () => {
+    return (
+      <>
+        {currentPanel === "dashboard" ? <DashboardPage /> : <></>}
+        {currentPanel === "user" ? <UserPage /> : <></>}
+        {currentPanel === "product" ? <ProductManagement /> : <></>}
+        {currentPanel === "category" ? <CategoryManagement /> : <></>}
+        {currentPanel === "approve-vendor" ? <ApproveVendorPage /> : <></>}
+        {currentPanel === "dispute" ? <DisputePage /> : <></>}
+      </>
+    );
   };
   const username = "Admin Dashboard";
   const box =
@@ -59,23 +74,23 @@ function AdminPageContainer () {
               text="&emsp;ประเภทสินค้า"
               textColor={checkPanel("category", currentPanel)}
               handle={() => setCurrentPanel("category")}
-              
             />
             <Button1
               text="&emsp;การอนุมัติผู้ขาย"
               textColor={checkPanel("approve-vendor", currentPanel)}
               handle={() => setCurrentPanel("approve-vendor")}
             />
+            <Button1
+              text="&emsp;การร้องเรียน"
+              textColor={checkPanel("dispute", currentPanel)}
+              handle={() => setCurrentPanel("dispute")}
+            />
           </div>
         </div>
         <div
           className={`w-200 ml-6 mr-12 mt-14 mb-8 h-150 bg-white ${box} flex-shrink-0 cursor-default`}
         >
-          {currentPanel === "dashboard" ? <DashboardPage/> : <></>}
-          {currentPanel === "user" ? <UserPage/> : <></>}
-          {currentPanel === "product" ? <ProductManagement/> : <></>}
-          {currentPanel === "category" ? <CategoryManagement/> : <></>}
-          {currentPanel === "approve-vendor" ? <ApproveVendorPage/> : <></>}
+          {displaySubpage()}
         </div>
       </div>
     </div>
