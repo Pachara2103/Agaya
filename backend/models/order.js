@@ -29,6 +29,12 @@ const orderSchema = new mongoose.Schema({
     required: true,
     maxlength: 100,
     ref: 'Customer' // อ้างอิง Customer
+  },
+  vid: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    maxlength: 100,
+    ref: 'Vendor' // อ้างอิง Vendor
   }
 }, {
   timestamps: true

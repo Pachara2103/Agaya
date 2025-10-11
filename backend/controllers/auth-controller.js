@@ -94,3 +94,23 @@ exports.updateMe = async (req, res, next) => {
   }
 };
 
+exports.verifyPassword = async (req, res, next) => {
+  try {
+    const {password} = req.body;
+    const userId = req.user.id;
+
+    if (!password) {
+      return res.status(400).json({success: false, message: "กรุณากรอกรหัสผ่าน"});
+    }
+
+    const isCorrect = await authService.verifyPassword(userId, password);
+
+    if (!isCorrect) {
+      return res.status(401).json({success: false, message: "รหัสผ่านเดิมไม่ถูกต้อง"});
+    }
+
+    res.status(200).json({success: true, message: "รหัสผ่านเดิมถูกต้อง"});
+  } catch(err) {
+    next(err);
+  }
+};

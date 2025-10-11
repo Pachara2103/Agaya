@@ -1,5 +1,6 @@
 import {React, useState, useEffect} from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import AddressList from './AddressList.jsx';
 import AddAddressForm from './AddAddressForm.jsx';
 
@@ -14,7 +15,7 @@ function Address() {
 
     const fetchAddresses = async () => {
         setIsLoading(true);
-        const token = localStorage.getItem('authToken');
+        const token = Cookies.get('token');
         if (!token) {
             setError('กรุณาเข้าสู่ระบบเพื่อดูข้อมูล');
             setIsLoading(false);
@@ -63,7 +64,7 @@ function Address() {
     }, []);
 
     const handleSaveAddress = async (formDataFromForm) => {
-        const token = localStorage.getItem('authToken');
+        const token = Cookies.get('token');
         if (!token || !currentUser?._id) { 
             alert('ข้อมูลผู้ใช้ไม่พร้อม กรุณาลองอีกครั้ง');
             return;
@@ -113,7 +114,7 @@ function Address() {
 
     const handleUpdateAddress = async(formDataFromForm) => {
         console.log("กำลังอัปเดตที่อยู่");
-        const token = localStorage.getItem('authToken');
+        const token = Cookies.get('token');
         if (!token || !editingAddress?._id) {
             alert('ข้อมูลไม่พร้อมสำหรับอัปเดต กรุณาลองอีกครั้ง');
             return;
@@ -152,7 +153,7 @@ function Address() {
             console.log("กำลังลบที่อยู่...", addressId);
 
             try {
-                const token = localStorage.getItem('authToken');
+                const token = Cookies.get('token');
                 const url = `http://localhost:5000/api/v1/Agaya/address/addresses/${addressId}`;
             
                 await axios.delete(url, {
