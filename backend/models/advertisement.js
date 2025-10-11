@@ -1,20 +1,21 @@
 const mongoose = require('mongoose');
 
 const advertisementSchema = new mongoose.Schema({
-  adid: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: 100
-  },
-  vid: {
-    type: String,
+  // advertisementId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: true,
+  //   unique: true,
+  //   maxlength: 100
+  // },
+  // mongoose generate this
+  vendorId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Vendor' // อ้างอิง Vendor
   },
-  aid: {
-    type: String,
+  adminId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Admin' // อ้างอิง Admin

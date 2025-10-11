@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema({
-  uid: {
+  customerId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,

@@ -7,18 +7,18 @@ const transactionSchema = new mongoose.Schema({
     unique: true,
     maxlength: 100
   },*/
-  payment_method: {
+  paymentMethod: {
     type: String,
     required: true,
     maxlength: 32
   },
-  transaction_date: {
+  transactionDate: {
     type: Date,
     required: true,
     default: Date.now
   },
-  oid: {
-    type: String,
+  orderId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Order' // อ้างอิง Order

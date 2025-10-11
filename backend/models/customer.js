@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const customerSchema = new mongoose.Schema({
-  uid: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     unique: true,
-    maxlength: 100
+    maxlength: 100,
+    ref : 'User'
   },
   balance: {
     type: Number,

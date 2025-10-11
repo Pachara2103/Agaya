@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 
 // Messages Schema
 const messageSchema = new mongoose.Schema({
-  mid: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: 100
-  },
+  // messageId: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  //   maxlength: 100
+  // }, 
+  // mongoose auto generate this
   type: {
     type: String,
     required: true,

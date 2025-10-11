@@ -7,24 +7,24 @@ const orderSchema = new mongoose.Schema({
     unique: true,
     maxlength: 100
   },*/
-  order_date: {
+  orderDate: {
     type: Date,
     required: true,
     default: Date.now
   },
-  order_status: {
+  orderStatus: {
     type: String,
     required: true,
     enum: ['NOT_PAID', 'PAID', 'COMPLETED'], // จำกัดค่าตาม Valid Values
     maxlength: 32
   },
-  cart_id: {
+  cartId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Cart' // อ้างอิง Cart
   },
-  cid: {
+  customerId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,

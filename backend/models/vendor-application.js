@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const vendorApplicationSchema = new mongoose.Schema({
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user', 
+    ref: 'user', //ส่วนนี้ไม่เป็น vendor หรอ
     required: true,
     unique: true 
   },

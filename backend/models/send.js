@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const sendSchema = new mongoose.Schema({
-  uid: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'User' // อ้างอิงผู้ส่ง
   },
-  mid: {
-    type: String,
+  messageId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Message' // อ้างอิงข้อความ

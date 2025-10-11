@@ -8,13 +8,13 @@ const productSchema = new mongoose.Schema({
   //   trim: true,
   //   maxlength: [100, "Product's id can not be more than 100 characters"]
   // },
-  product_name: {
+  productName: {
     type: String,
     required: [true,"Please enter Product's name"],
     trim : true ,
     maxlength: [255, "Product's name can not be more than 255 characters"]
   },
-  stock_quantity: {
+  stockQuantity: {
     type: Number,
     required: [true,"Require stock quantity"],
     min: 0,
@@ -32,8 +32,8 @@ const productSchema = new mongoose.Schema({
     max: 5.0,
     default: null
   },
-  vid: {
-    type: String,
+  vendorId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: [true,"Please enter Vendor's id"],
     maxlength: [100,"Vendor's id can not be more than 100 characters"],
     ref: 'Vendor' 
@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
     maxlength: [100,"Type can not be more than 100 characters"],
     default: null 
   },
-  product_description: {
+  productDescription: {
     type: String,
     maxlength: [200,"Product description can not be more than 200 characters"],
     default: null 

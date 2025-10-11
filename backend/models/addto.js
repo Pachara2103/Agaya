@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const addToSchema = new mongoose.Schema({
-  pid: {
+  productId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Product' // อ้างอิง Product
   },
-  cart_id: {
+  cartId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,

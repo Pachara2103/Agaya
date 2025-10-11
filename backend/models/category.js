@@ -7,7 +7,7 @@ const categorySchema = new mongoose.Schema({
     //     unique: true,   
     //     trim: true,
     // },
-    category_name: {
+    categoryName: {
         type: String,
         required: [true, "Please enter Category's name"],
         trim: true,
