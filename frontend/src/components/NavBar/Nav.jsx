@@ -52,7 +52,10 @@ function Nav() {
     <nav>
       <div className="header">
         <div className="header-left">
-          <h2 className="text-[#000] text-[18px] cursor-pointer font-bold" onClick={() => nav("/")}>
+          <h2 className="text-[#000] text-[18px] cursor-pointer font-bold" onClick={() => {
+            nav("/")
+            window.location.reload(); 
+          }}>
             Agaya
           </h2>
         </div>
