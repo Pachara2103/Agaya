@@ -3,7 +3,19 @@ const Address = require("../models/address");
 // Address managements
 exports.addAddress = async (id, updatedData) => {
     const {name, phoneNumber, address} = updatedData;
-    const userId = id;
+
+    const existingAddress = await Address.findOne({
+        user: id,
+        name: name,
+        phoneNumber: phoneNumber,
+        address: address
+    });
+
+    if (existingAddress) {
+        const error = new Error("มีที่อยู่นี้ในระบบแล้ว");
+        error.statusCode = 400; //400 Bad Request
+        throw error;
+    }
 
     const newAddress = await Address.create({
         user: id,

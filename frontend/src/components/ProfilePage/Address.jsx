@@ -69,6 +69,17 @@ function Address() {
             return;
         }
 
+        const isDuplicate = addresses.some(existingAddress =>
+            existingAddress.name.trim() === formDataFromForm.fullName.trim() &&
+            existingAddress.phoneNumber.trim() === formDataFromForm.phoneNumber.trim() &&
+            existingAddress.address.trim() === formDataFromForm.addressLine1.trim()
+        );
+
+        if (isDuplicate) {
+            alert("คุณได้บันทึกที่อยู่นี่ไว้แล้ว");
+            return;
+        }
+
         // 1. เตรียมข้อมูลให้ตรงกับ Backend Model
         const requestData = {
             name: formDataFromForm.fullName, // key ต้องชื่อ 'name'
