@@ -68,8 +68,10 @@ exports.forgotPassword = async (req, res, next) => {
 // @route   GET /api/v1/agaya/auth/google/callback
 // @access  Public
 exports.googleCallback = (req, res) => {
-  // req.user is populated by Passport.js after successful authentication
-  sendTokenResponse(req.user, 200, res);
+  const token = req.user.getSignedJwtToken(); 
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'; 
+  
+  res.status(200).redirect(`${frontendUrl}/auth/google/callback?token=${token}`);
 };
 
 // @desc    Get current logged-in user
