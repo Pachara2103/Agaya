@@ -125,3 +125,14 @@ exports.updateProfile = async (userId, userData) => {
 
   return user;
 };
+
+exports.verifyPassword = async (userId, passwordToCheck) => {
+  const user = await User.findById(userId).select('+password');
+  if (!user) {
+    throw new Error("ไม่พบผู้ใช้");    
+  }
+
+  const isMatch = await bcrypt.compare(passwordToCheck, user.password);
+  
+  return isMatch;
+};
