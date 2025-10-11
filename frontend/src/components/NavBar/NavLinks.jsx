@@ -7,13 +7,16 @@ function NavLinks({ user }) {
   const handleApplyClick = () => {
     if (!isLoggedIn) {
       nav("/signin");
+      window.location.reload(); 
       return;
     }
 
     if (user.userType && user.userType.includes("vendor")) {
       nav("/seller-page");
+      window.location.reload(); 
     } else {
       nav("/apply-for-seller");
+      window.location.reload(); 
     }
   };
 
@@ -25,13 +28,19 @@ function NavLinks({ user }) {
       <li>ช่วยเหลือ</li>
       <li
         className={isLoggedIn ? "disabled-link" : "cursor-pointer"}
-        onClick={isLoggedIn ? null : () => nav("/signup")}
+        onClick={isLoggedIn ? null : () => {
+          nav("/signup")
+          window.location.reload(); 
+        }}
       >
         สมัครใหม่
       </li>
       <li
         className={isLoggedIn ? "disabled-link" : "cursor-pointer"}
-        onClick={isLoggedIn ? null : () => nav("/signin")}
+        onClick={isLoggedIn ? null : () => {
+          nav("/signin")
+          window.location.reload(); 
+        }}
       >
         เข้าสู่ระบบ
       </li>
