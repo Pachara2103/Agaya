@@ -9,16 +9,16 @@ exports.addAddTo = async (req, res, next) => {
     }
 };
 
-exports.getAddToesByUser = async (req, res) => {
+exports.getAddToesByCartId = async (req, res, next) => {
     try {
-        const addToes = await addToService.getAddToesByUser(req.params.id);
+        const addToes = await addToService.getAddToByCartId(req.params.id);
         res.status(200).json(addToes);
     } catch (err) {
         next(err);
     }
 };
 
-exports.updateAddTo = async (req, res) => {
+exports.updateAddTo = async (req, res, next) => {
     try {
         const updatedAddTo = await addToService.updateAddTo(req.params.id, req.body);
         res.status(200).json(updatedAddTo);
@@ -27,7 +27,7 @@ exports.updateAddTo = async (req, res) => {
     }
 };
 
-exports.deleteAddTo = async (req, res) => {
+exports.deleteAddTo = async (req, res, next) => {
     try {
         await addToService.deleteAddTo(req.params.id);
         res.status(200).json({message: "AddTo deleted successfully"});
