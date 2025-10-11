@@ -15,7 +15,6 @@ function Signin() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
-    // ลิงก์นี้ต้องตรงกับ backend route ของคุณ
     window.location.href = `${API_URL}/auth/google`;
   };
 

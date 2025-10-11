@@ -23,6 +23,7 @@ import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
 
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import GoogleAuthHandler from "./components/LoginPage/GoogleAuthHandler.jsx";
 
 let router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ let router = createBrowserRouter([
       {
         path: "/categorymanagement",
         element: <CategoryManagement />,
+      },
+      {
+        path: "/auth/google/callback",
+        element: <GoogleAuthHandler />
       },
       {
         path: "/profile",
