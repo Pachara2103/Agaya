@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Cookies from 'js-cookie';
 import {useNavigate} from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
 import axios from 'axios';
@@ -20,7 +21,7 @@ function PasswordForm() {
         setError('');
 
         try {
-            const token = localStorage.getItem('authToken');
+            const token = Cookies.get('token');
             if (!token) {
                 setError("ไม่พบข้อมูลยืนยันตัวตน กรุณาเข้าสู่ระบบใหม่อีกรอบ");
                 setIsLoading(false);
