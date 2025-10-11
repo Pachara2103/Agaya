@@ -45,7 +45,6 @@ function Address() {
                 
                 // หมายเหตุ: ถ้า Backend ส่ง array กลับมาใน key อื่นที่ไม่ใช่ 'data' ให้แก้ตรงนี้
                 setAddresses(addressResponse.data);
-                console.log("5. ดึงข้อมูลที่อยู่สำเร็จ:", addressResponse.data);
             } else {
                 // กรณีที่ไม่พบ User ID
                 setAddresses([]);
@@ -92,7 +91,7 @@ function Address() {
             if (response.data.success) {
                 alert('บันทึกที่อยู่ใหม่สำเร็จ!');
                 setShowAddForm(false); // ปิดฟอร์ม
-                fetchInitialData();      // โหลดข้อมูลทั้งหมดใหม่
+                fetchAddresses();      // โหลดข้อมูลทั้งหมดใหม่
             }
 
         } catch (err) {
@@ -101,11 +100,62 @@ function Address() {
         }
     };
 
-    const handleUpdateAddress = async(updatedAddressData) => {
+    const handleUpdateAddress = async(formDataFromForm) => {
         console.log("กำลังอัปเดตที่อยู่");
-        //const response = await axios.put(`/api/v1/user/addresses/${editingAddress._id}`, updatedAddressData, ...`);
-        setEditingAddress(null);
-        fetchAddresses();
+        const token = localStorage.getItem('authToken');
+        if (!token || !editingAddress?._id) {
+            alert('ข้อมูลไม่พร้อมสำหรับอัปเดต กรุณาลองอีกครั้ง');
+            return;
+        }
+        const requestData = {
+            name: formDataFromForm.fullName,
+            phoneNumber: formDataFromForm.phoneNumber,
+            address: formDataFromForm.addressLine1
+        };
+
+        const url = `http://localhost:5000/api/v1/Agaya/address/addresses/${editingAddress._id}`;
+        console.log(`Sending PUT to: ${url}`);
+        console.log("with data:", requestData);
+        
+        try {
+            const response = await axios.put(url, requestData, {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+
+            if (response.data.success) {
+                alert('อัปเดตที่อยู่สำเร็จ');
+                setEditingAddress(null); //leave editing session
+                fetchAddresses();
+            }
+        } catch (err) {
+            console.error("Failed to update address:", err.response?.data || err.message);
+            alert('เกิดข้อผิดพลาดในการอัปเดตที่อยู่');
+        }
+    }
+
+    const handleDeleteAddress = async(addressId) => {
+        if (!addressId) {
+            alert('ไม่พบ ID ของที่อยู่ ไม่สามารถลบได้');
+            return;
+        }
+
+        if (window.confirm('คุณแน่ใจหรือไม่ว่าต้องการลบที่อยู่นี้?')) {
+            console.log("กำลังลบที่อยู่...", addressId);
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const url = `http://localhost:5000/api/v1/Agaya/address/addresses/${addressId}`;
+            
+                await axios.delete(url, {
+                    headers: {Authorization: `Bearer ${token}`}
+                });
+                alert('ลบที่อยู่สำเร็จแล้ว');
+                fetchAddresses();
+            } catch (err) {
+                console.log("ลบที่อยู่ล้มเหลว:", err);
+                alert('เกิดข้อผิดพลาดในการลบที่อยู่');
+            }
+        }
     }
 
     if (isLoading) return <div>Loading...</div>
@@ -139,6 +189,7 @@ function Address() {
                 <AddressList 
                     addresses={addresses} 
                     onEdit={(address) => setEditingAddress(address)}
+                    onDelete={handleDeleteAddress}
                 />
             )}
         </div>
