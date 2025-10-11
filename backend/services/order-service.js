@@ -80,7 +80,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
     }
 
-    //await Addto.deleteMany({ cart_id }).session(session);
+    await Addto.deleteMany({ cart_id }).session(session);
 
     await session.commitTransaction();
     session.endSession();
