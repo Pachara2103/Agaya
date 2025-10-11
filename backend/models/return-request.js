@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
-const { response } = require("../app");
+// const { response } = require("../app"); ส่วนนี้ไว้ใช้ทำอะไรอ่ะ
 
 const returnRequestSchema = new mongoose.Schema({
-    oid: {
+    orderId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Order"
     },
 
-    cid: {
+    customerId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "Customer"
     },
 
-    pid: {
+    productId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Product"
@@ -37,7 +37,7 @@ const returnRequestSchema = new mongoose.Schema({
         default: "PENDING",
     },
 
-    refund_amount: {
+    refundAmount: {
         type: Number,
         default: 0
     },
@@ -46,12 +46,12 @@ const returnRequestSchema = new mongoose.Schema({
         type: String,
     },
 
-    request_date: {
+    requestDate: {
         type: Date,
         default: Date.now
     },
 
-    resolved_date: {
+    resolvedDate: {
         type: Date
     },
 });

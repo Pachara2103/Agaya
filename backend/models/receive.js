@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const receiveSchema = new mongoose.Schema({
-  uid: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'User' // อ้างอิงผู้รับ
   },
-  mid: {
-    type: String,
+  messageId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Message' // อ้างอิงข้อความ

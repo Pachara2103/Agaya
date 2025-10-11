@@ -1,18 +1,19 @@
 const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema({
-  uid: {
+  customerId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Customer' // อ้างอิง Customer
-  },
-  cart_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true,
-    maxlength: 100
   }
+  // cartId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: true,
+  //   unique: true,
+  //   maxlength: 100
+  // }
+  // mongoose auto generate this
 }, {
   timestamps: true
 });

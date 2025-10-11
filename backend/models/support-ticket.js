@@ -1,29 +1,30 @@
 const mongoose = require('mongoose');
 
 const supportTicketSchema = new mongoose.Schema({
-  tid: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: 100
-  },
-  cid: {
-    type: String,
+  // ticketId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: true,
+  //   unique: true,
+  //   maxlength: 100
+  // },
+  // mongoose genarate this
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Customer' // อ้างอิง Customer
   },
-  aid: {
-    type: String,
+  adminId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     maxlength: 100,
     ref: 'Admin' // อ้างอิง Admin
   },
-  ticket_description: {
+  ticketDescription: {
     type: String,
     required: true
   },
-  date_created: {
+  dateCreated: {
     type: Date,
     required: true,
     default: Date.now
@@ -44,7 +45,7 @@ const supportTicketSchema = new mongoose.Schema({
     required: true,
     maxlength: 100
   },
-  admin_response: {
+  adminResponse: {
     type: String,
     default: null // เพราะ Allow Nulls = Yes
   }
