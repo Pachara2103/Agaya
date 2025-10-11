@@ -5,7 +5,7 @@ exports.addAddress = async (req, res, next) => {
     try {
         const userId = req.params.id;
         const newAddress = await addressService.addAddress(userId, req.body);
-        res.status(201).json({success: true, data: newAddress});
+        res.status(201).json({success: true, data: newAddress.toObject()});
     } catch (err) {
         next(err);
     }

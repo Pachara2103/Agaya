@@ -39,7 +39,8 @@ const PasswordRecovery = ({}) => {
   useEffect(() => {
     if (state !== 3) return;
     if (countdown <= 0) {
-      navigate("/");
+      navigate("/signin");
+      window.location.reload(); 
       return;
     }
     const timer = setTimeout(() => {

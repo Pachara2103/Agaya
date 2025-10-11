@@ -15,7 +15,6 @@ function Signin() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
-    // ลิงก์นี้ต้องตรงกับ backend route ของคุณ
     window.location.href = `${API_URL}/auth/google`;
   };
 
@@ -114,10 +113,10 @@ function Signin() {
               )}
 
               <button class="mb-2.5 button1" onClick={login}>เข้าสู่ระบบ</button>
-
+              
               <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                 <FcGoogle size={30} />
-                <p className="text-[14px] text-gray-800">Sign up with Google</p>
+                <p className="text-[14px] text-gray-800">Sign in with Google</p>
               </div>
 
               <div className="flex justify-start items-center text-gray-500 text-sm">

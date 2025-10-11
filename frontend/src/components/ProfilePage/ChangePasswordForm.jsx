@@ -1,20 +1,53 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
+import axios from 'axios';
 
 function PasswordForm() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!password) {
             setError('กรุณากรอกรหัส');
             return;
         }
 
-        navigate('/set-new-password', {state: {oldPassword: password}});
+        setIsLoading(true);
+        setError('');
+
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setError("ไม่พบข้อมูลยืนยันตัวตน กรุณาเข้าสู่ระบบใหม่อีกรอบ");
+                setIsLoading(false);
+                return;
+            }
+
+            const url = 'http://localhost:5000/api/v1/Agaya/auth/verify-password';
+            const requestData = {password: password};
+
+            const response = await axios.post(url, requestData, {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+            console.log("5555");
+
+            if (response.data.success) {
+                navigate('/set-new-password', {state: {oldPassword: password}});
+            }
+        } catch(err) {
+            if (err.response && err.response.status === 401) {
+                setError("รหัสผ่านเดิมไม่ถูกต้อง");
+            } else {
+                setError("เกิดข้อผิดพลาดในการตรวจสอบรหัสผ่าน");
+                console.error(err);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleBack = () => {
@@ -53,8 +86,10 @@ function PasswordForm() {
                         {error && <p className="text-red-700 bg-red-200 p-3 rounded text-center my-3">{error}</p>}
 
                         <button className="w-full bg-teal-400 text-white rounded-md font-bold transition-colors duration-300 hover:bg-teal-500" 
-                         onClick={handleSubmit}>
-                        ถัดไป
+                         onClick={handleSubmit}
+                         disabled={isLoading}
+                        >
+                            {isLoading ? "กำลังตรวจสอบ..." : "ถัดไป"}
                         </button>
                     </div>
                     
