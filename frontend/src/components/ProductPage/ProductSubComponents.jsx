@@ -94,17 +94,17 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
 
     <div className="flex items-center gap-4 mb-8">
       
-      <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+      <div className="flex items-center border border-gray-600 rounded-md overflow-hidden">
           <button
             onClick={decreaseQuantity}
             className="px-4 py-2 text-xl font-bold text-gray-600 hover:bg-gray-100 transition"
           >
             -
           </button>
-          <span className="px-6 py-2 border-l border-r font-medium text-lg">{quantity}</span>
+          <span className="px-6 py-2 font-medium text-lg text-gray-900">{quantity}</span>
           <button
             onClick={increaseQuantity}
-            className="px-4 py-2 text-xl font-bold text-red-500 hover:bg-gray-100 transition"
+            className="px-4 py-2 text-xl font-bold text-gray-600 hover:bg-gray-100 transition"
           >
             +
           </button>
@@ -119,7 +119,7 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
 
       <button 
           onClick={onBuyNow}
-          className="px-8 py-3 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition shadow-md"
+          className="px-8 py-3 bg-[#48B3AF] text-white font-semibold rounded-md hover:bg-red-700 transition shadow-md"
       >
           Buy Now
       </button>
