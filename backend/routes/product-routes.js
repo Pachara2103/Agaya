@@ -17,8 +17,8 @@ const Product = require("../models/product");
 
 router.get("/vendor/my-products", protect, authorize("vendor", "admin"), findProductsByVendor);
 
-router.get("/", protect, findAllProduct);
-router.get("/:id", protect, findProductById);
+router.get("/", findAllProduct);
+router.get("/:id", findProductById);
 router.post("/", protect, authorize("vendor", "admin"), createProduct);
 router.put("/:id", protect, authorize("vendor", "admin"), updateProduct);
 router.delete("/:id", protect, authorize("vendor", "admin"), deleteProduct);

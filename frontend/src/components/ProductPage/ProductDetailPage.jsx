@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const StarIcon = ({ filled }) => (
   <svg
@@ -28,37 +28,110 @@ const HeartIcon = () => (
   </svg>
 );
 
-const ProductDetail = ({ product, onBack }) => {
-  if (!product) {
-    return <div>Loading product...</div>;
-  }
-  
-  const [selectedImage, setSelectedImage] = useState(
-    product.image && product.image.length > 0
-      ? product.image[0]
-      : "https://via.placeholder.com/500x500"
-  );
+const ProductDetailPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const [product, setProduct] = useState(location.state?.product);
   const [quantity, setQuantity] = useState(1);
 
-  // อัปเดตรูปภาพที่เลือกเมื่อ prop product เปลี่ยนไป
+  const [isLoading, setIsLoading] = useState(!product);
+  const [isError, setIsError] = useState(false);
+
+  const fetchProductData = async (productId) => {
+    try {
+      setIsLoading(true);
+      setIsError(false);
+      const res = await getProductsById(productId);
+
+      const apiProduct = res.product;
+
+      if (apiProduct && apiProduct._id) {
+        setProduct({
+          _id: apiProduct._id,
+          productName: apiProduct.productName,
+          productDescription: apiProduct.productDescription,
+          price: apiProduct.price,
+          rating: apiProduct.rating || 0,
+          stockQuantity: apiProduct.stockQuantity,
+          image: apiProduct.image,
+        });
+      } else {
+        setProduct(null);
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setIsError(true);
+      setProduct(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setSelectedImage(
-      product.image && product.image.length > 0
-        ? product.image[0]
-        : "https://via.placeholder.com/500x500"
-    );
+    if (!product && id) {
+      fetchProductData(id);
+    } else if (!id) {
+      setIsLoading(false);
+      setIsError(true);
+    }
+  }, [id]);
+
+  const [selectedImage, setSelectedImage] = useState(
+    product?.image?.[0] || "https://via.placeholder.com/500x500"
+  );
+
+  useEffect(() => {
+    if (product) {
+      setSelectedImage(
+        product.image?.[0] || "https://via.placeholder.com/500x500"
+      );
+    }
   }, [product]);
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); // ฟังก์ชันสำหรับสร้างดาวตาม rating
 
-  // ฟังก์ชันสำหรับสร้างดาวตาม rating
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <StarIcon key={i} filled={i < rating} />
     ));
   };
+
+  const onBack = () => {
+    navigate(-1);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-10 text-center text-xl font-semibold">
+        Loading product details...
+      </div>
+    );
+  }
+  if (isError || !product) {
+    return (
+      <div className="p-10 text-center">
+        <h1 className="text-xl font-bold text-red-600">
+          Product Not Found or Error Loading
+        </h1>
+
+        <p className="text-gray-600 my-4">
+          The item may have been removed or the link is incorrect.
+        </p>
+
+        <button
+          onClick={() => navigate("/")}
+          className="mt-4 p-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
+        >
+          Back to Home
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -181,37 +254,6 @@ const ProductDetail = ({ product, onBack }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-const ProductDetailPage = ({ onBack, product }) => {
-  //   const sampleProductData = {
-  //     _id: "68c6f9136b57f2998888277b",
-  //     product_name: "Havic HV G-92 Gamepad",
-  //     stock_quantity: 60,
-  //     price: 192.0,
-  //     rating: 4,
-  //     vid: "68c6f7146b57f29988882766",
-  //     type: "Gaming",
-  //     product_description:
-  //       "PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install & mess free removal. Pressure sensitive.",
-  //     image: [
-  //       "https://i.imgur.com/As1V24s.png",
-  //       "https://i.imgur.com/mp35s3G.png",
-  //       "https://i.imgur.com/5L85KkC.png",
-  //       "https://i.imgur.com/83NfQIm.png",
-  //       "https://i.imgur.com/2TkFv4k.png",
-  //     ],
-  //     promotion: { active: false },
-  //     createdAt: "2025-09-14T17:19:15.602Z",
-  //     updatedAt: "2025-09-14T17:19:15.602Z",
-  //     __v: 0,
-  //   };
-
-  return (
-    <div className="font-sans">
-      <ProductDetail product={product} onBack={onBack} />
     </div>
   );
 };

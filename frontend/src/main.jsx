@@ -16,6 +16,7 @@ import Profile from "./components/ProfilePage/ProfileContainer.jsx";
 import Address from "./components/ProfilePage/Address.jsx";
 import AddAddressForm from "./components/ProfilePage/AddAddressForm.jsx";
 import ProductDetail from "./components/ProductDetailPage/ProductDetail.jsx";
+import ProductDetailPage from "./components/ProductPage/ProductDetailPage.jsx";
 import ResultSearch from "./components/ProductPage/ResultSearch.jsx";
 import Cart from "./components/CartPage/Cart.jsx";
 
@@ -87,7 +88,7 @@ let router = createBrowserRouter([
       },
       {
         path: "/productdetail/:id",
-        Component: ProductDetail,
+        Component: ProductDetailPage,
       },
       {
         path: "/apply-for-seller",

@@ -1,28 +1,21 @@
 import { ProductGrid } from "./GridProduct";
-import ProductDetailPage from "./ProductDetailPage";
 
 import "./.css";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ResultSearch = () => {
-  const [show, setShow] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate()
   const isSearchPage = location.pathname === "/result-search";
 
   const { products } = location.state || { products: [] };
 
-  const [productToShow, setProductToShow] = useState(null);
-
-  const onShow = (p) => {
-    if (p) {
-      setProductToShow(p);
-      console.log(" setProductToShow", p);
+  const onShow = (product) => {
+    if (product && product._id) {
+      navigate(`/productdetail/${product._id}`, { state: { product: product } });
+    } else {
+        console.error("Product ID is missing, cannot navigate to detail page.");
     }
-    setShow(true);
-  };
-  const onBack = () => {
-    setShow(false);
   };
   const backToHome = () => {
     window.location.href = "/";
@@ -33,15 +26,12 @@ const ResultSearch = () => {
       {isSearchPage && (
         <button
           className="button-white absolute top-0 left-0 m-10 w-20"
-          onClick={() => (window.location.href = "/")}
+          onClick={() => (backToHome())}
         >
           ย้อนกลับ
         </button>
       )}
-      {!show && (
-        <ProductGrid products={products} onShow={onShow} onBack={onBack} />
-      )}
-      {show && <ProductDetailPage onBack={onBack} product={productToShow} />}
+      <ProductGrid products={products} onShow={onShow} />
     </div>
   );
 };
