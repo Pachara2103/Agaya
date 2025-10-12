@@ -22,7 +22,7 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
     <div className="mt-6 bg-white p-6 rounded-lg shadow">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">สินค้าของฉัน</h2>
-        <button className="p-5 flex flex-row items-center button-red ">
+        <button className="p-5 flex flex-row items-center button-red " onClick={() => setPageSelected("เพิ่มสินค้าใหม่")}>
           <svg
             className="w-5 h-5 mr-2"
             fill="none"
@@ -54,8 +54,8 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
         />
 
         <div class="flex-1 flex justify-end gap-10 items-center">
-          <button className="w-20 button-border-red ">ยืนยัน</button>
-          <button className="button-white w-20">รีเซ็ต</button>
+          <button className="w-20 button-border-red py-4 ">ยืนยัน</button>
+          <button className="button-white w-20 py-4">รีเซ็ต</button>
         </div>
       </div>
       <p className="text-gray-600 mb-4">
