@@ -31,7 +31,7 @@ exports.addAddTo = async (Data) => {
     return result;
 };
 exports.getAddToByCartId = async(cartId) => {
-    const result = await AddTo.find({cartId: cartId});
+    const result = await AddTo.find({cartId: cartId}).populate("productId", "productName productDescription price image");
     return result;
 };
 exports.updateAddTo = async (id, updatedData) => {
