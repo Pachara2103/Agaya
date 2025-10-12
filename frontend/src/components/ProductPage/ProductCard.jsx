@@ -23,7 +23,7 @@ const ProductCard = ({ product, onShow }) => {
       <div class="relative flex-shrink-0 aspect-square w-50 overflow-hidden rounded bg-gray-100 flex items-center justify-center">
         <img
           src={product.image}
-          alt={product.product_name}
+          alt={product.productName}
           class="h-[80%] w-[80%] object-contain object-center p-4 transition-transform duration-300 group-hover:scale-110 cursor-pointer"
         />
 
@@ -51,7 +51,7 @@ const ProductCard = ({ product, onShow }) => {
       </div>
 
       <div class="mt-4">
-        <h3 class="font-bold text-base text-[#000]">{product.product_name}</h3>
+        <h3 class="font-bold text-base text-[#000]">{product.productName}</h3>
         <PriceDisplay price={product.price} />
         <StarRating rating={product.rating}  />
         {product.colors && (

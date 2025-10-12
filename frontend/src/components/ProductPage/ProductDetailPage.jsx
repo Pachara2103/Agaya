@@ -67,7 +67,7 @@ const ProductDetail = ({ product, onBack }) => {
           <div className="flex-grow flex items-center">
             <img
               src={selectedImage}
-              alt={product.product_name}
+              alt={product.productName}
               className="w-full max-h-120 object-contain rounded-lg bg-gray-100"
             />
           </div>
@@ -104,7 +104,7 @@ const ProductDetail = ({ product, onBack }) => {
         {/* คอลัมน์ขวา */}
         <div className="flex flex-col">
           <h1 className="text-3xl font-bold text-gray-900">
-            {product.product_name}
+            {product.productName}
           </h1>
 
           <div className="flex items-center my-4">
@@ -113,10 +113,10 @@ const ProductDetail = ({ product, onBack }) => {
             <span className="mx-4 text-gray-300">|</span>
             <span
               className={`font-semibold ${
-                product.stock_quantity > 0 ? "text-green-600" : "text-red-600"
+                product.stockQuantity > 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              {product.stock_quantity > 0 ? "In Stock" : "Out of Stock"}
+              {product.stockQuantity > 0 ? "In Stock" : "Out of Stock"}
             </span>
           </div>
 
@@ -125,7 +125,7 @@ const ProductDetail = ({ product, onBack }) => {
           </p>
 
           <p className="text-gray-600 mt-4 leading-relaxed">
-            {product.product_description || "No description available."}
+            {product.productDescription || "No description available."}
           </p>
 
           <hr className="my-8" />
