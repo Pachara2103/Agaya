@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useCartData from "../../hooks/useCartData"
 import { CartItemRow } from "./CartItemRow";
 import { ConfirmationModal } from "./ConfirmationModal";
+import useCartDeleteModal from "../../hooks/useCartDeleteModal";
 
 // --- Main Cart Component ---
 const Cart = () => {
@@ -19,26 +20,13 @@ const Cart = () => {
   } = useCartData();
 
   const [couponCode, setCouponCode] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [itemToDeleteId, setItemToDeleteId] = useState(null);
 
-  //remove
-  const handleRemoveClick = (addtoId) => {
-    setItemToDeleteId(addtoId);
-    setIsModalOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (itemToDeleteId) {
-      await deleteItem(itemToDeleteId); 
-    }
-    setIsModalOpen(false);
-    setItemToDeleteId(null);
-  };
-  const handleCancelDelete = () => {
-    setIsModalOpen(false);
-    setItemToDeleteId(null);
-  };
+  const { 
+    isModalOpen, 
+    handleRemoveClick, 
+    handleConfirmDelete, 
+    handleCancelDelete 
+  } = useCartDeleteModal(deleteItem);
 
   const navigate = useNavigate();
   const goToHome = () => {
