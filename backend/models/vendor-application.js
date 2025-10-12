@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const vendorApplicationSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user', //ส่วนนี้ไม่เป็น vendor หรอ
+    ref: 'User', //ส่วนนี้ไม่เป็น vendor หรอ *** เพราะว่า ตอนคนสมัครยังไม่มี vid น่ะ
     required: true,
     unique: true 
   },

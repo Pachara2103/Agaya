@@ -4,7 +4,7 @@ const createError = require('http-errors');
 
 exports.getPendingApplications = async () => {
   const applications = await VendorApplication.find({ status: 'pending' })
-    .populate('user', 'username email');
+    .populate('userId', "username email");
   return applications;
 };
 
