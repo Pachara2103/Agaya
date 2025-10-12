@@ -3,9 +3,19 @@
   border: solid 1px gray;
   width: 50%;
   color: gray;
+  padding: 16px 0;
 }
 .button:hover {
   background-color: #f8f2f2;
+}
+
+.button-green {
+  background-color: #48b3af;
+  color: white;
+  font-size: 14px;
+  padding: 16px 0;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
 .button-red {
@@ -34,6 +44,8 @@
   width: 10px;
   height: 10px;
   padding: 12px;
+  color: white;
+  cursor: pointer;
 }
 
 /* ////////////////////////////////// */
@@ -43,6 +55,7 @@
   border: solid 1px black;
   color: black;
   cursor: pointer;
+  padding: 16px 0;
 }
 .button-white:hover {
   background-color: #e6e6e6;
@@ -53,16 +66,18 @@
   border: solid 1px #b71f3b;
   color: #b71f3b;
   cursor: pointer;
+  padding: 16px 0;
 }
 .button-border-red:hover {
   background-color: #ffdde3;
 }
 
 .button-border-green {
-  background-color: #A9FCA9;
-  border: solid 1px #314E31;
-  color: #314E31;
+  background-color: #a9fca9;
+  border: solid 1px #314e31;
+  color: #314e31;
   cursor: pointer;
+  padding: 16px 0;
 }
 .button-border-green:hover {
   background-color: #8fd58fd3;

@@ -102,7 +102,7 @@ const OtpInput = ({ account, onNext, onBack }) => {
       </div>
 
       <button
-        className={disableOTP ? "opacity-70 mx-5" : "mx-5"}
+        className={disableOTP ? "opacity-70 mx-5 button1" : "mx-5 button1"}
         disabled={disableOTP}
         onClick={beforeNext}
       >

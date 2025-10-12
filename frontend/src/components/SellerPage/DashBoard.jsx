@@ -1,12 +1,13 @@
 const DashBoard = () => {
   return (
-    <div className="max-w-[1100px] justify-center mx-auto p-6 space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow h-[450px]">
-          <div className="bg-[#e9acb7] text-black text-xl font-bold p-5 rounded-t-lg -m-6 mb-6">
+    <div className="max-w-[1100px] justify-center mx-auto space-y-6 ">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
+        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow ">
+          <div className="bg-[#e9acb7] text-black text-xl font-bold p-5 rounded-t-lg -m-6 mb-0.5 ">
             ที่ต้องทำ
           </div>
-          <div className="grid grid-cols-2 gap-6 text-center h-full">
+          
+          <div className="grid grid-cols-2 gap-6 text-center h-full ">
             <div className="flex flex-col justify-center">
               <p className="text-5xl font-bold text-[#B71F3B]">0</p>
               <p className="text-xl text-black mt-2">ที่ต้องจัดส่ง</p>
