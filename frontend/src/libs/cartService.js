@@ -61,3 +61,25 @@ export const addProductToCart = async (productId, cartId, quantity) => {
     throw new Error("Can not add product to cart: " + e.message);
   }
 };
+
+export const getCartItems = async (cartId) => {
+  try {
+    const headers = getAuthHeaders();
+    // GET /addto/:cartId
+    const res = await fetch(`${API_URL}/addto/${cartId}`, {
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Failed to fetch cart items");
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.error("Fetch cart items error:", e);
+    throw new Error("Can not get cart items: " + e.message);
+  }
+};
