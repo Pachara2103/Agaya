@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { addProductToCart, getOrCreateCartByUserId } from "../../libs/cartService";
-import { getMe } from "../../libs/userService"
+import { getMe } from "../../libs/authService"
 import Cookies from "js-cookie";
 
 import {
@@ -97,6 +97,9 @@ const ProductDetailPage = () => {
     try {
       const meResponse = await getMe();
       const currentUserId = meResponse.data?._id;
+      // console.log(currentUserId)
+
+      // console.log(meResponse)
 
       if (!currentUserId) {
         throw new Error("User authentication failed (No ID found)");

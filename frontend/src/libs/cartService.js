@@ -15,16 +15,17 @@ const getAuthHeaders = () => {
 export const getOrCreateCartByUserId = async (userId) => {
   try {
     const headers = getAuthHeaders();
-    const res = await fetch(`${API_URL}/api/v1/Agaya/cart/${userId}`, {
+    const res = await fetch(`${API_URL}/cart/${userId}`, {
       method: "GET",
       headers: headers, 
     });
-
+    // console.log(`user: ${userId}`)
+    // console.log("imhere1")
     if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || "Failed to fetch or create cart");
     }
-    
+    // console.log("imhere2")
     const data = await res.json();
     return Array.isArray(data) ? data[0] : data; 
 
@@ -38,7 +39,7 @@ export const addProductToCart = async (productId, cartId, quantity) => {
   try {
     const headers = getAuthHeaders();
     
-    const res = await fetch(`${API_URL}/api/v1/Agaya/addto`, {
+    const res = await fetch(`${API_URL}/addto`, {
       method: "POST",
       headers: headers, 
       body: JSON.stringify({
