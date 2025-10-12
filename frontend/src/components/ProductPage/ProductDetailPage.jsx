@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { addProductToCart, getOrCreateCartByUserId } from "../../libs/cartService";
-import { getMe } from "../../libs/userServiceService"
+import { getMe } from "../../libs/userService"
 import Cookies from "js-cookie";
 
 import {
