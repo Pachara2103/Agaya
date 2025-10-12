@@ -51,46 +51,10 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   }, [name]);
   //callback
   const handleFileSelect = (file) => {
-    console.log('file = ', file)
+    console.log("file = ", file);
     setSelectedFile(file);
   };
 
-  // const submit = async () => {
-  //   const quantity = parseInt(stock, 10) || 0;
-  //   const productData = {
-  //     product_name: name,
-  //     type: category,
-  //     product_description: description,
-  //     price: parseFloat(price) || 0, // แปลงเป็นตัวเลข
-  //     stock_quantity: quantity, // แปลงเป็นเลขจำนวนเต็ม
-  //   };
-
-  //   if (!name || !category || !description || !price || !stock) {
-  //     alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-  //     return;
-  //   }
-  //   try {
-  //     if (!isEdit) {
-  //       const res = await createProduct(productData);
-  //       if (res.success) {
-  //         alert("เพิ่มสินค้าสำเร็จ");
-  //         setPageSelected("สินค้าของฉัน");
-  //         return;
-  //       }
-  //       alert("เพิ่มสินค้าไม่สำเร็จ กรุณาลองใหม่");
-  //     } else {
-  //       const res = await updateProduct(product._id, productData);
-  //       if (res.success) {
-  //         alert("อัพเดตสินค้าสำเร็จ");
-  //         setPageSelected("สินค้าของฉัน");
-  //         return;
-  //       }
-  //       alert("อัพเดตสินค้าไม่สำเร็จ กรุณาลองใหม่");
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
   const submit = async () => {
     if (!name || !category || !description || !price || !stock) {
       alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
@@ -98,8 +62,8 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
     }
 
     if (!isEdit && !selectedFile) {
-        alert("กรุณาเพิ่มรูปภาพสินค้า");
-        return;
+      alert("กรุณาเพิ่มรูปภาพสินค้า");
+      return;
     }
 
     try {
@@ -107,11 +71,11 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
 
       if (selectedFile) {
         const formData = new FormData();
-        formData.append("image", selectedFile); 
-        console.log('select file = ', selectedFile)
-        
+        formData.append("image", selectedFile);
+        console.log("select file = ", selectedFile);
+
         const uploadRes = await uploadProductImage(formData);
-        
+
         if (uploadRes.success) {
           imageUrl = uploadRes.imageUrl; // ได้ URL จาก Cloudinary แล้ว
         } else {
@@ -139,9 +103,8 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
         alert(isEdit ? "อัพเดตสินค้าสำเร็จ" : "เพิ่มสินค้าสำเร็จ");
         setPageSelected("สินค้าของฉัน");
       } else {
-         alert(res.message || "เกิดข้อผิดพลาด กรุณาลองใหม่");
+        alert(res.message || "เกิดข้อผิดพลาด กรุณาลองใหม่");
       }
-
     } catch (e) {
       console.error(e);
       alert("เกิดข้อผิดพลาด: " + e.message);
@@ -150,7 +113,14 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   return (
     <div className="bg-gray-100 min-h-screen ">
       <div className="flex space-x-8">
-        <AddProductSidebar />
+        <AddProductSidebar
+          name={name}
+          img={selectedFile}
+          category={category}
+          description={description}
+          price={price}
+          stock={stock}
+        />
 
         <div className="w-3/4">
           <div className="bg-white p-6 rounded-lg shadow mb-8 px-15">
@@ -169,10 +139,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                 )}
 
                 {confirmdelete && (
-                  <div
-                    // Style สำหรับจัดตำแหน่งและหน้าตาของกล่อง
-                    className="absolute top-full right-0 mt-2 w-64 rounded-lg bg-white p-4 shadow-lg border z-10"
-                  >
+                  <div className="absolute top-full right-0 mt-2 w-64 rounded-lg bg-white p-4 shadow-lg border z-10">
                     <p className="text-sm text-gray-700 mb-4">
                       คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?
                     </p>
@@ -198,9 +165,13 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                 <label className="text-sm text-gray-600 mb-2">ภาพสินค้า</label>
 
                 <div className="w-32 h-32 border-2 border-dashed rounded-md flex flex-col items-center justify-center text-red-500 cursor-pointer hover:bg-red-50">
-                  <ImageUploader 
-                    onFileSelect={handleFileSelect} 
-                    initialImage={isEdit && product && product.image ? product.image[0] : null}
+                  <ImageUploader
+                    onFileSelect={handleFileSelect}
+                    initialImage={
+                      isEdit && product && product.image
+                        ? product.image[0]
+                        : null
+                    }
                   />
                 </div>
               </div>

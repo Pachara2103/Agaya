@@ -83,7 +83,7 @@ function Signup() {
               ></div>
 
               {/* register form */}
-              <div className="flex flex-col justify-center w-[20vw] relative">
+              <div className="flex flex-col justify-center w-[20vw] gap-2">
                 <h1 className="text-[35px] font-bold text-black mb-4">
                   สมัครใหม่
                 </h1>
@@ -107,7 +107,8 @@ function Signup() {
                   </p>
                 )}
 
-                <button className="mb-2.5" onClick={changState}>สร้างบัญชีผู้ใช้</button>
+                <button className="mb-0.5 button1" onClick={changState}>สร้างบัญชีผู้ใช้</button>
+               
 
                 <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                   <FcGoogle size={30} />

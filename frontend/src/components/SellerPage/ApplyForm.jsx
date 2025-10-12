@@ -92,7 +92,7 @@ const Form = ({
       </div>
 
       <div className="text-center mt-10" onClick={() => onSubmit()}>
-        <button className="w-[20%]">ยืนยัน</button>
+        <button className="w-[20%] button-green">ยืนยัน</button>
       </div>
     </div>
   );

@@ -148,7 +148,7 @@ const PasswordInput = ({ onNext, onBack, type, account, details }) => {
 
         <button
           onClick={() => submitPassword()}
-          className={disable ? "button-disable mt-5" : "mt-5"}
+          className={disable ? "button-disable mt-5 button1" : "mt-5 button1"}
           disabled={disable}
         >
           สมัครใหม่
