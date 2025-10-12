@@ -1,10 +1,11 @@
 const User = require('../models/user');
 const VendorApplication = require('../models/vendor-application');
 const createError = require('http-errors');
+const Vendor = require('../models/vendor')
 
 exports.getPendingApplications = async () => {
   const applications = await VendorApplication.find({ status: 'pending' })
-    .populate('user', 'username email');
+    .populate('userId', "username email");
   return applications;
 };
 
@@ -27,9 +28,15 @@ exports.processApplication = async (applicationId, newStatus, reason = null) => 
   await application.save();
 
   if (newStatus === 'approved') {
-    await User.findByIdAndUpdate(application.user, {
+    await User.findByIdAndUpdate(application.userId, {
       $addToSet: { userType: 'vendor' }
     });
+    const user = await User.findById(application.userId)
+    if (user) {
+      await Vendor.create({
+        userId: user._id
+      })
+    }
   }
 
   return application;

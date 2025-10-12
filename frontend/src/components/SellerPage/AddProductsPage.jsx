@@ -37,9 +37,9 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
     if (product) {
       console.log(" AddProductsPage p = ", product);
       let price = product.price.toString();
-      let q = product.stock_quantity.toString();
-      setName(product.product_name);
-      setDescription(product.product_description);
+      let q = product.stockQuantity.toString();
+      setName(product.productName);
+      setDescription(product.productDescription);
       setCategory(product.type);
       setPrice(price);
       setStock(q);
@@ -84,12 +84,12 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       }
 
       const productData = {
-        product_name: name,
+        productName: name,
         type: category,
-        product_description: description,
+        productDescription: description,
         price: parseFloat(price) || 0,
-        stock_quantity: parseInt(stock, 10) || 0,
-        image: imageUrl ? [imageUrl] : [],
+        stockQuantity: parseInt(stock, 10) || 0,
+        image: imageUrl ? [imageUrl] : [], 
       };
 
       let res;

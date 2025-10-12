@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     unique: true,
+    sparse: true,
     match: /^[0-9]{10}$/ // ตรวจสอบว่าเป็นเลข 10 หลัก
   },
   email: {
