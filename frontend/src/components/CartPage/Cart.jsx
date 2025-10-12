@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getOrCreateCartByUserId,
-  getCartItems,
-  updateCartItemQuantity,
-  deleteCartItem,
-} from "../../libs/cartService";
-import { getMe } from "../../libs/authService";
-import { CartItemRow } from "./CartItemRow"
+import useCartData from "../../hooks/useCartData"
+import { CartItemRow } from "./CartItemRow";
 
 const ConfirmationModal = ({ onConfirm, onCancel }) => {
   return (
@@ -42,125 +36,51 @@ const ConfirmationModal = ({ onConfirm, onCancel }) => {
 
 // --- Main Cart Component ---
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [cartId, setCartId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    cartItems,
+    isLoading,
+    error,
+    subtotal,
+    shipping,
+    total,
+    fetchCartData,
+    handleQuantityChange,
+    deleteItem,
+  } = useCartData();
 
   const [couponCode, setCouponCode] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [itemToDeleteId, setItemToDeleteId] = useState(null); 
-
-  const fetchCartData = async () => {
-    setIsLoading(true);
-    setError(null);
-    let currentUserId = null;
-
-    try {
-      const meResponse = await getMe();
-      currentUserId = meResponse.data?._id;
-
-      if (!currentUserId) {
-        // Handle case where user is not logged in
-        throw new Error("User not authenticated.");
-      }
-
-      const userCart = await getOrCreateCartByUserId(currentUserId);
-      const fetchedCartId = userCart._id;
-      setCartId(fetchedCartId);
-
-      const fetchedItems = await getCartItems(fetchedCartId);
-
-      setCartItems(
-        fetchedItems.map((item) => ({
-          _id: item._id,
-          productId: item.productId,
-          quantity: item.quantity,
-          productName: item.productId.productName || "Product",
-          price: item.productId.price,
-          image: item.productId.image,
-        }))
-      );
-    } catch (error) {
-      console.error("Cart fetch error:", error);
-      setError(error.message || "Failed to load cart.");
-      setCartItems([]);
-    } finally {
-      setIsLoading(false)
-    }
-  };
-
-  useEffect(() => {
-    fetchCartData();
-  }, []);
-
-  const handleQuantityChange = async (addtoId, newQuantity) => {
-    const quantity = Math.max(1, newQuantity);
-    setCartItems(
-      cartItems.map((item) =>
-        item._id === addtoId ? { ...item, quantity } : item
-      )
-    );
-
-    const itemToUpdate = cartItems.find((item) => item._id === addtoId);
-
-    if (itemToUpdate) {
-      try {
-        await updateCartItemQuantity(addtoId, {
-          productId: itemToUpdate.productId._id,
-          cartId: cartId,
-          quantity: quantity,
-        });
-      } catch (e) {
-        console.error("Failed to update quantity on backend:", e);
-        fetchCartData();
-      }
-    }
-  };
+  const [itemToDeleteId, setItemToDeleteId] = useState(null);
 
   //remove
   const handleRemoveClick = (addtoId) => {
     setItemToDeleteId(addtoId);
     setIsModalOpen(true);
   };
+
   const handleConfirmDelete = async () => {
     if (itemToDeleteId) {
-      try {
-        await deleteCartItem(itemToDeleteId);
-
-        setCartItems(cartItems.filter((item) => item._id !== itemToDeleteId));
-      } catch (e) {
-        console.error("Failed to delete item from cart:", e);
-      }
+      await deleteItem(itemToDeleteId); 
     }
     setIsModalOpen(false);
     setItemToDeleteId(null);
   };
   const handleCancelDelete = () => {
     setIsModalOpen(false);
-    setItemToDeleteId(null); 
+    setItemToDeleteId(null);
   };
-
-  //all price
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-  const shipping = 0;
-  const total = subtotal + shipping;
 
   const navigate = useNavigate();
   const goToHome = () => {
     navigate("/");
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="text-center p-20 text-lg">
-  //       <p>Loading Cart Data...</p>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+     return <div className="text-center p-20 text-lg"><p>Loading Cart Data...</p></div>;
+  }
+  if (error) {
+     return <div className="text-center p-20 text-lg text-red-600"><p>Error: {error}</p></div>;
+  }
 
   return (
     <div className="bg-white text-gray-800 p-4 sm:p-8 md:p-16">
@@ -191,8 +111,8 @@ const Cart = () => {
 
           {cartItems.map((item) => (
             <CartItemRow
-              key = {item._id}
-              item = {item}
+              key={item._id}
+              item={item}
               handleQuantityChange={handleQuantityChange}
               handleRemoveClick={handleRemoveClick}
             />
@@ -201,14 +121,16 @@ const Cart = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <button 
-          onClick={goToHome}
-          className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
+          <button
+            onClick={goToHome}
+            className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+          >
             Return to shop
           </button>
-          <button 
-          onClick={fetchCartData} 
-          className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
+          <button
+            onClick={fetchCartData}
+            className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+          >
             Update cart
           </button>
         </div>
