@@ -1,5 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  getOrCreateCartByUserId,
+  getCartItems,
+  updateCartItemQuantity,
+  deleteCartItem,
+} from "../../libs/cartService";
+import { getMe } from "../../libs/authService";
 
 const ChevronUpIcon = () => (
   <svg
@@ -37,126 +44,6 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-const initialCartItems = [
-  {
-    _id: "generated-id-1",
-    product_name: "HAVIT HV-G92 Gamepad",
-    stock_quantity: 88,
-    price: 120,
-    rating: 4,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description:
-      "This is a sample description for HAVIT HV-G92 Gamepad.",
-    image: ["https://i.postimg.cc/MGvFk4TQ/g92-2-500x500-1.png"],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-  {
-    _id: "generated-id-2",
-    product_name: "AK-900 Wired Keyboard",
-    stock_quantity: 75,
-    price: 960,
-    rating: 5,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description:
-      "This is a sample description for AK-900 Wired Keyboard.",
-    image: ["https://i.postimg.cc/dQRgy7cp/ak-900-01-500x500-1.png"],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-  {
-    _id: "generated-id-3",
-    product_name: "IPS LCD Gaming Monitor",
-    stock_quantity: 99,
-    price: 370,
-    rating: 5,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description:
-      "This is a sample description for IPS LCD Gaming Monitor.",
-    image: ["https://i.postimg.cc/NfpVdWMx/Frame-613.png"],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-  {
-    _id: "generated-id-4",
-    product_name: "S-Series Comfort Chair",
-    stock_quantity: 99,
-    price: 375,
-    rating: 4,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description:
-      "This is a sample description for S-Series Comfort Chair.",
-    image: [
-      "https://i.postimg.cc/VkvhpD0P/sam-moghadam-khamseh-kvmds-Tr-GOBM-unsplash-1.png",
-    ],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-  {
-    _id: "generated-id-5",
-    product_name: "Another S-Series Chair",
-    stock_quantity: 102,
-    price: 275,
-    rating: 5,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description:
-      "This is a sample description for Another S-Series Chair.",
-    image: [
-      "https://i.postimg.cc/VkvhpD0P/sam-moghadam-khamseh-kvmds-Tr-GOBM-unsplash-1.png",
-    ],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-  {
-    _id: "generated-id-6",
-    product_name: "The north coat",
-    stock_quantity: 65,
-    price: 260,
-    rating: 5,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description: "This is a sample description for The north coat.",
-    image: [
-      "https://i.postimg.cc/BbZpDnxf/672462-ZAH9-D-5626-002-100-0000-Light-The-North-Face-x-Gucci-coat-1.png",
-    ],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-  {
-    _id: "generated-id-7",
-    product_name: "CANON EOS DSLR Camera",
-    stock_quantity: 95,
-    price: 260,
-    rating: 5,
-    vid: "68c6f7146b57f29988882766",
-    type: null,
-    product_description:
-      "This is a sample description for CANON EOS DSLR Camera.",
-    image: ["https://i.postimg.cc/GpqHt3hy/eos-250d-03-500x500-1.png"],
-    promotion: { active: false },
-    createdAt: "2025-09-15T14:37:37.994Z",
-    updatedAt: "2025-09-15T14:37:37.994Z",
-    __v: 0,
-  },
-];
-
 const ConfirmationModal = ({ onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 transition-opacity">
@@ -190,34 +77,103 @@ const ConfirmationModal = ({ onConfirm, onCancel }) => {
 
 // --- Main Cart Component ---
 const Cart = () => {
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const [cartItems, setCartItems] = useState([]);
+  const [cartId, setCartId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [couponCode, setCouponCode] = useState("");
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemToDeleteId, setItemToDeleteId] = useState(null); 
 
-  const handleQuantityChange = (id, newQuantity) => {
+  const fetchCartData = async () => {
+    setIsLoading(true);
+    setError(null);
+    let currentUserId = null;
+
+    try {
+      const meResponse = await getMe();
+      currentUserId = meResponse.data?._id;
+
+      if (!currentUserId) {
+        // Handle case where user is not logged in
+        throw new Error("User not authenticated.");
+      }
+
+      const userCart = await getOrCreateCartByUserId(currentUserId);
+      const fetchedCartId = userCart._id;
+      setCartId(fetchedCartId);
+
+      const fetchedItems = await getCartItems(fetchedCartId);
+
+      setCartItems(
+        fetchedItems.map((item) => ({
+          _id: item._id,
+          productId: item.productId,
+          quantity: item.quantity,
+          productName: item.productId.productName || "Product",
+          price: item.productId.price,
+          image: item.productId.image,
+        }))
+      );
+    } catch (error) {
+      console.error("Cart fetch error:", error);
+      setError(error.message || "Failed to load cart.");
+      setCartItems([]);
+    } finally {
+      setIsLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    fetchCartData();
+  }, []);
+
+  const handleQuantityChange = async (addtoId, newQuantity) => {
     const quantity = Math.max(1, newQuantity);
     setCartItems(
-      cartItems.map((item) => (item._id === id ? { ...item, quantity } : item))
+      cartItems.map((item) =>
+        item._id === addtoId ? { ...item, quantity } : item
+      )
     );
+
+    const itemToUpdate = cartItems.find((item) => item._id === addtoId);
+
+    if (itemToUpdate) {
+      try {
+        await updateCartItemQuantity(addtoId, {
+          productId: itemToUpdate.productId._id,
+          cartId: cartId,
+          quantity: quantity,
+        });
+      } catch (e) {
+        console.error("Failed to update quantity on backend:", e);
+        fetchCartData();
+      }
+    }
   };
 
   //remove
-  const handleRemoveClick = (id) => {
-    setItemToDelete(id);
+  const handleRemoveClick = (addtoId) => {
+    setItemToDeleteId(addtoId);
     setIsModalOpen(true);
   };
-  const handleConfirmDelete = () => {
-    if (itemToDelete) {
-      setCartItems(cartItems.filter((item) => item._id !== itemToDelete));
+  const handleConfirmDelete = async () => {
+    if (itemToDeleteId) {
+      try {
+        await deleteCartItem(itemToDeleteId);
+
+        setCartItems(cartItems.filter((item) => item._id !== itemToDeleteId));
+      } catch (e) {
+        console.error("Failed to delete item from cart:", e);
+      }
     }
     setIsModalOpen(false);
-    setItemToDelete(null);
+    setItemToDeleteId(null);
   };
   const handleCancelDelete = () => {
     setIsModalOpen(false);
-    setItemToDelete(null);
+    setItemToDeleteId(null); 
   };
 
   //all price
@@ -232,6 +188,14 @@ const Cart = () => {
   const goToHome = () => {
     navigate("/");
   };
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="text-center p-20 text-lg">
+  //       <p>Loading Cart Data...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="bg-white text-gray-800 p-4 sm:p-8 md:p-16">
@@ -268,11 +232,11 @@ const Cart = () => {
               {/* Product */}
               <div className="col-span-1 md:col-span-4 flex items-center gap-4 text-left">
                 <img
-                  src={item.image[0]}
-                  alt={item.product_name}
+                  src={item.image?.[0] || 'placeholder.jpg'}
+                  alt={item.productName}
                   className="w-16 h-12 object-contain"
                 />
-                <span>{item.product_name}</span>
+                <span>{item.productName}</span>
               </div>
 
               {/* Price */}
@@ -305,6 +269,7 @@ const Cart = () => {
                       onClick={() =>
                         handleQuantityChange(item._id, item.quantity - 1)
                       }
+                      disabled={item.quantity <= 1}
                       className="hover:bg-gray-200 p-1 rounded-full cursor-pointer"
                     >
                       <ChevronDownIcon />
@@ -334,10 +299,14 @@ const Cart = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <button className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
+          <button 
+          onClick={goToHome}
+          className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
             Return to shop
           </button>
-          <button className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
+          <button 
+          onClick={fetchCartData} 
+          className="w-full sm:w-auto border border-gray-400 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
             Update cart
           </button>
         </div>
