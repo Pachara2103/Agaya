@@ -1,6 +1,8 @@
 const {checkoutOrder, updateOrderStatus, getOrdersByCustomer, getOrdersByVendor} = require("../services/order-service");
 
-//POST /api/v1/agaya/orders/checkout
+// @desc    Checkout order
+// @route   POST /api/v1/agaya/orders/checkout
+// @access  Private
 exports.checkoutOrder = async (req, res, next) => {
   try{
     const createdOrders = await checkoutOrder(req.body, req.user);
@@ -10,8 +12,10 @@ exports.checkoutOrder = async (req, res, next) => {
   }
 };
 
-//PATCH /api/v1/agaya/orders/:orderId/status
 //req.body = { "status" : "PAID"}
+// @desc    Update status
+// @route   PATCH /api/v1/agaya/orders/:orderId
+// @access  Private
 exports.updateOrderStatus = async (req, res, next) => {
   try {
     const {order} = await updateOrderStatus(req.params.orderId, req.body.status, req.user);

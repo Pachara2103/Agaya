@@ -5,7 +5,7 @@ const {protect, authorize} = require('../middleware/auth');
 
 router.post('/checkout', protect, authorize("customer") , checkoutOrder);
 
-router.patch('/:orderId/status', protect, updateOrderStatus);
+router.patch('/:orderId', protect, updateOrderStatus);
 
 router.get('/customer/:cid',protect, authorize("customer", "admin"), getOrdersByCustomer);
 
