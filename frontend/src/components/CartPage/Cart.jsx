@@ -45,7 +45,7 @@ const Cart = () => {
       )}
       <div className="max-w-6xl mx-auto">
         <div className="text-sm text-gray-500 mb-8">
-          <span onClick={goToHome} className="cursor-pointer"> Home </span>
+          <span onClick={goToHome} className="cursor-pointer hover:text-red-600"> Home </span>
           <span className="text-gray-800"> / Cart</span>
         </div>
 

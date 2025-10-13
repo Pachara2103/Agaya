@@ -32,4 +32,4 @@ const RowProductAndTitle = ({ title, products, details }) => {
   );
 };
 
-export default  RowProductAndTitle;
+export default RowProductAndTitle;

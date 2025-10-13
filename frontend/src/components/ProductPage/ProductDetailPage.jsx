@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { addProductToCart, getOrCreateCartByUserId } from "../../libs/cartService";
-import { getMe } from "../../libs/authService"
+import {
+  addProductToCart,
+  getOrCreateCartByUserId,
+} from "../../libs/cartService";
+import { getMe } from "../../libs/authService";
 import Cookies from "js-cookie";
 
 import {
@@ -78,16 +81,15 @@ const ProductDetailPage = () => {
   const decreaseQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  // const onBack = () => navigate(-1);
   const handleAddToCart = async () => {
     console.log(`Added ${quantity} of ${product.productName} to cart!`);
-    const token = Cookies.get('token')
+    const token = Cookies.get("token");
     if (!token) {
       alert("กรุณาเข้าสู่ระบบก่อนทำการเพิ่มสินค้าลงในตะกร้า");
       // ในอนาคต เราอาจจะใช้เป็นเพิ่ม cart ได้ทั้งๆที่ไม่ login
       // น่าจะมีวิธีอยู่แต่เดี๋ยวค่อยทำ
-      navigate('/signin')
-      return
+      navigate("/signin");
+      return;
     }
     if (!product) {
       console.error("Product data is missing.");
@@ -97,9 +99,6 @@ const ProductDetailPage = () => {
     try {
       const meResponse = await getMe();
       const currentUserId = meResponse.data?._id;
-      // console.log(currentUserId)
-
-      // console.log(meResponse)
 
       if (!currentUserId) {
         throw new Error("User authentication failed (No ID found)");
@@ -115,9 +114,8 @@ const ProductDetailPage = () => {
       alert(`${quantity} of ${product.productName} added to cart!`);
     } catch (error) {
       console.error("Error adding to cart:", error.message);
-      alert(`Failed to add to cart: ${error.message}. Please log in again.`)
+      alert(`Failed to add to cart: ${error.message}. Please log in again.`);
     }
-
   };
 
   const handleBuyNow = () => {
@@ -163,15 +161,13 @@ const ProductDetailPage = () => {
             Home
           </span>
 
-          <span className="text-gray-400">/</span>
+          <span className="text-black">/</span>
           <span
-            onClick={() => navigate(-1)}
-            className="cursor-pointer hover:text-red-600 transition"
+            className="text-black transition"
           >
             {prevPageName}
           </span>
 
-          <span className="text-gray-400">/</span>
           <span className="text-gray-900 font-medium truncate max-w-[200px] md:max-w-none">
             {product.productName}
           </span>

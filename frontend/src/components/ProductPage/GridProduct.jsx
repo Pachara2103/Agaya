@@ -19,7 +19,7 @@ const GridProductAndTitle = ({ title, products, details }) => {
   );
 };
 
-export const ProductGrid = ({ products, onShow, onBack }) => {
+export const ProductGrid = ({ products}) => {
   return (
     <div class="flex items-center justify-center w-screen">
       <div class="p-10">
@@ -28,8 +28,6 @@ export const ProductGrid = ({ products, onShow, onBack }) => {
             <ProductCard
               key={product.id}
               product={product}
-              onShow={onShow}
-              onBack={onBack}
             />
           ))}
         </div>

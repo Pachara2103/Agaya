@@ -1,3 +1,5 @@
+ import showProductDetail from '../../hooks/showProductDetail';
+
 const StarRating = ({ rating, reviewCount }) => (
   <div class="flex items-center **:text-sm">
     <span class="text-yellow-400">{'★'.repeat(Math.floor(rating))}</span>
@@ -15,7 +17,9 @@ const PriceDisplay = ({ price, originalPrice }) => (
   </div>
 );
 
-const ProductCard = ({ product, onShow }) => {
+const ProductCard = ({ product}) => {
+    const {onShow} = showProductDetail(); 
+
   return (
     // for use group-hover 
     <div class="group relative" onClick={()=>onShow(product)}>
