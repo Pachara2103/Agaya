@@ -22,18 +22,7 @@ const trackingEventSubschema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
-        default: function () {
-            const defaultDescriptions = {
-                ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
-                PICKED_UP: 'ผู้ส่งได้นำพัสดุมาส่งที่จุดรับแล้ว',
-                IN_TRANSIT: 'พัสดุอยู่ระหว่างขนส่ง',
-                FAILED_ATTEMPT: 'การจัดส่งพัสดุไม่สำเร็จ',
-                DELIVERED: 'จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว',
-                COMPLETED: 'ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์'
-            };
-            return defaultDescriptions[this.statusKey];
-        }
+        required: true
     },
     timestamp: {
         type: Date,
