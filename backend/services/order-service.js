@@ -5,7 +5,8 @@ const Product = require("../models/product");
 const Transaction = require("../models/transaction");
 const Cart = require("../models/cart");
 const mongoose = require("mongoose");
-const createError = require('http-errors'); 
+const createError = require('http-errors');
+const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js")
 
 const hasRole = (user, roles) =>
     user.userType.some((role) => roles.includes(role));
@@ -175,61 +176,20 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
     }
 
     // Pagination
-    let page = parseInt(queryParams.page) > 0 ? parseInt(queryParams.page) : 1;
-    const limit = parseInt(queryParams.limit) > 0 ? parseInt(queryParams.limit) : 10;
+    const matchStage = { [field]: filterId };
+    const totalOrders = await Order.countDocuments(matchStage);
+    const { page, limit, totalPages, skip } = calculatePagination(totalOrders, queryParams);
 
-    const totalOrders = await Order.countDocuments({ [field]: filterId });
-    const totalPages = Math.ceil(totalOrders / limit) || 1;
-    if (page > totalPages) page = totalPages;
 
-    const skip = (page - 1) * limit;
-
-    // Aggregation pipeline
-    const orders = await Order.aggregate([
-      { $match: { [field]: filterId } },
-      {
-        $lookup: {
-          from: "contains",
-          localField: "_id",
-          foreignField: "oid",
-          as: "contains",
-        },
-      },
-      { $unwind: "$contains" },
-      {
-        $lookup: {
-          from: "products",
-          localField: "contains.pid",
-          foreignField: "_id",
-          as: "product",
-        },
-      },
-      { $unwind: "$product" },
-      {
-        $group: {
-          _id: "$_id",
-          orderStatus: { $first: "$orderStatus" },
-          orderDate: { $first: "$orderDate" },
-          customer_id: { $first: "$customerId" },
-          vendor_id: { $first: "$vendorId" },
-          contains: {
-            $push: {
-              product_id: "$product._id",
-              name: "$product.product_name",
-              price: "$product.price",
-              quantity: "$contains.quantity",
-              total_price: { $multiply: ["$product.price", "$contains.quantity"] },
-            },
-          },
-        },
-      },
-      {
-        $addFields: { order_total: { $sum: "$contains.total_price" } },
-      },
-      { $sort: { orderDate: -1 } },
+    // Build pipeline instead
+    const pipeline = [
+      { $match: matchStage }, 
+      ...getOrderDetailsPipeline(), 
       { $skip: skip },
       { $limit: limit },
-    ]);
+    ];
+    
+    const orders = await Order.aggregate(pipeline);
 
     return {
       orders,
