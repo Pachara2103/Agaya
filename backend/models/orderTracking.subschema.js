@@ -11,7 +11,10 @@ const trackingEventSubschema = new mongoose.Schema({
             // 'ARRIVED_LOCAL',
             // 'OUT_FOR_DELIVERY',
             'DELIVERED',
-            'FAILED_ATTEMPT'
+            'FAILED_ATTEMPT',
+            'COMPLETED'
+            // when customer click receive button on order history
+            // else after 7 days make it complete
         ]
         // maybe if not communicate 
         // picked_up -> in_transit -> delivered 

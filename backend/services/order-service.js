@@ -56,7 +56,8 @@ exports.checkoutOrder = async (orderData, user) => {
     for(const [vendorId, vendorItem] of Object.entries(itemsByVendor)){
       let totalAmount = 0;
       const order = new Order({ 
-        orderStatus: "PAID", 
+        // orderStatus: "PAID", 
+        // have to do payment first 
         cartId, 
         customerId, 
         vendorId,
@@ -104,64 +105,6 @@ exports.checkoutOrder = async (orderData, user) => {
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
-    throw err;
-  }
-};
-
-exports.updateOrderStatus = async (orderId, status, user) => {
-  try {
-
-    const validStatuses = ["NOT_PAID", "PAID", "COMPLETED"];
-    if (!validStatuses.includes(status)) {
-      throw new createError(
-        400, `Invalid status. Valid values: ${validStatuses.join(", ")}`
-      );
-    }
-
-    //console.log("orderId:", orderId);
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      throw new createError(
-        404, "Order not found"
-      );
-    }
-
-    //console.log(user);
-
-    if (hasRole(user, ["admin"])) {
-    }
-    // Customer can change NOT_PAID -> PAID
-    else if (
-      hasRole(user, ["customer"]) &&
-      status === "PAID" &&
-      order.orderStatus === "NOT_PAID"
-    ) {
-      if (order.customerId.toString() !== user._id.toString()) {
-        throw new createError(
-          403, "Unauthorized to update this order"
-        );
-      }
-    }
-    //Vendor can change PAID -> COMPLETED
-    else if (
-      hasRole(user, ["vendor"]) &&
-      status === "COMPLETED" &&
-      order.orderStatus === "PAID"
-    ) {
-    } else {
-      throw new createError(
-          403, "Unauthorized action"
-      );
-    }
-
-    order.orderStatus = status;
-    await order.save();
-
-    return order;
-
-  } catch (err) {
     throw err;
   }
 };

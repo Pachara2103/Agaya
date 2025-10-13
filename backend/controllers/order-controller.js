@@ -12,19 +12,6 @@ exports.checkoutOrder = async (req, res, next) => {
   }
 };
 
-//req.body = { "status" : "PAID"}
-// @desc    Update status
-// @route   PATCH /api/v1/agaya/orders/:orderId
-// @access  Private
-exports.updateOrderStatus = async (req, res, next) => {
-  try {
-    const {order} = await updateOrderStatus(req.params.orderId, req.body.status, req.user);
-    res.status(200).json({ sucess: true, message: "Order status updated", data : order });
-  } catch (err) {
-    next(err);
-  }
-};
-
 exports.getOrdersByCustomer = async (req, res, next) => {
   try {
     const orderByCustomer = await getOrdersByCustomer(req.params.cid, req.user, req.query)
