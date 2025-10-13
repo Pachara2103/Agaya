@@ -17,7 +17,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, paymentMethod } = orderData;
+    const { cartId, customerId, paymentMethod, selectedItem} = orderData;
 
     const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
     if (!carts)
@@ -31,9 +31,15 @@ exports.checkoutOrder = async (orderData, user) => {
       );
     }
 
-    const cartItems = await Addto.find({ cartId }).session(session); // Find product
+    if(!selectedItem || !selectedItem.length) throw new createError(400, "No select item");
+    const cartItems = await Addto.find({_id: {$in: selectedItem}}).session(session); // Find product
     if (!cartItems.length) {
-      throw new createError(400, "Cart is empty");
+      throw new createError(404, "Select item not found");
+    }
+
+    const invalidItem = cartItems.filter(item => item.cartId.toString() !== cartId.toString());
+    if(invalidItem.length > 0){
+      throw new createError(404, `Item IDs: ${invalidItems.map(i => i._id).join(", ")} not belong to your cart`);
     }
     // console.log(cartItems)
 
@@ -95,7 +101,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
     }
 
-    await Addto.deleteMany({ cartId }).session(session);
+    await Addto.deleteMany({_id: {$in: selectedItem}}).session(session);
 
     await session.commitTransaction();
     session.endSession();
