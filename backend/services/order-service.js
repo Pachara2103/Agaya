@@ -54,7 +54,19 @@ exports.checkoutOrder = async (orderData, user) => {
     
     for(const [vendorId, vendorItem] of Object.entries(itemsByVendor)){
       let totalAmount = 0;
-      const order = new Order({ orderStatus: "NOT_PAID", cartId, customerId, vendorId });
+      const order = new Order({ 
+        orderStatus: "PAID", 
+        cartId, 
+        customerId, 
+        vendorId,
+        orderTracking: [
+          {
+            statusKey: 'ORDER_RECEIVED',
+            description: 'คำสั่งซื้อได้รับการยืนยันและรอเตรียมการจัดส่ง',
+            timestamp: new Date()
+          }
+        ] 
+      });
       await order.save({ session });
 
       for(const {item, product} of vendorItem) {
