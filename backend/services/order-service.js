@@ -9,7 +9,7 @@ const createError = require('http-errors');
 const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js")
 
 const hasRole = (user, roles) =>
-    user.userType.some((role) => roles.includes(role));
+  user.userType.some((role) => roles.includes(role));
 
 exports.checkoutOrder = async (orderData, user) => {
   const session = await Order.startSession();
@@ -17,7 +17,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, paymentMethod } = orderData;
+    const { cartId, customerId, paymentMethod, selectedItem } = orderData;
 
     const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
     if (!carts)
@@ -31,9 +31,15 @@ exports.checkoutOrder = async (orderData, user) => {
       );
     }
 
-    const cartItems = await Addto.find({ cartId }).session(session); // Find product
+    if (!selectedItem || !selectedItem.length) throw new createError(400, "No select item");
+    const cartItems = await Addto.find({ _id: { $in: selectedItem } }).session(session); // Find product
     if (!cartItems.length) {
-      throw new createError(400, "Cart is empty");
+      throw new createError(404, "Select item not found");
+    }
+
+    const invalidItem = cartItems.filter(item => item.cartId.toString() !== cartId.toString());
+    if (invalidItem.length > 0) {
+      throw new createError(404, `Item IDs: ${invalidItems.map(i => i._id).join(", ")} not belong to your cart`);
     }
     // console.log(cartItems)
 
@@ -41,25 +47,25 @@ exports.checkoutOrder = async (orderData, user) => {
     for (let item of cartItems) {
       console.log(item);
       const product = await Product.findOne({ _id: item.productId }).session(session);
-      if (!product) throw new createError(404, `Product ${item.pid} not found`);
+      if (!product) throw new createError(404, `Product ${item.productId} not found`);
       if (product.stockQuantity < item.quantity) {
         throw new createError(400, `Not enough stock for product ${item.productId}`);
       }
       // Saperate item by vendor  
-      const vendorId =  product.vendorId.toString();
-      if(!itemsByVendor[vendorId]) itemsByVendor[vendorId] = [];
-      itemsByVendor[vendorId].push({item, product});
+      const vendorId = product.vendorId.toString();
+      if (!itemsByVendor[vendorId]) itemsByVendor[vendorId] = [];
+      itemsByVendor[vendorId].push({ item, product });
     }
 
     const createdOrders = [];
-    
-    for(const [vendorId, vendorItem] of Object.entries(itemsByVendor)){
+
+    for (const [vendorId, vendorItem] of Object.entries(itemsByVendor)) {
       let totalAmount = 0;
-      const order = new Order({ 
+      const order = new Order({
         // orderStatus: "PAID", 
         // have to do payment first 
-        cartId, 
-        customerId, 
+        cartId,
+        customerId,
         vendorId,
         orderTracking: [
           {
@@ -67,22 +73,22 @@ exports.checkoutOrder = async (orderData, user) => {
             description: 'คำสั่งซื้อได้รับการยืนยันและรอเตรียมการจัดส่ง',
             timestamp: new Date()
           }
-        ] 
+        ]
       });
       await order.save({ session });
 
-      for(const {item, product} of vendorItem) {
+      for (const { item, product } of vendorItem) {
         totalAmount += item.quantity * product.price;
         product.stockQuantity -= item.quantity;
         await product.save({ session });
-        
+
         const contain = new Contain({
           productId: item.productId,
           orderId: order._id,
           quantity: item.quantity,
         });
         await contain.save({ session });
-      } 
+      }
 
       const transaction = new Transaction({
         orderId: order._id,
@@ -91,11 +97,11 @@ exports.checkoutOrder = async (orderData, user) => {
       });
 
       await transaction.save({ session });
-      createdOrders.push({order, transaction});
+      createdOrders.push({ order, transaction });
 
     }
 
-    await Addto.deleteMany({ cartId }).session(session);
+    await Addto.deleteMany({ _id: { $in: selectedItem } }).session(session);
 
     await session.commitTransaction();
     session.endSession();
@@ -108,6 +114,88 @@ exports.checkoutOrder = async (orderData, user) => {
     throw err;
   }
 };
+
+const statusFlow = {
+  ORDER_RECEIVED: { next: ["PICKED_UP"], roles: ["vendor", "admin"] },
+  PICKED_UP: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
+  IN_TRANSIT: { next: ["DELIVERED", "FAILED_ATTEMPT"], roles: ["vendor", "admin"] },
+  FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
+  DELIVERED: { next: ["COMPLETED"], roles: ["customer", "admin"] },
+  COMPLETED: { next: [], roles: [] }
+};
+const defaultDescriptions = {
+  ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
+  PICKED_UP: 'ผู้ส่งได้นำพัสดุมาส่งที่จุดรับแล้ว',
+  IN_TRANSIT: 'พัสดุอยู่ระหว่างขนส่ง',
+  FAILED_ATTEMPT: 'การจัดส่งพัสดุไม่สำเร็จ',
+  DELIVERED: 'จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว',
+  COMPLETED: 'ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์'
+};
+
+const checkAuth = (Status, user, order) => {
+  const allowRoles = statusFlow[Status].roles;
+
+  if (hasRole(user, allowRoles)) {
+    if (hasRole(user, ["admin"]) && allowRoles.includes("admin")) return true;
+    if (allowRoles.includes("customer")) {
+      if (user._id.toString() == order.customerId.toString()) return true
+    }
+    if (allowRoles.includes("vendor")) {
+      if (user._id.toString() == order.vendorId.toString()) return true
+    }
+  }
+  return false;
+
+}
+
+exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
+  try {
+    console.log(orderId);
+    const { newStatus, description } = trackingBody;
+
+    if (!newStatus) throw new createError(400, "Missing status fields");
+
+    const validStatuses = [
+      'PICKED_UP',
+      'IN_TRANSIT',
+      'DELIVERED',
+      'FAILED_ATTEMPT',
+      'COMPLETED'
+    ];
+    if (!validStatuses.includes(newStatus)) {
+      throw new createError(
+        400, `Invalid status. Valid values: ${validStatuses.join(", ")}`
+      );
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) throw new createError(404, "Order not found");
+
+    const currentState = order.orderTracking[order.orderTracking.length - 1].statusKey;
+
+    if (!statusFlow[currentState].next.includes(newStatus)) {
+      throw new createError(404, `Cannot change status from ${currentState} to ${newStatus}`);
+    }
+
+    if (!checkAuth(currentState, user, order)) {
+      throw new createError(403, "You are not authorized to update this order status");
+    }
+
+    order.orderTracking.push({
+      statusKey: newStatus,
+      description: description || defaultDescriptions[newStatus],
+      timestamp: new Date()
+    });
+
+    //order.orderTracking.push(trackingEvent);
+    await order.save();
+
+    return order;
+
+  } catch (err) {
+    throw err;
+  }
+}
 
 const getOrders = async ({ field, id, user, queryParams = {} }) => {
   try {
@@ -126,12 +214,12 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
 
     // Build pipeline instead
     const pipeline = [
-      { $match: matchStage }, 
-      ...getOrderDetailsPipeline(), 
+      { $match: matchStage },
+      ...getOrderDetailsPipeline(),
       { $skip: skip },
       { $limit: limit },
     ];
-    
+
     const orders = await Order.aggregate(pipeline);
 
     return {
