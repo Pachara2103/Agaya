@@ -16,15 +16,15 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, payment_method } = orderData;
+    const { cartId, customerId, paymentMethod } = orderData;
 
-    const carts = await Cart.findOne({ uid: customerId, _id: cartId });
+    const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
     if (!carts)
       throw new createError(
         404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
       );
 
-    if (!cartId || !customerId || !payment_method) {
+    if (!cartId || !customerId || !paymentMethod) {
       throw new createError(
         400, "Missing required fields"
       );
@@ -34,14 +34,15 @@ exports.checkoutOrder = async (orderData, user) => {
     if (!cartItems.length) {
       throw new createError(400, "Cart is empty");
     }
+    // console.log(cartItems)
 
     const itemsByVendor = {};
     for (let item of cartItems) {
       console.log(item);
-      const product = await Product.findOne({ _id: item.pid }).session(session);
+      const product = await Product.findOne({ _id: item.productId }).session(session);
       if (!product) throw new createError(404, `Product ${item.pid} not found`);
-      if (product.stock_quantity < item.quantity) {
-        throw new createError(400, `Not enough stock for product ${item.pid}`);
+      if (product.stockQuantity < item.quantity) {
+        throw new createError(400, `Not enough stock for product ${item.productId}`);
       }
       // Saperate item by vendor  
       const vendorId =  product.vendorId.toString();
@@ -58,20 +59,20 @@ exports.checkoutOrder = async (orderData, user) => {
 
       for(const {item, product} of vendorItem) {
         totalAmount += item.quantity * product.price;
-        product.stock_quantity -= item.quantity;
+        product.stockQuantity -= item.quantity;
         await product.save({ session });
         
         const contain = new Contain({
-          pid: item.pid,
-          oid: order._id,
+          productId: item.productId,
+          orderId: order._id,
           quantity: item.quantity,
         });
         await contain.save({ session });
       } 
 
       const transaction = new Transaction({
-        oid: order._id,
-        payment_method: payment_method,
+        orderId: order._id,
+        paymentMethod: paymentMethod,
         amount: totalAmount.toFixed(2),
       });
 
