@@ -5,7 +5,8 @@ const Product = require("../models/product");
 const Transaction = require("../models/transaction");
 const Cart = require("../models/cart");
 const mongoose = require("mongoose");
-const createError = require('http-errors'); 
+const createError = require('http-errors');
+const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js")
 
 const hasRole = (user, roles) =>
     user.userType.some((role) => roles.includes(role));
@@ -16,15 +17,15 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, payment_method } = orderData;
+    const { cartId, customerId, paymentMethod } = orderData;
 
-    const carts = await Cart.findOne({ uid: customerId, _id: cartId });
+    const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
     if (!carts)
       throw new createError(
         404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
       );
 
-    if (!cartId || !customerId || !payment_method) {
+    if (!cartId || !customerId || !paymentMethod) {
       throw new createError(
         400, "Missing required fields"
       );
@@ -34,14 +35,15 @@ exports.checkoutOrder = async (orderData, user) => {
     if (!cartItems.length) {
       throw new createError(400, "Cart is empty");
     }
+    // console.log(cartItems)
 
     const itemsByVendor = {};
     for (let item of cartItems) {
       console.log(item);
-      const product = await Product.findOne({ _id: item.pid }).session(session);
+      const product = await Product.findOne({ _id: item.productId }).session(session);
       if (!product) throw new createError(404, `Product ${item.pid} not found`);
-      if (product.stock_quantity < item.quantity) {
-        throw new createError(400, `Not enough stock for product ${item.pid}`);
+      if (product.stockQuantity < item.quantity) {
+        throw new createError(400, `Not enough stock for product ${item.productId}`);
       }
       // Saperate item by vendor  
       const vendorId =  product.vendorId.toString();
@@ -53,25 +55,38 @@ exports.checkoutOrder = async (orderData, user) => {
     
     for(const [vendorId, vendorItem] of Object.entries(itemsByVendor)){
       let totalAmount = 0;
-      const order = new Order({ orderStatus: "NOT_PAID", cartId, customerId, vendorId });
+      const order = new Order({ 
+        // orderStatus: "PAID", 
+        // have to do payment first 
+        cartId, 
+        customerId, 
+        vendorId,
+        orderTracking: [
+          {
+            statusKey: 'ORDER_RECEIVED',
+            description: 'คำสั่งซื้อได้รับการยืนยันและรอเตรียมการจัดส่ง',
+            timestamp: new Date()
+          }
+        ] 
+      });
       await order.save({ session });
 
       for(const {item, product} of vendorItem) {
         totalAmount += item.quantity * product.price;
-        product.stock_quantity -= item.quantity;
+        product.stockQuantity -= item.quantity;
         await product.save({ session });
         
         const contain = new Contain({
-          pid: item.pid,
-          oid: order._id,
+          productId: item.productId,
+          orderId: order._id,
           quantity: item.quantity,
         });
         await contain.save({ session });
       } 
 
       const transaction = new Transaction({
-        oid: order._id,
-        payment_method: payment_method,
+        orderId: order._id,
+        paymentMethod: paymentMethod,
         amount: totalAmount.toFixed(2),
       });
 
@@ -94,64 +109,6 @@ exports.checkoutOrder = async (orderData, user) => {
   }
 };
 
-exports.updateOrderStatus = async (orderId, status, user) => {
-  try {
-
-    const validStatuses = ["NOT_PAID", "PAID", "COMPLETED"];
-    if (!validStatuses.includes(status)) {
-      throw new createError(
-        400, `Invalid status. Valid values: ${validStatuses.join(", ")}`
-      );
-    }
-
-    //console.log("orderId:", orderId);
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      throw new createError(
-        404, "Order not found"
-      );
-    }
-
-    //console.log(user);
-
-    if (hasRole(user, ["admin"])) {
-    }
-    // Customer can change NOT_PAID -> PAID
-    else if (
-      hasRole(user, ["customer"]) &&
-      status === "PAID" &&
-      order.orderStatus === "NOT_PAID"
-    ) {
-      if (order.customerId.toString() !== user._id.toString()) {
-        throw new createError(
-          403, "Unauthorized to update this order"
-        );
-      }
-    }
-    //Vendor can change PAID -> COMPLETED
-    else if (
-      hasRole(user, ["vendor"]) &&
-      status === "COMPLETED" &&
-      order.orderStatus === "PAID"
-    ) {
-    } else {
-      throw new createError(
-          403, "Unauthorized action"
-      );
-    }
-
-    order.orderStatus = status;
-    await order.save();
-
-    return order;
-
-  } catch (err) {
-    throw err;
-  }
-};
-
 const getOrders = async ({ field, id, user, queryParams = {} }) => {
   try {
     let filterId = new mongoose.Types.ObjectId(id);
@@ -162,61 +119,20 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
     }
 
     // Pagination
-    let page = parseInt(queryParams.page) > 0 ? parseInt(queryParams.page) : 1;
-    const limit = parseInt(queryParams.limit) > 0 ? parseInt(queryParams.limit) : 10;
+    const matchStage = { [field]: filterId };
+    const totalOrders = await Order.countDocuments(matchStage);
+    const { page, limit, totalPages, skip } = calculatePagination(totalOrders, queryParams);
 
-    const totalOrders = await Order.countDocuments({ [field]: filterId });
-    const totalPages = Math.ceil(totalOrders / limit) || 1;
-    if (page > totalPages) page = totalPages;
 
-    const skip = (page - 1) * limit;
-
-    // Aggregation pipeline
-    const orders = await Order.aggregate([
-      { $match: { [field]: filterId } },
-      {
-        $lookup: {
-          from: "contains",
-          localField: "_id",
-          foreignField: "oid",
-          as: "contains",
-        },
-      },
-      { $unwind: "$contains" },
-      {
-        $lookup: {
-          from: "products",
-          localField: "contains.pid",
-          foreignField: "_id",
-          as: "product",
-        },
-      },
-      { $unwind: "$product" },
-      {
-        $group: {
-          _id: "$_id",
-          orderStatus: { $first: "$orderStatus" },
-          orderDate: { $first: "$orderDate" },
-          customer_id: { $first: "$customerId" },
-          vendor_id: { $first: "$vendorId" },
-          contains: {
-            $push: {
-              product_id: "$product._id",
-              name: "$product.product_name",
-              price: "$product.price",
-              quantity: "$contains.quantity",
-              total_price: { $multiply: ["$product.price", "$contains.quantity"] },
-            },
-          },
-        },
-      },
-      {
-        $addFields: { order_total: { $sum: "$contains.total_price" } },
-      },
-      { $sort: { orderDate: -1 } },
+    // Build pipeline instead
+    const pipeline = [
+      { $match: matchStage }, 
+      ...getOrderDetailsPipeline(), 
       { $skip: skip },
       { $limit: limit },
-    ]);
+    ];
+    
+    const orders = await Order.aggregate(pipeline);
 
     return {
       orders,

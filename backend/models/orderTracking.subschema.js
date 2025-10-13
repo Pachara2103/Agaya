@@ -1,0 +1,54 @@
+const mongoose = require('mongoose');
+
+const trackingEventSubschema = new mongoose.Schema({
+    statusKey: {
+        type: String,
+        required: true,
+        enum: [
+            'ORDER_RECEIVED',
+            'PICKED_UP',
+            'IN_TRANSIT',
+            // 'ARRIVED_LOCAL',
+            // 'OUT_FOR_DELIVERY',
+            'DELIVERED',
+            'FAILED_ATTEMPT',
+            'COMPLETED'
+            // when customer click receive button on order history
+            // else after 7 days make it complete
+        ]
+        // maybe if not communicate 
+        // picked_up -> in_transit -> delivered 
+        // handle if in_transit -> failed_attempt -> in_transit -> ... until -> delivered
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    timestamp: {
+        type: Date,
+        required: true,
+        default: Date.now
+    }
+}, {_id: false})
+
+// {
+//   "_id": "order_id_00001",
+//   // ... other order fields ...
+//   "orderTracking": [
+//     {
+//       "statusKey": "PICKED_UP",
+//       "description": "ผู้ส่งได้นำพัสดุมาส่งที่จุดรับของแล้ว",
+//       "timestamp": "2025-10-13T08:00:00.000Z"
+//     },
+//     {
+//       "statusKey": "IN_TRANSIT",
+//       "description": "พัสดุอยู่ระหว่างขนส่ง",
+//       "timestamp": "2025-10-13T16:30:00.000Z"
+//     },
+//     {
+//       "statusKey": "DELIVERED",
+//       "description": "จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว",
+//       "timestamp": "2025-10-14T11:45:00.000Z"
+//     }
+//   ]
+// }
