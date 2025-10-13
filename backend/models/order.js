@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const trackingEventSubschema = require("./orderTracking.subschema")
 
 const orderSchema = new mongoose.Schema({
   /*oid: {
@@ -17,6 +18,10 @@ const orderSchema = new mongoose.Schema({
     required: true,
     enum: ['NOT_PAID', 'PAID', 'COMPLETED'], // จำกัดค่าตาม Valid Values
     maxlength: 32
+  },
+  orderTracking: {
+    type: [trackingEventSubschema],
+    required: true
   },
   cartId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -41,3 +46,16 @@ const orderSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Order', orderSchema);
+
+// orderTracking: [
+//     {
+//         statusKey: 'ORDER_RECEIVED',
+//         description: 'คำสั่งซื้อได้รับการยืนยันและรอเตรียมการจัดส่ง',
+//         timestamp: new Date()
+//     }
+// ]
+
+// must initial with this one required is true
+// have to handle when place order must paid exactly
+// after confirmed receive will have to add balance to vendor 
+// have to make balance in vendor model
