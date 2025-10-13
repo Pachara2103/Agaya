@@ -1,0 +1,18 @@
+.scrollbar::-webkit-scrollbar {
+  width: 10px; 
+  height: 10px; 
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* พื้นหลัง */
+  border-radius: 9999px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b71f3b, #ff849b); 
+  border-radius: 9999px; 
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #a31832, #ff6e8a); /* เปลี่ยนสีเวลา hover */
+}

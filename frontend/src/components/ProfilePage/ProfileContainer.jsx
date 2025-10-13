@@ -1,15 +1,16 @@
-import { MdAccountCircle } from "react-icons/md";
+import { MdAccountCircle, MdOutlineNotifications } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { LuShoppingBag } from "react-icons/lu";
-import { MdOutlineNotifications } from "react-icons/md";
 import { IoMdPerson } from "react-icons/io";
 import Button1 from "../Button1";
 import { useEffect, useState } from "react";
-import Profile from "./Profile.jsx";
-import Address from "./Address.jsx";
 import ChangePasswordForm from "../ProfilePage/ChangePasswordForm";
 import { getMe } from "../../libs/authService";
 import "./scrollbar.css";
+
+import Profile from "./Profile.jsx";
+import Address from "./Address.jsx";
+import Order from "../OrderPage/Order.jsx";
 
 // rgba(221, 221, 221, 0.7)
 function ProfileContainer() {
@@ -39,21 +40,23 @@ function ProfileContainer() {
     fetchUserData();
   }, []);
 
-  if (loading) return <div>Loading...</div>; 
-  if (error) return <div>Error: {error}</div>; 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   // const username = "User00001";
   const box =
     "border-gray-100 border-1 shadow-[0_0_4px_1px_rgba(221,221,221,0.7)]"; //offsetX, offsetY, blur, spread
   return (
-    <div className={`overflow-x-auto`}>
+    <div className={`overflow-x-auto overflow-y-hidden`}>
       <div
         className={`max-[1160px]:inline-flex flex flex-row bg-white text-[14px] justify-center`}
       >
         {" "}
         {/* block */}
-        <div className={`w-72 ml-10 mr-6 mt-14 mb-8 h-150 bg-white ${box} overflow-y-scroll scrollbar` }>
-          <div className={`flex flex-col gap-2 ml-8 mr-8 mt-8`}>
+        <div
+          className={`w-72 ml-10 mr-6 mt-14 mb-8 h-150 bg-white ${box} overflow-y-scroll scrollbar`}
+        >
+          <div className={`flex flex-col gap-2 ml-8 mr-8 mt-8 `}>
             <div className="flex flex-row text-black mb-6">
               <div className={``}>
                 {userData?.profileImageUrl ? (
@@ -64,10 +67,12 @@ function ProfileContainer() {
                   />
                 ) : (
                   <MdAccountCircle size={48} className="text-gray-300" />
-                )}  
+                )}
               </div>
               <div className={`flex-col ml-4 self-center`}>
-                <div className={`font-[500] mb-1 text-[16px]`}>{userData?.username}</div>
+                <div className={`font-[500] mb-1 text-[16px]`}>
+                  {userData?.username}
+                </div>
                 <div className={`font-[100] text-gray-400 text-[13px]`}>
                   แก้ไขข้อมูลส่วนตัว
                 </div>
@@ -117,12 +122,12 @@ function ProfileContainer() {
               emoji={<LuShoppingBag size={20} />}
               text="การซื้อของฉัน"
               textSize={20}
-              handle={() => setCurrrentPanel("to-ship")}
+              handle={() => setCurrrentPanel("order")}
             />
             <Button1
               text="&emsp;ที่ต้องจัดส่ง"
-              textColor={checkPanel("to-ship", currentPanel)}
-              handle={() => setCurrrentPanel("to-ship")}
+              textColor={checkPanel("order", currentPanel)}
+              handle={() => setCurrrentPanel("order")}
             />
             <Button1
               text="&emsp;ที่ต้องได้รับ"
@@ -157,15 +162,17 @@ function ProfileContainer() {
               text="ส่วนลดของฉัน"
               textSize={20}
               handle={() => setCurrrentPanel("my-vouchers")}
-            />  
+            />
           </div>
         </div>
         <div
           className={`w-200 ml-6 mr-12 mt-14 mb-8 h-150 bg-white ${box} flex-shrink-0 cursor-default`}
         >
-          {currentPanel === "profile" && <Profile userData={userData} />}
-          {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
-          {currentPanel === "addresses" ? <Address /> : ""}
+            {currentPanel === "profile" && <Profile userData={userData} />}
+            {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
+            {currentPanel === "addresses" ? <Address /> : ""}
+            {currentPanel === "order" ? <Order /> : ""}
+          
         </div>
       </div>
     </div>
