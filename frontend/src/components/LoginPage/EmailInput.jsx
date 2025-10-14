@@ -86,7 +86,7 @@ const EmailInput = ({ onNext, onBack }) => {
         )}
 
         <button
-          className={disable ? "opacity-70 mx-5" : "mx-5"}
+          className={disable ? "opacity-70 mx-5 button1" : "mx-5 button1"}
           disabled={disable}
           onClick={() => nextState()}
         >
