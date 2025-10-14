@@ -15,10 +15,12 @@ const Cart = () => {
     subtotal,
     shipping,
     total,
+    selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
-    groupedCartItems
+    groupedCartItems,
+    toggleSelectItem
   } = useCartData();
 
   const [couponCode, setCouponCode] = useState("");
@@ -56,6 +58,8 @@ const Cart = () => {
           groupedItems={groupedCartItems}
           onQuantityChange={handleQuantityChange}
           onRemoveClick={handleRemoveClick}
+          isSelected={selectedItemIds}
+          onToggleSelect= {toggleSelectItem}
         />
 
         {/* Action Buttons Component */}

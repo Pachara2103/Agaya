@@ -1,6 +1,6 @@
 import { CartItemRow } from "./CartItemRow";
 
-export const StoreGroup = ({ storeName, items, onQuantityChange, onRemoveClick }) => {
+export const StoreGroup = ({ storeName, items, onQuantityChange, onRemoveClick, isSelected, onToggleSelect }) => {
     console.log("hehe2", storeName, items)
     return (
         <div className="mb-5 border border-[#D9D9D9]">
@@ -13,7 +13,9 @@ export const StoreGroup = ({ storeName, items, onQuantityChange, onRemoveClick }
                     key={item._id}
                     item={item}
                     handleQuantityChange={onQuantityChange} 
-                    handleRemoveClick={onRemoveClick}      
+                    handleRemoveClick={onRemoveClick}
+                    isSelected={isSelected}
+                    onToggleSelect= {onToggleSelect}      
                 />
                 ))}
             </div>

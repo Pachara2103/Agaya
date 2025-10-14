@@ -1,32 +1,31 @@
-export const SelectionCircle = ({ isSelected, onClick }) => {
+export const SelectionCircle = ({ isSelected, onClick, selectId }) => {
+    const isItemSelected = isSelected.includes(selectId);
+
+    const circleClasses = `
+        relative p-1 rounded-full cursor-pointer transition-all duration-100
+        flex items-center justify-center
+        ${isItemSelected 
+            ? "border-2 border-[#48B3AF] bg-white" 
+            : "border-2 border-[#828282] bg-white hover:border-gray-600" 
+        }
+    `;
+
+    const innerDotClasses = `
+        w-3 h-3 rounded-full
+        ${isItemSelected 
+            ? "bg-[#48B3AF] scale-100" 
+            : "bg-[#828282] scale-100" 
+        }
+    `;
+
     return (
         <button
             onClick={onClick}
-            className={
-                `w-5 h-5 rounded-full border-2 flex items-center justify-center
-                ${isSelected ? "border-[#828282] bg-white hover:border-gray-600" 
-                    :"border-[#828282] bg-white hover:border-gray-600"
-                }`
-            }
-            aria-label={isSelected ? "Unselect item" : "Select item"}
-        >       
-            {isSelected && (
-                <svg
-                    className="w-3 h-3 text-white" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24" 
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="3" 
-                        d="M5 13l4 4L19 7" 
-                    >    
-                    </path>
-                </svg>
-            )}
+            className={circleClasses}
+            aria-label={isItemSelected ? "Unselect item" : "Select item"}
+            type="button"
+        >
+            <div className={innerDotClasses}/>
         </button>
-    )
-}
+    );
+};

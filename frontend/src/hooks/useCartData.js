@@ -12,6 +12,7 @@ const useCartData = () => {
   const [cartId, setCartId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
 
   const fetchCartData = async () => {
     setIsLoading(true);
@@ -106,6 +107,16 @@ const useCartData = () => {
     return groups
   }, {})
 
+  const toggleSelectItem = (itemId) => {
+    setSelectedItemIds(prev => {
+      if (prev.includes(itemId)) {
+        return prev.filter(id => id !== itemId)
+      } else {
+        return [...prev, itemId]
+      }
+    })
+  }
+
   return {
     cartItems,
     isLoading,
@@ -113,10 +124,12 @@ const useCartData = () => {
     subtotal,
     shipping,
     total,
+    selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
-    groupedCartItems
+    groupedCartItems,
+    toggleSelectItem
   };
 };
 

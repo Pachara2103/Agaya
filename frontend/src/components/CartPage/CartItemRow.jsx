@@ -3,14 +3,16 @@ import { ChevronDownIcon, ChevronUpIcon } from "./CartIcon"
 import { SelectionCircle } from "./SelectionCircle"
 
 export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick, isSelected, onToggleSelect }) => {
+  console.log("TEST", isSelected)
   return (
     <div
       key={item._id}
       className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center p-5 text-center"
     >
-      <div className="col-span-1 flex justify-center order-first md:order-none">
+      <div className="col-span-1 flex justify-center order-first items-center md:order-none">
         <SelectionCircle 
-          isSelected={isSelected} 
+          isSelected={isSelected}
+          selectId={item._id} 
           onClick={() => onToggleSelect(item._id)} 
         />
       </div>
