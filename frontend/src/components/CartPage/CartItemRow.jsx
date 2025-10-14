@@ -1,49 +1,21 @@
 import React from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "./CartIcon"
+import { SelectionCircle } from "./SelectionCircle"
 
-const ChevronUpIcon = () => (
-  <svg
-    width="10"
-    height="6"
-    viewBox="0 0 10 6"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M9 5L5 1L1 5"
-      stroke="black"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const ChevronDownIcon = () => (
-  <svg
-    width="10"
-    height="6"
-    viewBox="0 0 10 6"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M1 1L5 5L9 1"
-      stroke="black"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick }) => {
+export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick, isSelected, onToggleSelect }) => {
   return (
     <div
       key={item._id}
-      className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center p-5 text-center"
+      className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center p-5 text-center"
     >
+      <div className="col-span-1 flex justify-center order-first md:order-none">
+        <SelectionCircle 
+          isSelected={isSelected} 
+          onClick={() => onToggleSelect(item._id)} 
+        />
+      </div>
       {/* Product */}
-      <div className="col-span-1 md:col-span-4 flex items-center gap-4 text-left">
+      <div className="col-span-1 md:col-span-3 flex items-center gap-4 text-left">
         <img
           src={item.image?.[0] || "placeholder.jpg"}
           alt={item.productName}
@@ -91,7 +63,7 @@ export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick }) =
       </div>
 
       {/* Remove Button */}
-      <div className="col-span-1 md:col-span-1 flex justify-center">
+      <div className="col-span-1 md:col-span-2 flex justify-center">
         <button
           onClick={() => handleRemoveClick(item._id)}
           className="bg-[#B71F3B] text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors cursor-pointer"
