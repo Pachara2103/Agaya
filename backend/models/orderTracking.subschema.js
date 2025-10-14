@@ -12,7 +12,11 @@ const trackingEventSubschema = new mongoose.Schema({
             // 'OUT_FOR_DELIVERY',
             'DELIVERED',
             'FAILED_ATTEMPT',
-            'COMPLETED'
+            'COMPLETED',
+            'CANCELLED' ,
+            'REFUNDED'
+
+
             // when customer click receive button on order history
             // else after 7 days make it complete
         ]
