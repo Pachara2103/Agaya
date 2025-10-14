@@ -13,6 +13,11 @@ const vendorSchema = new mongoose.Schema({
     min: 0.0,
     max: 5.0,
     default: null // เนื่องจาก Allow Nulls = Yes
+  },
+  storeName: {
+    type: String,
+    required: true,
+    maxlength: 100
   }
 }, {
   timestamps: true
