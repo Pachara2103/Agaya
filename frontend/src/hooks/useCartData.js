@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { getOrCreateCartByUserId, getCartItems, updateCartItemQuantity, deleteCartItem } from "../libs/cartService";
+import {
+  getOrCreateCartByUserId,
+  getCartItems,
+  updateCartItemQuantity,
+  deleteCartItem,
+} from "../libs/cartService";
 import { getMe } from "../libs/authService";
 
 const useCartData = () => {
@@ -7,6 +12,7 @@ const useCartData = () => {
   const [cartId, setCartId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
 
   const fetchCartData = async () => {
     setIsLoading(true);
@@ -35,6 +41,7 @@ const useCartData = () => {
           productName: item.productId.productName || "Product",
           price: item.productId.price,
           image: item.productId.image,
+          storeName: item.productId.vendorId?.storeName || "Unknown Store",
         }))
       );
     } catch (error) {
@@ -48,7 +55,7 @@ const useCartData = () => {
 
   useEffect(() => {
     fetchCartData();
-  }, []); 
+  }, []);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     const quantity = Math.max(1, newQuantity);
@@ -91,6 +98,25 @@ const useCartData = () => {
   const shipping = 0;
   const total = subtotal + shipping;
 
+  const groupedCartItems = cartItems.reduce((groups, item) => {
+    const storeName = item.storeName
+    if (!groups[storeName]) {
+      groups[storeName] = []
+    }
+    groups[storeName].push(item)
+    return groups
+  }, {})
+
+  const toggleSelectItem = (itemId) => {
+    setSelectedItemIds(prev => {
+      if (prev.includes(itemId)) {
+        return prev.filter(id => id !== itemId)
+      } else {
+        return [...prev, itemId]
+      }
+    })
+  }
+
   return {
     cartItems,
     isLoading,
@@ -98,9 +124,12 @@ const useCartData = () => {
     subtotal,
     shipping,
     total,
-    fetchCartData, 
-    handleQuantityChange, 
-    deleteItem, 
+    selectedItemIds,
+    fetchCartData,
+    handleQuantityChange,
+    deleteItem,
+    groupedCartItems,
+    toggleSelectItem
   };
 };
 

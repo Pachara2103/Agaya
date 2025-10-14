@@ -34,7 +34,8 @@ exports.processApplication = async (applicationId, newStatus, reason = null) => 
     const user = await User.findById(application.userId)
     if (user) {
       await Vendor.create({
-        userId: user._id
+        userId: user._id,
+        storeName: application.storeName
       })
     }
   }
