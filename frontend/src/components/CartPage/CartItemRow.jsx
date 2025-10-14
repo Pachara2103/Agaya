@@ -40,7 +40,7 @@ export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick }) =
   return (
     <div
       key={item._id}
-      className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center p-5 border-1 border-[#D9D9D9] text-center"
+      className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center p-5 text-center"
     >
       {/* Product */}
       <div className="col-span-1 md:col-span-4 flex items-center gap-4 text-left">
