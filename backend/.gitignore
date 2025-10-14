@@ -27,3 +27,4 @@ config/config.env
 # vscode extension
 .vscode
 node_modules
+.env.test
