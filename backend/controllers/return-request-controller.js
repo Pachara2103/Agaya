@@ -1,6 +1,16 @@
 const {requestReturn, processReturn, getReturnReqs} = require("../services/return-request-service");
 
 // PATH : POST /api/v1/agaya/return/request
+/*
+  req.body : {
+    "orderId" : "68ef7b7da2562cfe70121dc2",
+    "products" : [{
+        "productId": "68ef6e4ff9e853a33bedb193",
+        "quantity" : "4"
+    }],
+    "reason" : "Wrong product"
+  }
+*/ 
 exports.requestReturn = async (req, res, next) => {
     try {
         const returnRequest = await requestReturn(req.body, req.user);
