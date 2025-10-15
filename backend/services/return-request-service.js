@@ -10,7 +10,7 @@ const hasRole = (user, roles) =>
 
 exports.requestReturn = async (requestBody, user) => {
     try {
-        const { orderId, productId, quantity, reason } = requestBody;
+        const { orderId, products, reason } = requestBody;
         const customerId = user._id;
 
         if (!reason) throw new createError(400, "Plese provide reason");
@@ -19,34 +19,41 @@ exports.requestReturn = async (requestBody, user) => {
         if (!order) throw new createError(404, "order not found");
         if (order.customerId.toString() !== customerId.toString()) throw new createError(403, "Unauthorized request");
 
-        const contain_product = await Contain.findOne({ orderId, productId });
-        if (!contain_product) throw new createError(400, `No product ${productId} in order ${orderId}`);
-        if (quantity > contain_product.quantity) {
-            throw new createError(400, `Return quantity exceeds purchased amount for product ${productId}`);
-        }
-
-        if (!["PAID", "COMPLETE"].includes(order.order_status)) {
-            throw new createError(400, "Only PAID or COMPLETE order can be refunded");
+        const status = order.orderTracking[order.orderTracking.length - 1].statusKey;
+        if (!["DELIVERED", "COMPLETED"].includes(status)) {
+            throw new createError(400, "Only DELIVERED or COMPLETED order can be refunded");
         }
         // Order older than 30 day cant be return
         const now = new Date();
-        const orderDate = new Date(order.order_date);
+        const orderDate = new Date(order.orderDate);
         const orderDuration = (now - orderDate) / (24 * 60 * 60 * 1000);
         if (orderDuration > 30) throw new createError(400, "Order older than 30 day cant be return");
 
-        const existRequest = await ReturnRequest.findOne({ orderId, productId, status: { $in: ["PENDING", "APPROVED", "REFUNDED"] } });
-        if (existRequest) throw new createError(400, "Return request of this product already exist");
+        const validProducts = [];
+
+        for (const item of products) {
+            const {productId, quantity} = item;
+            const containProduct = await Contain.findOne({ orderId, productId });
+            if (!containProduct)
+                throw new createError(400, `Product ${productId} not found in order ${orderId}`);
+
+            if (quantity > containProduct.quantity)
+                throw new createError(400, `Return quantity exceeds purchased amount for product ${productId}`);
+
+            validProducts.push({productId, quantity});
+        }
 
         const returnRequest = new ReturnRequest({
             orderId,
             customerId,
-            productId,
-            quantity,
+            products: validProducts,
             reason,
             status: "PENDING",
             response: "Your request is being reviewed. You will be notified of the outcome within 3-5 business days."
         });
 
+        order.orderTracking.push({statusKey: "DISPUTED"})
+        await order.save();
         await returnRequest.save();
         return returnRequest;
     } catch (error) {
@@ -64,11 +71,9 @@ exports.processReturn = async (returnId, requestBody, user) => {
                 400, `Invalid status. Valid values: ${validStatuses.join(", ")}`
             );
         }
-
         const returnReq = await ReturnRequest.findById(returnId);
         if (!returnReq) throw new createError(404, "Request not found");
-        const product = await Product.findById(returnReq.productId);
-
+        const order = await Order.findById(returnReq.orderId);
 
         const now = new Date();
         if (hasRole(user, ["admin"])) {
@@ -82,6 +87,8 @@ exports.processReturn = async (returnId, requestBody, user) => {
                     if (!response) throw new createError(400, "Plese provide reason for rejection");
                     returnReq.response = response;
                     returnReq.resolvedDate = now;
+                    order.orderTracking.push({statusKey: "COMPLETED"})
+                    await order.save();
                 }
                 else throw new createError(400, "This request can only change status to APPROVED or REJECTED");
                 await returnReq.save();
@@ -89,16 +96,21 @@ exports.processReturn = async (returnId, requestBody, user) => {
             }
         }
 
-        if (hasRole(user, ["admin"]) || product.vid.toString() === user._id.toString()) {
+        if (hasRole(user, ["admin"]) || order.vendorId.toString() === user._id.toString()) {
             if (returnReq.status === "APPROVED") {
                 if (status === "COMPLETED") {
-                    product.stock_quantity += returnReq.quantity;
-                    const totalRefunded = product.price * returnReq.quantity;
-                    await product.save();
+                    let totalRefunded = 0;
+                    for (const item of returnReq.products) {
+                        const product = await Product.findById(item.productId);
+                        if (!product) throw new createError(404, `Product ${item.productId} not found.`);
+                        product.stockQuantity += item.quantity;
+                        await product.save();
+                        totalRefunded += product.price * item.quantity;
+                    }
 
                     const transaction = new Transaction({
                         orderId: returnReq.orderId,
-                        payment_method: "Refund",
+                        paymentMethod: "Refund",
                         amount: totalRefunded,
                     });
                     await transaction.save();
@@ -107,12 +119,14 @@ exports.processReturn = async (returnId, requestBody, user) => {
                     returnReq.response = `A refund of ${totalRefunded}$ was issued to your original payment method on ${now.toString()}.`;
                     returnReq.resolvedDate = now;
                     await returnReq.save();
+                    order.orderTracking.push({statusKey: "RETURNED"})
+                    await order.save();
                     return { returnReq, transactionId: transaction._id };
                 }
-                else throw new createError(400, "APPROVED request can only change status to COMPLETE");
+                else throw new createError(400, "APPROVED request can only change status to COMPLETED");
             }
         }
-        if (returnReq.status === "COMPLETE" || returnReq.status === "REJECTED") throw new createError(400, "Request already COMPLETED or REJECTED");
+        if (returnReq.status === "COMPLETED" || returnReq.status === "REJECTED") throw new createError(400, "Request already COMPLETED or REJECTED");
         throw new createError(403, "Unauthorized action.");
     } catch (error) {
         throw error

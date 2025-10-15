@@ -1,6 +1,17 @@
 const mongoose = require('mongoose');
 
-const trackingEventSubschema = new mongoose.Schema({
+const defaultDescriptions = {
+    ORDER_RECEIVED: "คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง",
+    PICKED_UP: "ผู้ส่งได้นำพัสดุมาส่งที่จุดรับแล้ว",
+    IN_TRANSIT: "พัสดุอยู่ระหว่างขนส่ง",
+    FAILED_ATTEMPT: "การจัดส่งพัสดุไม่สำเร็จ",
+    DELIVERED: "จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว",
+    COMPLETED: "ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์",
+    DISPUTED: "สินค้ากำลังอยู่ระหว่างการคืนสินค้า",
+    RETURNED: "สินค้าถูกส่งคืนไปยังผู้ขายเรียบร้อยแล้ว"
+};
+
+exports.trackingEventSubschema = new mongoose.Schema({
     statusKey: {
         type: String,
         required: true,
@@ -12,7 +23,9 @@ const trackingEventSubschema = new mongoose.Schema({
             // 'OUT_FOR_DELIVERY',
             'DELIVERED',
             'FAILED_ATTEMPT',
-            'COMPLETED'
+            'COMPLETED',
+            'DISPUTED',
+            'RETURNED'
             // when customer click receive button on order history
             // else after 7 days make it complete
         ]
@@ -22,7 +35,10 @@ const trackingEventSubschema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        default: function () {
+            return defaultDescriptions[this.statusKey];
+        }
     },
     timestamp: {
         type: Date,

@@ -1,4 +1,3 @@
-const { response } = require("../app");
 const SupportTicket = require("../models/support-ticket");
 const createError = require('http-errors');
 
