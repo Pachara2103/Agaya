@@ -2,6 +2,7 @@ const Product = require('../models/product');
 const AuditLog = require('../models/audit-log');
 const createError = require('http-errors');
 const auditService = require('./audit-service');
+const Vendor = require('../models/vendor')
 
 
 // Get all products
@@ -64,14 +65,24 @@ exports.findProductById = async (id) => {
     throw createError(404, 'Product not found');
 }
 
-exports.findProductsByVendorId = async (vendorId) => {
-    const products = await Product.find({ vendorId: vendorId });
+exports.findProductsByVendorId = async (userId) => {
+    const vendor = await Vendor.findOne({ userId: userId})
+    if (!vendor) {
+        throw createError(404, `You are not vendor brother`);
+    }
+    const products = await Product.find({ vendorId: vendor._id });
     return products
 }
 
 exports.createProduct = async (createData, user) => {
     try {
         const { productName, stockQuantity, price, rating, type, productDescription, image, promotion} = createData;
+
+        const vendor = await Vendor.findOne({ userId: user._id })
+
+        if (!vendor) {
+            throw createError(404, `You are not vendor brother`);
+        }
         
         const newProduct = await Product.create({
             productName,
@@ -81,7 +92,7 @@ exports.createProduct = async (createData, user) => {
             type,
             productDescription,
             image,
-            vendorId: user._id,
+            vendorId: vendor._id,
             promotion
         });
 
