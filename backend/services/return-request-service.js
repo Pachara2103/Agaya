@@ -20,8 +20,8 @@ exports.requestReturn = async (requestBody, user) => {
         if (order.customerId.toString() !== customerId.toString()) throw new createError(403, "Unauthorized request");
 
         const status = order.orderTracking[order.orderTracking.length - 1].statusKey;
-        if (!["DELIVERED", "COMPLETED"].includes(status)) {
-            throw new createError(400, "Only DELIVERED or COMPLETED order can be refunded");
+        if (!["DELIVERED"].includes(status)) {
+            throw new createError(400, "Only DELIVERED order can be refunded");
         }
         // Order older than 30 day cant be return
         const now = new Date();
