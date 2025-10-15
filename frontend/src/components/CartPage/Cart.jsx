@@ -15,9 +15,12 @@ const Cart = () => {
     subtotal,
     shipping,
     total,
+    selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
+    groupedCartItems,
+    toggleSelectItem
   } = useCartData();
 
   const [couponCode, setCouponCode] = useState("");
@@ -31,6 +34,7 @@ const Cart = () => {
 
   const navigate = useNavigate();
   const goToHome = () => navigate("/");
+  console.log(groupedCartItems)
 
   if (isLoading) return <div className="text-center p-20 text-lg"><p>Loading Cart Data...</p></div>;
   if (error) return <div className="text-center p-20 text-lg text-red-600"><p>Error: {error}</p></div>;
@@ -51,9 +55,11 @@ const Cart = () => {
 
         {/* Cart Table Component */}
         <CartTable
-          items={cartItems}
+          groupedItems={groupedCartItems}
           onQuantityChange={handleQuantityChange}
           onRemoveClick={handleRemoveClick}
+          isSelected={selectedItemIds}
+          onToggleSelect= {toggleSelectItem}
         />
 
         {/* Action Buttons Component */}

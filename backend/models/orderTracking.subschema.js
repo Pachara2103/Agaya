@@ -25,7 +25,10 @@ exports.trackingEventSubschema = new mongoose.Schema({
             'FAILED_ATTEMPT',
             'COMPLETED',
             'DISPUTED',
+            'CANCELLED',
             'REFUNDED'
+
+
             // when customer click receive button on order history
             // else after 7 days make it complete
         ]
