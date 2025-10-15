@@ -119,7 +119,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
                     returnReq.response = `A refund of ${totalRefunded}$ was issued to your original payment method on ${now.toString()}.`;
                     returnReq.resolvedDate = now;
                     await returnReq.save();
-                    order.orderTracking.push({statusKey: "RETURNED"})
+                    order.orderTracking.push({statusKey: "REFUNDED"})
                     await order.save();
                     return { returnReq, transactionId: transaction._id };
                 }

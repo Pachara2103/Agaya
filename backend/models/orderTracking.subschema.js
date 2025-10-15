@@ -8,7 +8,7 @@ const defaultDescriptions = {
     DELIVERED: "จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว",
     COMPLETED: "ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์",
     DISPUTED: "สินค้ากำลังอยู่ระหว่างการคืนสินค้า",
-    RETURNED: "สินค้าถูกส่งคืนไปยังผู้ขายเรียบร้อยแล้ว"
+    REFUNDED: "สินค้าถูกส่งคืนไปยังผู้ขายเรียบร้อยแล้ว"
 };
 
 exports.trackingEventSubschema = new mongoose.Schema({
@@ -25,7 +25,7 @@ exports.trackingEventSubschema = new mongoose.Schema({
             'FAILED_ATTEMPT',
             'COMPLETED',
             'DISPUTED',
-            'RETURNED'
+            'REFUNDED'
             // when customer click receive button on order history
             // else after 7 days make it complete
         ]
