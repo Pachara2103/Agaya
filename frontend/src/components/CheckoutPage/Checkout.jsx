@@ -1,13 +1,11 @@
 import {useState} from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import useCartData from "../../hooks/useCartData";
-import useCartDeleteModal from "../../hooks/useCartDeleteModal";
-import { CartTable } from "../CartPage/CartTable";
-import { CartActionButtons } from "../CartPage/CartActionButtons";
-import { CartTotalsSummary } from "../CartPage/CartTotalsSummary";
+import {CartTable} from "../CartPage/CartTable";
+import {ProductTable} from "./ProductTable";
 import {CartCouponSubmit} from "./CartCouponSubmit";
-import { ConfirmationModal } from "../CartPage/ConfirmationModal";
 import AddressDropdown from "./AddressDropdown";
+import {PaymentBox} from "./PaymentBox";
 
 function CheckoutPage() {
     const {
@@ -17,24 +15,35 @@ function CheckoutPage() {
         subtotal,
         shipping,
         total,
-        fetchCartData,
-        handleQuantityChange,
-        deleteItem
     } = useCartData();
 
-    const handleAddressSelect = (selectedAddress) => {
-        console.log("ที่อยู่ที่ถูกเลือก:", selectedAddress);
-        
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState('cod');
+    const [couponCode, setCouponCode] = useState("")
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState("");
+
+    const handleAddressSelect = (address) => {
+        setSelectedAddress(address);
     };
 
-    const [couponCode, setCouponCode] = useState("")
+    const handleSubmitOrder = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitError('');
 
-    const {
-        isModalOpen,
-        handleRemoveClick,
-        handleConfirmDelete,
-        handleCancelDelete
-    } = useCartDeleteModal(deleteItem);
+        if (!selectedAddress) {
+            setSubmitError("กรุณาเลือกที่อยู่สำหรับจัดส่ง");
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            
+        } catch(err) {
+
+        }
+    }
 
     const navigate = useNavigate();
     const goToHome = () => navigate("/");
@@ -45,12 +54,6 @@ function CheckoutPage() {
 
     return (
         <div className="bg-white text-gray-800 p-4 sm:p-8 md:p-16">
-            {isModalOpen && (
-                <ConfirmationModal
-                    onConfirm={handleConfirmDelete}
-                    onCancel={handleCancelDelete}
-                />
-            )}
             <div className="max-w-6xl mx-auto">
                 <div className="text-sm text-gray-500 mb-8">
                     <span onClick={goToHome} className="cursor-pointer hover:text-red-600"> Home </span>
@@ -62,10 +65,8 @@ function CheckoutPage() {
                     <AddressDropdown onAddressSelect={handleAddressSelect}/>
                 </div>
 
-                <CartTable
+                <ProductTable
                     items={cartItems}
-                    onQuantityChange={handleQuantityChange}
-                    onRemoveClick={handleRemoveClick}
                 />
 
                 <div className="flex flex-col md:flex-row justify-between items-start gap-8 ">
@@ -74,7 +75,7 @@ function CheckoutPage() {
                         onCouponChange={(e) => setCouponCode(e.target.value)}
                     />
 
-                    <CartTotalsSummary
+                    <PaymentBox
                         subtotal={subtotal}
                         shipping={shipping}
                         total={total}
