@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import ChangePasswordForm from "../ProfilePage/ChangePasswordForm";
 import { getMe } from "../../libs/authService";
 import "./scrollbar.css";
+import {ordersByShop} from '../OrderPage/exampleOrder.js';   //example product
+
 
 import Profile from "./Profile.jsx";
 import Address from "./Address.jsx";
@@ -131,8 +133,8 @@ function ProfileContainer() {
             />
             <Button1
               text="&emsp;ที่ต้องได้รับ"
-              textColor={checkPanel("to-receive", currentPanel)}
-              handle={() => setCurrrentPanel("to-receive")}
+              textColor={checkPanel("order-receive", currentPanel)}
+              handle={() => setCurrrentPanel("order-receive")}
             />
             <Button1
               text="&emsp;จัดส่งสำเร็จ"
@@ -168,11 +170,13 @@ function ProfileContainer() {
         <div
           className={`w-200 ml-6 mr-12 mt-14 mb-8 h-150 bg-white ${box} flex-shrink-0 cursor-default`}
         >
-            {currentPanel === "profile" && <Profile userData={userData} />}
-            {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
-            {currentPanel === "addresses" ? <Address /> : ""}
-            {currentPanel === "order" ? <Order /> : ""}
-          
+          {currentPanel === "profile" && <Profile userData={userData} />}
+          {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
+          {currentPanel === "addresses" ? <Address /> : ""}
+          {currentPanel === "order" ? <Order isOrderReceivePage={false} isOtherPage={false} ordersByShop={ordersByShop} /> : ""}
+          {currentPanel === "order-receive" ? <Order isOrderReceivePage={true} isOtherPage={false} ordersByShop={ordersByShop}/> : ""}
+          {currentPanel === "complete"||"return-refund"||"cancelled" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
+
         </div>
       </div>
     </div>
