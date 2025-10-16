@@ -1,7 +1,6 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import useCartData from "../../hooks/useCartData";
-import {CartTable} from "../CartPage/CartTable";
 import {ProductTable} from "./ProductTable";
 import {CartCouponSubmit} from "./CartCouponSubmit";
 import AddressDropdown from "./AddressDropdown";
@@ -25,6 +24,10 @@ function CheckoutPage() {
 
     const handleAddressSelect = (address) => {
         setSelectedAddress(address);
+    };
+
+    const handleCancelOrder = () => {
+        navigate('/cart');
     };
 
     const handleSubmitOrder = async (e) => {
@@ -79,6 +82,10 @@ function CheckoutPage() {
                         subtotal={subtotal}
                         shipping={shipping}
                         total={total}
+                        paymentMethod={paymentMethod}
+                        onPaymentChange={(e) => setPaymentMethod(e.target.value)}
+                        onPlaceOrder={handleSubmitOrder}
+                        onCancelOrder={handleCancelOrder}
                     />
                 </div>
             </div>
