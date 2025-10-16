@@ -41,12 +41,38 @@ function CheckoutPage() {
             return;
         }
 
-        try {
-            
-        } catch(err) {
-
+        const {cartId} = useCartData();
+        if (!cartId) {
+            setSubmitError("ไม่พบข้อมูลตะกร้าสินค้า");
+            setIsSubmitting(false);
+            return;
         }
-    }
+
+        try {
+            const token = Cookies.get('token');
+            if (!token) throw new Error("กรุณาเข้าสู่ระบบ");
+
+            const orderPayload = {
+                cartId: cartId,
+                selectedItem: cartItems.map(item => item._id),
+                paymentMethod: paymentMethod
+            };
+
+            const response = await axios.post('http://localhost:5000/api/v1/Agaya/orders/checkout', orderPayload, {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+
+            if (response.data.success) {
+                alert("สั่งซื้อสินค้าสำเร็จ!");
+                const newOrderId = response.data.createdOrders[0].order._id;
+                navigate('/confirm-order');
+            }
+        } catch(err) {
+            setSubmission(err.response?.data?.message || err.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const navigate = useNavigate();
     const goToHome = () => navigate("/");

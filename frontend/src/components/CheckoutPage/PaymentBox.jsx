@@ -1,3 +1,6 @@
+import {FaCcVisa, FaCcMastercard} from "react-icons/fa";
+import {BsCashCoin} from "react-icons/bs";
+
 export const PaymentBox = ({
     subtotal,
     shipping,
@@ -34,8 +37,11 @@ export const PaymentBox = ({
                     onChange={onPaymentChange}
                     className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                 />
-                <label htmlFor="payment_bank" className="ml-3">Bank</label>
-
+                <label htmlFor="payment_bank" className="ml-3 flex-grow">Bank</label>
+                <div className="flex items-center gap-2 text-2xl">
+                    <FaCcVisa />
+                    <FaCcMastercard />
+                </div>
             </div>
             <div className="flex items-center">
                 <input
@@ -47,7 +53,10 @@ export const PaymentBox = ({
                     onChange={onPaymentChange}
                     className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                 />
-                <label htmlFor="payment_cod" className="ml-3">Cash on delivery</label>
+                <label htmlFor="payment_cod" className="ml-3 flex-grow">Cash on delivery</label>
+                <div className="text-2xl">
+                    <BsCashCoin />
+                </div>
             </div>
         </div>
         <div className="flex flex-row gap-4">
