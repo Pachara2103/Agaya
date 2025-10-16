@@ -5,8 +5,9 @@ import useCartDeleteModal from "../../hooks/useCartDeleteModal";
 import { CartTable } from "../CartPage/CartTable";
 import { CartActionButtons } from "../CartPage/CartActionButtons";
 import { CartTotalsSummary } from "../CartPage/CartTotalsSummary";
-import {CartCouponSubmit} from "../CartPage/CartCouponSubmit";
+import {CartCouponSubmit} from "./CartCouponSubmit";
 import { ConfirmationModal } from "../CartPage/ConfirmationModal";
+import AddressDropdown from "./AddressDropdown";
 
 function CheckoutPage() {
     const {
@@ -21,13 +22,18 @@ function CheckoutPage() {
         deleteItem
     } = useCartData();
 
+    const handleAddressSelect = (selectedAddress) => {
+        console.log("ที่อยู่ที่ถูกเลือก:", selectedAddress);
+        
+    };
+
     const [couponCode, setCouponCode] = useState("")
 
     const {
         isModalOpen,
         handleRemoveClick,
         handleConfirmDelete,
-        handleCancleDelete
+        handleCancelDelete
     } = useCartDeleteModal(deleteItem);
 
     const navigate = useNavigate();
@@ -42,14 +48,18 @@ function CheckoutPage() {
             {isModalOpen && (
                 <ConfirmationModal
                     onConfirm={handleConfirmDelete}
-                    onCancle={handleCancelDelete}
+                    onCancel={handleCancelDelete}
                 />
             )}
             <div className="max-w-6xl mx-auto">
                 <div className="text-sm text-gray-500 mb-8">
                     <span onClick={goToHome} className="cursor-pointer hover:text-red-600"> Home </span>
-                    <span onClick={goToCart} className="cursor-pointer hover:text-red-600"> /Cart</span>
-                    <span className="text-gray-800"> /Checkout</span>
+                    <span onClick={goToCart} className="cursor-pointer hover:text-red-600"> / Cart</span>
+                    <span className="text-gray-800"> / Checkout</span>
+                </div>
+
+                <div className="mb-8">
+                    <AddressDropdown onAddressSelect={handleAddressSelect}/>
                 </div>
 
                 <CartTable

@@ -4,7 +4,6 @@ import { CartTable } from "./CartTable";
 import { CartActionButtons } from "./CartActionButtons";
 import { CartTotalsSummary } from "./CartTotalsSummary";
 import { ConfirmationModal } from "./ConfirmationModal";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 
 const Cart = () => {
@@ -19,8 +18,6 @@ const Cart = () => {
     handleQuantityChange,
     deleteItem,
   } = useCartData();
-
-  const [couponCode, setCouponCode] = useState("");
   
   const { 
     isModalOpen, 
