@@ -1,50 +1,7 @@
 import OrderCard from "./OrderCard";
 import './scrollbar.css';
-const Order = () => {
-  //example product
-  const ordersByShop = [
-    {
-      shopName: "HAVIT Official Store",
-      products: [
-        {
-          _id: "generated-id-1",
-          productName: "HAVIT HV-G92 Gamepad",
-          price: 120,
-          image: ["https://i.postimg.cc/MGvFk4TQ/g92-2-500x500-1.png"],
-        },
-        {
-          _id: "generated-id-3",
-          productName: "Gaming Headset H2002d",
-          price: 450,
-          image: [],
-        },
-        {
-          _id: "generated-id-4",
-          productName: "RGB Gaming Mouse",
-          price: 250,
-          image: [],
-        },
-      ],
-    },
-    {
-      shopName: "AK-Keyboard Thailand",
-      products: [
-        {
-          _id: "generated-id-2",
-          productName: "AK-900 Wired Keyboard",
-          price: 960,
-          image: ["https://i.postimg.cc/dQRgy7cp/ak-900-01-500x500-1.png"],
-        },
-        {
-          _id: "generated-id-2",
-          productName: "AK-900 Wired Keyboard",
-          price: 960,
-          image: [],
-        },
-      ],
-    },
-  ];
 
+const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
   const totalProducts = ordersByShop.length;
 
   return (
@@ -60,9 +17,13 @@ const Order = () => {
               key={index}
               shopName={item.shopName}
               products={item.products}
+              isOrderReceivePage={isOrderReceivePage}
+              isOtherPage={isOtherPage}
             />
           ))}
         </div>
+
+
       </div>
     </div>
   );
