@@ -20,8 +20,6 @@ const userSchema = new mongoose.Schema({
   // ไม่ได้ใช้ login แล้ว เนื่องจาก sms เสียตัง
   phoneNumber: {
     type: String,
-    unique: true,
-    sparse: true,
     match: /^[0-9]{10}$/ // ตรวจสอบว่าเป็นเลข 10 หลัก
   },
   email: {

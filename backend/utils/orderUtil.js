@@ -33,7 +33,6 @@ exports.getOrderDetailsPipeline = () => {
         {
             $group: {
                 _id: "$_id",
-                orderStatus: { $first: "$orderStatus" },
                 orderDate: { $first: "$orderDate" },
                 customerId: { $first: "$customerId" },
                 vendorId: { $first: "$vendorId" },

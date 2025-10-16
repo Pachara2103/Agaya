@@ -1,24 +1,38 @@
 const mongoose = require('mongoose');
 
-const supportTicketSchema = new mongoose.Schema({
-  // ticketId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   required: true,
-  //   unique: true,
-  //   maxlength: 100
-  // },
-  // mongoose genarate this
-  customerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    maxlength: 100,
-    ref: 'Customer' // อ้างอิง Customer
+const adminResponseSubschema = new mongoose.Schema({
+  responseStatus: {
+    type: String,
+    enum: ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'],
+    required: true
+  },
+  message: {
+    type: String,
+    default: function() {
+      const defaultMessages = {
+        OPEN: "Your issue has been submitted and is awaiting review.",
+        IN_PROGRESS: "Your issue is being reviewed.",
+        RESOLVED: "Your issue has been resolved.",
+        CLOSED: "This ticket has been closed."
+      };
+      return defaultMessages[this.responseStatus];
+    }
+  },
+  adminResponseDate: {
+    type: Date,
+    default: Date.now
   },
   adminId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'Admin'
+  }
+}, { _id: false });
+
+const supportTicketSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
-    maxlength: 100,
-    ref: 'Admin' // อ้างอิง Admin
+    ref: 'User'
   },
   ticketDescription: {
     type: String,
@@ -26,13 +40,12 @@ const supportTicketSchema = new mongoose.Schema({
   },
   dateCreated: {
     type: Date,
-    required: true,
     default: Date.now
   },
   status: {
     type: String,
-    required: true,
-    maxlength: 20
+    enum: ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'],
+    default: 'OPEN'
   },
   priority: {
     type: Number,
@@ -46,8 +59,8 @@ const supportTicketSchema = new mongoose.Schema({
     maxlength: 100
   },
   adminResponse: {
-    type: String,
-    default: null // เพราะ Allow Nulls = Yes
+    type: [adminResponseSubschema],
+    require: true
   }
 }, {
   timestamps: true

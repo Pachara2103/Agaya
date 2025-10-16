@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
-// const { response } = require("../app"); ส่วนนี้ไว้ใช้ทำอะไรอ่ะ
+
+const returnProductSubschema = new mongoose.Schema({
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        min: 1
+    },
+}, { _id: false });
 
 const returnRequestSchema = new mongoose.Schema({
     orderId: {
@@ -14,16 +26,9 @@ const returnRequestSchema = new mongoose.Schema({
         ref: "Customer"
     },
 
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Product"
-    },
-
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1
+    products: {
+        type: [returnProductSubschema],
+        required: true
     },
 
     reason: {

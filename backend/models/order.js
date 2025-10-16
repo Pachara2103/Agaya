@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const trackingEventSubschema = require("./orderTracking.subschema")
+const {trackingEventSubschema} = require("./orderTracking.subschema")
 
 const orderSchema = new mongoose.Schema({
   orderDate: {
