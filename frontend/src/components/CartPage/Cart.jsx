@@ -32,6 +32,16 @@ const Cart = () => {
   const navigate = useNavigate();
   const goToHome = () => navigate("/");
 
+  const handleProcessToCheckout = () => {
+    const checkoutData = {
+      items: cartItems,
+      subtotal: subtotal,
+      shipping: shipping,
+      total: total
+    };
+    navigate('/checkout', {state: checkoutData});
+  };
+
   if (isLoading) return <div className="text-center p-20 text-lg"><p>Loading Cart Data...</p></div>;
   if (error) return <div className="text-center p-20 text-lg text-red-600"><p>Error: {error}</p></div>;
 
@@ -62,14 +72,15 @@ const Cart = () => {
           onUpdateCart={fetchCartData}
         />
 
-        {/* Totals Summary Component */}
-        <CartTotalsSummary
-          subtotal={subtotal}
-          shipping={shipping}
-          total={total}
-          couponCode={couponCode}
-          onCouponChange={(e) => setCouponCode(e.target.value)}
-        />
+        <div className="flex justify-end">
+          {/* Totals Summary Component */}
+          <CartTotalsSummary
+            subtotal={subtotal}
+            shipping={shipping}
+            total={total}
+            onProcessToCheckout={handleProcessToCheckout}
+          />
+        </div>
       </div>
     </div>
   );
