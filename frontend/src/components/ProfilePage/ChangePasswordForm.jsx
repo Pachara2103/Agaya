@@ -86,7 +86,7 @@ function PasswordForm() {
 
                         {error && <p className="text-red-700 bg-red-200 p-3 rounded text-center my-3">{error}</p>}
 
-                        <button className="w-full bg-teal-400 text-white rounded-md font-bold transition-colors duration-300 hover:bg-teal-500" 
+                        <button className="w-full h-10 bg-teal-400 text-white rounded-md font-bold transition-colors duration-300 hover:bg-teal-500" 
                          onClick={handleSubmit}
                          disabled={isLoading}
                         >
