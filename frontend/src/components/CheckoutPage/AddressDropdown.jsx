@@ -109,7 +109,6 @@ function AddressDropdown({onAddressSelect}) {
                     onChange={handleSelectChange}
                     className="w-full p-3 bg-gray-100 rounded-md focus:outline-none"
                 >
-                    <option value="" disabled>เลือกที่อยู่ที่จัดส่ง</option>
                     {addresses.map(address => (
                         <option key={address._id} value={address._id}>
                             {`${address.name} - ${address.address}`}
