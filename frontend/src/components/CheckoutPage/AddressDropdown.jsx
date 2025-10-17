@@ -100,7 +100,6 @@ function AddressDropdown({onAddressSelect}) {
     };
 
     if (isLoading) return <p className="text-gray-500">กำลังโหลดที่อยู่...</p>;
-    if (addresses.length === 0) return null;
 
     return (
         <div className="mb-6">
