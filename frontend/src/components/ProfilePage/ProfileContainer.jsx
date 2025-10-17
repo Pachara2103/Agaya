@@ -173,11 +173,11 @@ function ProfileContainer() {
           {currentPanel === "profile" && <Profile userData={userData} />}
           {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
           {currentPanel === "addresses" ? <Address /> : ""}
-          {currentPanel === "order" ? <Order isOrderReceivePage={false} isOtherPage={false} ordersByShop={ordersByShop} /> : ""}
-          {currentPanel === "order-receive" ? <Order isOrderReceivePage={true} isOtherPage={false} ordersByShop={ordersByShop}/> : ""}
-          {currentPanel === "complete" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
-          {currentPanel === "return-refund" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
-          {currentPanel === "cancelled" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
+          {currentPanel === "order" ? <Order isOrderReceivePage={false} isOtherPage={false} page={1} /> : ""}
+          {currentPanel === "order-receive" ? <Order isOrderReceivePage={true} isOtherPage={false} page={2}/> : ""}
+          {currentPanel === "complete" ? <Order isOrderReceivePage={false} isOtherPage={true} page={3} /> : ""}
+          {currentPanel === "return-refund" ? <Order isOrderReceivePage={false} isOtherPage={true} page={4} /> : ""}
+          {currentPanel === "cancelled" ? <Order isOrderReceivePage={false} isOtherPage={true} page={5} /> : ""}
         </div>
       </div>
     </div>

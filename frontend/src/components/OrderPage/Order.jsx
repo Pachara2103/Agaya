@@ -1,9 +1,22 @@
 import OrderCard from "./OrderCard";
 import './scrollbar.css';
+import useOrderData from "../../hooks/useOrderData";
 
-const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
-  const totalProducts = ordersByShop.length;
-
+const Order = ({isOrderReceivePage,isOtherPage, page}) => {
+  /*
+    base on 2 boolean, using order hooks on this page
+  */
+  const { filteredOrders, cancelOrder } = useOrderData(page)
+  // fetchOrderData
+  // console.log("before filter", orders)
+  const totalProducts = filteredOrders.length;
+  // console.log("test")
+  // orders.map((item, index) => {
+  //   console.log(item, index)
+  //   console.log(item.storeName)
+  //   console.log(item.orderTracking.length === 1)
+  // })
+  // console.log("after filter", orders)
   return (
     <div className="bg-[#F8F8F8] p-4 sm:p-8 font-sans overflow-auto h-150 scrollbar">
       <div className="max-w-4xl mx-auto">
@@ -11,14 +24,23 @@ const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
           รายการสินค้า {totalProducts} รายการ
         </h1>
 
+        {/* using props 2 boolean to indicate page */}
+        {/* 
+          props
+          key: for sort ?
+          storeName: 
+          products: ? populate on {quantity, price, name, }
+        */}
         <div className="space-y-6">
-          {ordersByShop.map((item, index) => (
+          {filteredOrders.map((item, index) => (
             <OrderCard
               key={index}
-              shopName={item.shopName}
-              products={item.products}
+              orderId={item._id}
+              shopName={item.storeName}
+              products={item.contains}
               isOrderReceivePage={isOrderReceivePage}
               isOtherPage={isOtherPage}
+              onCancel={cancelOrder}
             />
           ))}
         </div>

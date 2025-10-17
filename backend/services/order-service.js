@@ -116,7 +116,7 @@ exports.checkoutOrder = async (orderData, user) => {
 };
 
 const statusFlow = {
-  ORDER_RECEIVED: { next: ["PICKED_UP"], roles: ["vendor", "admin"] },
+  ORDER_RECEIVED: { next: ["PICKED_UP", "CANCELLED"], roles: ["customer","vendor", "admin"] },
   PICKED_UP: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   IN_TRANSIT: { next: ["DELIVERED", "FAILED_ATTEMPT"], roles: ["vendor", "admin"] },
   FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
@@ -129,7 +129,8 @@ const defaultDescriptions = {
   IN_TRANSIT: 'พัสดุอยู่ระหว่างขนส่ง',
   FAILED_ATTEMPT: 'การจัดส่งพัสดุไม่สำเร็จ',
   DELIVERED: 'จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว',
-  COMPLETED: 'ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์'
+  COMPLETED: 'ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์',
+  CANCELLED: 'คำสั่งซื้อถูกยกเลิก'
 };
 
 const checkAuth = (Status, user, order) => {
@@ -160,7 +161,8 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
       'IN_TRANSIT',
       'DELIVERED',
       'FAILED_ATTEMPT',
-      'COMPLETED'
+      'COMPLETED',
+      'CANCELLED'
     ];
     if (!validStatuses.includes(newStatus)) {
       throw new createError(

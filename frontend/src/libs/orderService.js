@@ -1,0 +1,51 @@
+import { API_URL } from "./api";
+import Cookies from "js-cookie";
+
+const getAuthHeaders = () => {
+  const token = Cookies.get('token');
+  if (!token) {
+    return { "Content-Type": "application/json" };
+  }
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+// @desc    Fetch Orders By CustomerId and token
+// @route   GET /api/v1/agaya/orders/customer/:cid
+// @access  Private
+export const getOrdersByCustomer = async (cid) => {
+  try {
+    // fetch from route
+    const res = await fetch(`${API_URL}/orders/customer/${cid}`, {
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Server Error");
+  }
+};
+
+// @desc    Add Order Tracking Status to OrderTracking
+// @route   PUT /api/v1/agaya/orders/:oid
+// @access  Private (relative to customer, vendor, admin)
+// for more detail please check in backend/services/order-service.js
+export const addOrderTrackingEvent = async (oid, newStatus, description) => {
+  try {
+    const res = await fetch(`${API_URL}/orders/${oid}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        newStatus: newStatus,
+        description: description
+      })
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Server Error");
+  }
+}

@@ -8,7 +8,8 @@ const defaultDescriptions = {
     DELIVERED: "จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว",
     COMPLETED: "ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์",
     DISPUTED: "สินค้ากำลังอยู่ระหว่างการคืนสินค้า",
-    REFUNDED: "สินค้าถูกส่งคืนไปยังผู้ขายเรียบร้อยแล้ว"
+    REFUNDED: "สินค้าถูกส่งคืนไปยังผู้ขายเรียบร้อยแล้ว",
+    CANCELLED: "คำสั่งซื้อถูกยกเลิก"
 };
 
 exports.trackingEventSubschema = new mongoose.Schema({
