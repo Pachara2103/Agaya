@@ -38,7 +38,8 @@ const StatusTracking = ({
 
   return (
     <div>
-      {!showstatus && !isOrderReceivePage && (
+
+      {/* {!showstatus && !isOrderReceivePage && (
         <div
           onClick={showStatus}
           className="flex justify-center items-center p-3 border-t border-gray-200 text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors"
@@ -59,8 +60,9 @@ const StatusTracking = ({
             <FaChevronUp />
             <span className="ml-2">ซ่อน</span>
           </div>
-        </div>
-      )}
+        </div> 
+      )} */}
+      {/* ดูรายละเอียดเพิ่มเติม & ซ่อน comment ไว้เผื่อใช้ในอันอื่น */}
 
       {isOrderReceivePage && (
         <div className="space-y-2">
