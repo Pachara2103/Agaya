@@ -16,16 +16,8 @@ const getAuthHeaders = () => {
 // @desc    Fetch Orders By CustomerId and token
 // @route   GET /api/v1/agaya/orders/customer/:cid
 // @access  Private
-export const getOrdersByCustomer= async () => {
+export const getOrdersByCustomer= async (cid) => {
   try {
-    // using this to retrieve customerId T^T
-    const meResponse = await getMe();
-    let cid = null
-    cid = meResponse.data?._id;
-    if (!cid) {
-        console.error("Get Order failed")
-        throw new Error("Cannot retrieve customerId")
-    }
     // fetch from route
     const res = await fetch(`${API_URL}/orders/customer/${cid}`, {
       method: "GET",

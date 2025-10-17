@@ -1,9 +1,12 @@
 import OrderCard from "./OrderCard";
 import './scrollbar.css';
+import useOrderData from "../../hooks/useOrderData";
 
 const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
   const totalProducts = ordersByShop.length;
-
+  const { orders, fetchOrderData } = useOrderData()
+  // fetchOrderData
+  console.log(orders)
   return (
     <div className="bg-[#F8F8F8] p-4 sm:p-8 font-sans overflow-auto h-150 scrollbar">
       <div className="max-w-4xl mx-auto">
