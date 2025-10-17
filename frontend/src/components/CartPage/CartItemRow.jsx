@@ -1,4 +1,3 @@
-import React from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "./CartIcon"
 import { SelectionCircle } from "./SelectionCircle"
 

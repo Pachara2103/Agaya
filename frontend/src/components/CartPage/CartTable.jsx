@@ -1,4 +1,4 @@
-import { StoreGroup } from "./StoreGroup"; 
+import { StoreGroup } from "./StoreGroup";
 
 export const CartTable = ({ groupedItems, onQuantityChange, onRemoveClick, isSelected, onToggleSelect }) => {
   const storeNames = Object.keys(groupedItems);

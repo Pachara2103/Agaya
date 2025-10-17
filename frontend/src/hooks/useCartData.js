@@ -91,12 +91,21 @@ const useCartData = () => {
     }
   };
 
-  const subtotal = cartItems.reduce(
+  const selectedItems = cartItems.filter(item =>
+    selectedItemIds.includes(item._id)
+  );
+
+  const selectedSubtotal = selectedItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const shipping = 0;
-  const total = subtotal + shipping;
+  const selectedShipping = 0;
+  const selectedTotal = selectedSubtotal + selectedShipping;
+
+  const fullCartTotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
   const groupedCartItems = cartItems.reduce((groups, item) => {
     const storeName = item.storeName
@@ -121,15 +130,17 @@ const useCartData = () => {
     cartItems,
     isLoading,
     error,
-    subtotal,
-    shipping,
-    total,
     selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
+    toggleSelectItem,
     groupedCartItems,
-    toggleSelectItem
+    selectedItems,
+    selectedSubtotal,
+    selectedShipping,
+    selectedTotal,
+    cartId
   };
 };
 

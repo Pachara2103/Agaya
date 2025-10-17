@@ -4,26 +4,24 @@ import { CartTable } from "./CartTable";
 import { CartActionButtons } from "./CartActionButtons";
 import { CartTotalsSummary } from "./CartTotalsSummary";
 import { ConfirmationModal } from "./ConfirmationModal";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 
 const Cart = () => {
   const {
-    cartItems,
     isLoading,
     error,
-    subtotal,
-    shipping,
-    total,
     selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
+    toggleSelectItem,
     groupedCartItems,
-    toggleSelectItem
+    selectedItems,
+    selectedSubtotal,
+    selectedShipping,
+    selectedTotal,
+    cartId
   } = useCartData();
-
-  const [couponCode, setCouponCode] = useState("");
   
   const { 
     isModalOpen, 
@@ -35,6 +33,23 @@ const Cart = () => {
   const navigate = useNavigate();
   const goToHome = () => navigate("/");
   console.log(groupedCartItems)
+
+  const handleProcessToCheckout = () => {
+    if (selectedItems.length === 0) {
+      alert("กรุณาเลือกสินค้าอย่างน้อย 1 ชิ้น");
+      return;
+    }
+
+    const checkoutData = {
+      items: selectedItems,
+      subtotal: selectedSubtotal,
+      shipping: selectedShipping,
+      total: selectedTotal,
+      cartId: cartId,
+      selectedItemIds: selectedItemIds
+    };
+    navigate('/checkout', {state: checkoutData});
+  };
 
   if (isLoading) return <div className="text-center p-20 text-lg"><p>Loading Cart Data...</p></div>;
   if (error) return <div className="text-center p-20 text-lg text-red-600"><p>Error: {error}</p></div>;
@@ -68,14 +83,15 @@ const Cart = () => {
           onUpdateCart={fetchCartData}
         />
 
-        {/* Totals Summary Component */}
-        <CartTotalsSummary
-          subtotal={subtotal}
-          shipping={shipping}
-          total={total}
-          couponCode={couponCode}
-          onCouponChange={(e) => setCouponCode(e.target.value)}
-        />
+        <div className="flex justify-end">
+          {/* Totals Summary Component */}
+          <CartTotalsSummary
+            subtotal={selectedSubtotal}
+            shipping={selectedShipping}
+            total={selectedTotal}
+            onProcessToCheckout={handleProcessToCheckout}
+          />
+        </div>
       </div>
     </div>
   );
