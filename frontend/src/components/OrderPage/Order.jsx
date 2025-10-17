@@ -6,7 +6,7 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
   /*
     base on 2 boolean, using order hooks on this page
   */
-  const { filteredOrders } = useOrderData(page)
+  const { filteredOrders, cancelOrder } = useOrderData(page)
   // fetchOrderData
   // console.log("before filter", orders)
   const totalProducts = filteredOrders.length;
@@ -35,10 +35,12 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
           {filteredOrders.map((item, index) => (
             <OrderCard
               key={index}
+              orderId={item._id}
               shopName={item.storeName}
               products={item.contains}
               isOrderReceivePage={isOrderReceivePage}
               isOtherPage={isOtherPage}
+              onCancel={cancelOrder}
             />
           ))}
         </div>

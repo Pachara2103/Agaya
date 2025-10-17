@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { getOrdersByCustomer } from "../libs/orderService"
+import { getOrdersByCustomer, addOrderTrackingEvent } from "../libs/orderService"
 import { getMe } from "../libs/authService"
 
 const useOrderData = (page) => {
@@ -47,19 +47,36 @@ const useOrderData = (page) => {
             case 3:
                 return orders.filter((item) => getLatestStatusKey(item).includes("COMPLETED"));
             case 4:
-                return orders.filter((item) => getLatestStatusKey(item).includes("CANCELLED"));
-            case 5:
                 return orders.filter((item) => getLatestStatusKey(item).includes("REFUNDED"));
+            case 5:
+                return orders.filter((item) => getLatestStatusKey(item).includes("CANCELLED"));
             default:
                 return orders;
         }
     }, [orders, page])
 
+    const cancelOrder = async (orderId) => {
+        try {
+            const newStatus = "CANCELLED";
+            // const description = "T^T no design related"; 
+            
+            await addOrderTrackingEvent(orderId, newStatus, null);
+            
+            await fetchOrderData(); 
+            
+            alert(`Order ${orderId} has been cancelled.`);
+        } catch (err) {
+            console.error("Cancellation Failed:", err);
+            alert("Failed to cancel the order. Please try again.");
+        }
+    }
+
     return {
         orders,
         setOrders,
         fetchOrderData,
-        filteredOrders
+        filteredOrders,
+        cancelOrder
     }
 }
 

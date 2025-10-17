@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StatusTracking from "./StatusTracking";
 
-const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage}) => {
+const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel}) => {
   const [showstatus, setShowStatus] = useState(false);
 
   const showStatus = () => {
@@ -10,6 +10,13 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage}) => {
   const hideStatus = () => {
     setShowStatus(false);
   };
+  // tmp module will use confirmation modal later
+  const handleCancel = () => {
+      if (window.confirm("really?")) {
+          onCancel(orderId);
+      }
+  };
+
   return (
     <div className="bg-[#F8F8F8] shadow-sm border border-gray-200">
       {/* head*/}
@@ -65,7 +72,9 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage}) => {
 
       {(!isOrderReceivePage&&!isOtherPage) && (
         <div className="w-full flex justify-center pb-3">
-          <button className="w-50 py-5 bg-[#B71F3B] rounded-md font-medium hover:bg-[#951a31] cursor-pointer">
+          <button
+            onClick={handleCancel}
+            className="w-50 py-5 bg-[#B71F3B] rounded-md font-medium hover:bg-[#951a31] cursor-pointer">
             Cancel
           </button>
         </div>
