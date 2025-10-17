@@ -8,7 +8,7 @@ export const ProductItemRow = ({item}) => {
                 <img
                     src={item.image?.[0] || "https://placehold.co/64x48/eee/ccc?text=Img"}
                     alt={item.productName}
-                    className="w-16 h-12 object-contain-rounded"
+                    className="w-16 h-12 object-contain"
                 />
                 <span>{item.productName}</span>  
             </div>
@@ -17,7 +17,7 @@ export const ProductItemRow = ({item}) => {
 
             <div className="col-span-2">x {item.quantity}</div>
 
-            <div className="col-span-2 text-right font-semibold">
+            <div className="col-span-1 text-right font-semibold">
                 ${(item.price * item.quantity).toFixed(2)}
             </div>
         </div>
