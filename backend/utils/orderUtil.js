@@ -53,6 +53,7 @@ exports.getOrderDetailsPipeline = () => {
                         name: "$product.productName",
                         price: "$product.price",
                         quantity: "$contains.quantity",
+                        image: "$product.image",
                         totalPrice: { $multiply: ["$product.price", "$contains.quantity"] },
                     },
                 },
