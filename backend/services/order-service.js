@@ -145,7 +145,7 @@ const checkAuth = (Status, user, order) => {
     }
   }
   return false;
-
+  
 }
 
 exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {

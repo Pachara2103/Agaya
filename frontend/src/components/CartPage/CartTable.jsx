@@ -1,4 +1,4 @@
-import { CartItemRow } from "./CartItemRow";
+import { StoreGroup } from "./StoreGroup"; 
 
 export const CartTable = ({ items, onQuantityChange, onRemoveClick }) => {
   const totalQuantity = items.reduce((sum, currentItem) => sum + currentItem.quantity, 0);
