@@ -17,7 +17,7 @@ export const ProductItemRow = ({item}) => {
 
             <div className="col-span-2">x {item.quantity}</div>
 
-            <div className="col-span-1 text-right font-semibold">
+            <div className="col-span-1 text-center font-semibold">
                 ${(item.price * item.quantity).toFixed(2)}
             </div>
         </div>

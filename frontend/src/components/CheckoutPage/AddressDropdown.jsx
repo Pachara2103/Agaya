@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import AddAddressModal from "./AddAddressModal";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -11,40 +11,46 @@ function AddressDropdown({onAddressSelect}) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const fetchUserAddresses = async () => {
-        const token = Cookies.get('token');
-        if (!token) {
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            const response = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const user = response.data.data;
-            setCurrentUser(user);
-                
-            if (response.data.data?._id) {
-                const userId = response.data.data._id;
-                const addressUrl = `http://localhost:5000/api/v1/Agaya/address/${userId}/addresses`;
-                const addressResponse = await axios.get(addressUrl, {
-                    headers: {Authorization: `Bearer ${token}`}
-                });
-                setAddresses(addressResponse.data);
-            } else {
-                setAddresses([]);
-            }
-        } catch(err) {
-            console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-        
     useEffect(() => {
+        const fetchUserAddresses = async () => {
+            const token = Cookies.get('token');
+            if (!token) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const response = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const user = response.data.data;
+                setCurrentUser(user);
+                    
+                if (response.data.data?._id) {
+                    const userId = response.data.data._id;
+                    const addressUrl = `http://localhost:5000/api/v1/Agaya/address/${userId}/addresses`;
+                    const addressResponse = await axios.get(addressUrl, {
+                        headers: {Authorization: `Bearer ${token}`}
+                    });
+                    const fetchedAddresses = addressResponse.data || [];
+                    setAddresses(fetchedAddresses);
+
+                    if (fetchedAddresses.length > 0 && !selectedAddressId) {
+                        const firstAddress = fetchedAddresses[0];
+                        setSelectedAddressId(firstAddress._id);
+                        onAddressSelect(firstAddress);
+                    }
+                } else {
+                    setAddresses([]);
+                }
+            } catch(err) {
+                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
         fetchUserAddresses();
-    }, []);
+    }, [selectedAddressId, onAddressSelect]);
 
     const handleSelectChange = (event) => {
         const id = event.target.value;

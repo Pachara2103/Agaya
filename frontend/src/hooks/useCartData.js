@@ -91,12 +91,6 @@ const useCartData = () => {
     }
   };
 
-  // const subtotal = cartItems.reduce(
-  //   (acc, item) => acc + item.price * item.quantity,
-  //   0
-  // );
-  // const shipping = 0;
-  // const total = subtotal + shipping;
   const selectedItems = cartItems.filter(item =>
     selectedItemIds.includes(item._id)
   );
@@ -136,15 +130,12 @@ const useCartData = () => {
     cartItems,
     isLoading,
     error,
-    subtotal: fullCartTotal,
-    shipping: 0,
-    total: fullCartTotal + 0,
     selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
-    groupedCartItems,
     toggleSelectItem,
+    groupedCartItems,
     selectedItems,
     selectedSubtotal,
     selectedShipping,

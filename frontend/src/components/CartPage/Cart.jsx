@@ -8,18 +8,14 @@ import { useNavigate } from "react-router-dom"
 
 const Cart = () => {
   const {
-    cartItems,
     isLoading,
     error,
-    subtotal,
-    shipping,
-    total,
     selectedItemIds,
     fetchCartData,
     handleQuantityChange,
     deleteItem,
-    groupedCartItems,
     toggleSelectItem,
+    groupedCartItems,
     selectedItems,
     selectedSubtotal,
     selectedShipping,
