@@ -31,11 +31,21 @@ exports.getOrderDetailsPipeline = () => {
         },
         { $unwind: "$product" },
         {
+            $lookup: {
+                from: "vendors",
+                localField: "vendorId",
+                foreignField: "_id",
+                as: "vendorDetails"
+            }
+        },
+        {$unwind: "$vendorDetails" },
+        {
             $group: {
                 _id: "$_id",
                 orderDate: { $first: "$orderDate" },
                 customerId: { $first: "$customerId" },
                 vendorId: { $first: "$vendorId" },
+                storeName: { $first: "$vendorDetails.storeName" },
                 orderTracking: { $first: "$orderTracking" }, 
                 contains: {
                     $push: {
