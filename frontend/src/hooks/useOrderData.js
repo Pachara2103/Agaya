@@ -16,9 +16,7 @@ const useOrderData = () => {
                 throw new Error("User not authenticated.");
             }
             const customerOrders = await getOrdersByCustomer(cid)
-            setOrders(
-                customerOrders
-            );    
+            setOrders(customerOrders?.data?.orders);    
         } catch (err) {
             console.error("Cart fetch error:", error);
             setOrders([]);

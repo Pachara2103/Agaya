@@ -25,20 +25,29 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage}) => {
         <div className="space-y-6">
           {products.map((product) => (
             <div key={product._id} className="flex items-center space-x-4">
-              <img
-                src={product.image[0]}
-                alt="image"
-                className="w-20 h-20 object-contain rounded-md"
-              />
+              {
+                product &&
+                product.image &&
+                product.image.length > 0 &&
+                (
+                  <img 
+                    src={product.image[0]} 
+                    alt={product.name || 'Product Image'} 
+                    className="w-20 h-20 object-contain rounded-md"
+                  />
+                )
+              }
               <div className="flex-grow flex flex-row gap-5">
                 <p className="text-gray-800 font-medium">
-                  {product.productName}
+                  {product.name}
                 </p>
-                <p className="text-black  font-medium">x1</p>
+                <p className="text-black  font-medium">
+                  x{product.quantity}
+                </p>
               </div>
               <div className="w-24 text-right">
                 <p className="text-gray-800 font-semibold">
-                  ${product.price.toLocaleString()}
+                  ${product.totalPrice.toLocaleString()}
                 </p>
               </div>
               <div className="w-32 text-right">

@@ -6,10 +6,16 @@ const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
   /*
     base on 2 boolean, using order hooks on this page
   */
-  const totalProducts = ordersByShop.length;
   const { orders, fetchOrderData } = useOrderData()
   // fetchOrderData
   console.log(orders)
+  const totalProducts = orders.length;
+  console.log("test")
+  orders.map((item, index) => {
+    console.log(item, index)
+    console.log(item.storeName)
+    console.log(item.contains)
+  })
   return (
     <div className="bg-[#F8F8F8] p-4 sm:p-8 font-sans overflow-auto h-150 scrollbar">
       <div className="max-w-4xl mx-auto">
@@ -25,11 +31,11 @@ const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
           products: ? populate on {quantity, price, name, }
         */}
         <div className="space-y-6">
-          {ordersByShop.map((item, index) => (
+          {orders.map((item, index) => (
             <OrderCard
               key={index}
-              shopName={item.shopName}
-              products={item.products}
+              shopName={item.storeName}
+              products={item.contains}
               isOrderReceivePage={isOrderReceivePage}
               isOtherPage={isOtherPage}
             />
