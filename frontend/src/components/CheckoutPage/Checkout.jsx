@@ -1,26 +1,37 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import useCartData from "../../hooks/useCartData";
+import {useEffect, useState} from "react";
+import {useNavigate, useLocation} from "react-router-dom";
 import {ProductTable} from "./ProductTable";
 import {CartCouponSubmit} from "./CartCouponSubmit";
 import AddressDropdown from "./AddressDropdown";
 import {PaymentBox} from "./PaymentBox";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 function CheckoutPage() {
-    const {
-        cartItems,
-        isLoading,
-        error,
-        subtotal,
-        shipping,
-        total,
-    } = useCartData();
-
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('cod');
     const [couponCode, setCouponCode] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const checkoutData = location.state;
+
+    if (!checkoutData || !checkoutData.items || checkoutData.items.length === 0) {
+        useEffect(() => {navigate('/cart');}, [navigate]);
+        return <div className="text-center p-20 text-lg"><p>ไม่มีสินค้าสำหรับชำระเงิน กำลังนำคุณกลับไปที่ตะกร้า...</p></div>
+    }
+
+    const {
+        items: selectedItems,
+        subtotal,
+        shipping,
+        total,
+        cartId,
+        selectedItemIds
+    } = checkoutData;
+    //console.log("hehe3", selectedItems);
 
     const handleAddressSelect = (address) => {
         setSelectedAddress(address);
@@ -41,7 +52,6 @@ function CheckoutPage() {
             return;
         }
 
-        const {cartId} = useCartData();
         if (!cartId) {
             setSubmitError("ไม่พบข้อมูลตะกร้าสินค้า");
             setIsSubmitting(false);
@@ -54,32 +64,36 @@ function CheckoutPage() {
 
             const orderPayload = {
                 cartId: cartId,
-                selectedItem: cartItems.map(item => item._id),
+                selectedItem: selectedItemIds,
                 paymentMethod: paymentMethod
             };
 
             const response = await axios.post('http://localhost:5000/api/v1/Agaya/orders/checkout', orderPayload, {
                 headers: {Authorization: `Bearer ${token}`}
             });
+            console.log("Backend Response Data:", response.data);
 
-            if (response.data.success) {
+            if (response.data) {
                 alert("สั่งซื้อสินค้าสำเร็จ!");
-                const newOrderId = response.data.createdOrders[0].order._id;
-                navigate('/confirm-order');
+
+                if (Array.isArray(response.data.data) && response.data.data.length > 0) {
+                    const newOrderId = response.data.data[0].order._id;
+                    navigate('/confirm-order');
+                    //navigate(`/order-status/${newOrderId}`); // พาไปหน้าติดตามสถานะ
+                } else {
+                    console.error("ไม่พบข้อมูล order ID ใน response.data.data");
+                    //navigate('order-history');
+                }
             }
         } catch(err) {
-            setSubmission(err.response?.data?.message || err.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
+            setSubmitError(err.response?.data?.message || err.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const navigate = useNavigate();
     const goToHome = () => navigate("/");
     const goToCart = () => navigate("/cart");
-
-    if (isLoading) return <div className="text-center p-20 text-lg"><p>Loading Cart Data...</p></div>
-    if (error) return <div className="text-center p-20 text-lg text-red-600"><p>Error: {error}</p></div>
 
     return (
         <div className="bg-white text-gray-800 p-4 sm:p-8 md:p-16">
@@ -95,7 +109,7 @@ function CheckoutPage() {
                 </div>
 
                 <ProductTable
-                    items={cartItems}
+                    items={selectedItems}
                 />
 
                 <div className="flex flex-col md:flex-row justify-between items-start gap-8 ">
@@ -114,6 +128,7 @@ function CheckoutPage() {
                         onCancelOrder={handleCancelOrder}
                     />
                 </div>
+                {submitError && <p className="text-red-500 text-center mt-4">{submitError}</p>}
             </div>
         </div>
     );

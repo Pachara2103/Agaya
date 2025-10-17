@@ -19,7 +19,12 @@ const Cart = () => {
     handleQuantityChange,
     deleteItem,
     groupedCartItems,
-    toggleSelectItem
+    toggleSelectItem,
+    selectedItems,
+    selectedSubtotal,
+    selectedShipping,
+    selectedTotal,
+    cartId
   } = useCartData();
   
   const { 
@@ -34,11 +39,18 @@ const Cart = () => {
   console.log(groupedCartItems)
 
   const handleProcessToCheckout = () => {
+    if (selectedItems.length === 0) {
+      alert("กรุณาเลือกสินค้าอย่างน้อย 1 ชิ้น");
+      return;
+    }
+
     const checkoutData = {
-      items: cartItems,
-      subtotal: subtotal,
-      shipping: shipping,
-      total: total
+      items: selectedItems,
+      subtotal: selectedSubtotal,
+      shipping: selectedShipping,
+      total: selectedTotal,
+      cartId: cartId,
+      selectedItemIds: selectedItemIds
     };
     navigate('/checkout', {state: checkoutData});
   };
@@ -78,9 +90,9 @@ const Cart = () => {
         <div className="flex justify-end">
           {/* Totals Summary Component */}
           <CartTotalsSummary
-            subtotal={subtotal}
-            shipping={shipping}
-            total={total}
+            subtotal={selectedSubtotal}
+            shipping={selectedShipping}
+            total={selectedTotal}
             onProcessToCheckout={handleProcessToCheckout}
           />
         </div>
