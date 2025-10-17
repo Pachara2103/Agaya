@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { getOrdersByCustomer } from "../libs/orderService"
 import { getMe } from "../libs/authService"
 
-const useOrderData = () => {
+const useOrderData = (page) => {
     const [orders, setOrders] = useState([])    
 
     const fetchOrderData = async () => {
@@ -26,10 +26,40 @@ const useOrderData = () => {
         fetchOrderData();
     }, []);
 
+    const filteredOrders = useMemo(() => {
+        if (!orders || orders.length === 0) {
+            return [];
+        }
+        const getLatestStatusKey = (item) => item.orderTracking.length > 0 ? item.orderTracking[item.orderTracking.length - 1].statusKey : '';
+        switch(page) {
+            case 1:
+                return orders.filter((item) => (item.orderTracking.length === 1))
+            case 2:
+                return orders.filter((item) => {
+                    const latestStatusKey = getLatestStatusKey(item);
+                    return item.orderTracking.length > 1 && (
+                        latestStatusKey.includes("PICKED_UP") ||
+                        latestStatusKey.includes("IN_TRANSIT") ||
+                        latestStatusKey.includes("FAILED_ATTEMPT") ||
+                        latestStatusKey.includes("DELIVERED")
+                    );
+                })
+            case 3:
+                return orders.filter((item) => getLatestStatusKey(item).includes("COMPLETED"));
+            case 4:
+                return orders.filter((item) => getLatestStatusKey(item).includes("CANCELLED"));
+            case 5:
+                return orders.filter((item) => getLatestStatusKey(item).includes("REFUNDED"));
+            default:
+                return orders;
+        }
+    }, [orders, page])
+
     return {
         orders,
         setOrders,
-        fetchOrderData
+        fetchOrderData,
+        filteredOrders
     }
 }
 
