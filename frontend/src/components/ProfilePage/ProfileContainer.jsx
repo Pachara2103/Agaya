@@ -175,8 +175,9 @@ function ProfileContainer() {
           {currentPanel === "addresses" ? <Address /> : ""}
           {currentPanel === "order" ? <Order isOrderReceivePage={false} isOtherPage={false} ordersByShop={ordersByShop} /> : ""}
           {currentPanel === "order-receive" ? <Order isOrderReceivePage={true} isOtherPage={false} ordersByShop={ordersByShop}/> : ""}
-          {currentPanel === "complete"||"return-refund"||"cancelled" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
-
+          {currentPanel === "complete" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
+          {currentPanel === "return-refund" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
+          {currentPanel === "cancelled" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
         </div>
       </div>
     </div>
