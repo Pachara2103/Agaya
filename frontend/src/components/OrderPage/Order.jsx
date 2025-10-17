@@ -2,20 +2,41 @@ import OrderCard from "./OrderCard";
 import './scrollbar.css';
 import useOrderData from "../../hooks/useOrderData";
 
-const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
+const Order = ({isOrderReceivePage,isOtherPage, page}) => {
   /*
     base on 2 boolean, using order hooks on this page
   */
-  const { orders, fetchOrderData } = useOrderData()
+  const { orders, setOrders, fetchOrderData } = useOrderData()
   // fetchOrderData
-  console.log(orders)
-  const totalProducts = orders.length;
-  console.log("test")
-  orders.map((item, index) => {
-    console.log(item, index)
-    console.log(item.storeName)
-    console.log(item.contains)
-  })
+  // console.log("before filter", orders)
+  let totalProducts = orders.length;
+  // console.log("test")
+  let filteredOrders = orders;
+  // orders.map((item, index) => {
+  //   console.log(item, index)
+  //   console.log(item.storeName)
+  //   console.log(item.orderTracking.length === 1)
+  // })
+  if (page === 1) {
+    filteredOrders = orders.filter((item) => (item.orderTracking.length === 1))
+  } else if (page === 2) {
+    filteredOrders = orders.filter((item) => {
+      const latestStatusKey = item.orderTracking[item.orderTracking.length - 1].statusKey;
+      return item.orderTracking.length > 1 && (
+        latestStatusKey.includes("PICKED_UP") ||
+        latestStatusKey.includes("IN_TRANSIT") ||
+        latestStatusKey.includes("FAILED_ATTEMPT")
+      );
+    })
+  } else if (page === 3) {
+    filteredOrders = orders.filter((item) => (item.orderTracking[item.orderTracking.length - 1].statusKey.includes("DELIVERED")))
+  } else if (page === 4) {
+    filteredOrders = orders.filter((item) => (item.orderTracking[item.orderTracking.length - 1].statusKey.includes("CANCELLED")))
+  } else if (page === 5) {
+    filteredOrders = orders.filter((item) => (item.orderTracking[item.orderTracking.length - 1].statusKey.includes("REFUNDED")))
+  }
+  totalProducts = filteredOrders.length
+  // console.log("after filter", orders)
   return (
     <div className="bg-[#F8F8F8] p-4 sm:p-8 font-sans overflow-auto h-150 scrollbar">
       <div className="max-w-4xl mx-auto">
@@ -31,7 +52,7 @@ const Order = ({isOrderReceivePage,isOtherPage, ordersByShop}) => {
           products: ? populate on {quantity, price, name, }
         */}
         <div className="space-y-6">
-          {orders.map((item, index) => (
+          {filteredOrders.map((item, index) => (
             <OrderCard
               key={index}
               shopName={item.storeName}

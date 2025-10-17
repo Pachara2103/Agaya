@@ -25,8 +25,10 @@ const useOrderData = () => {
     useEffect(() => {
         fetchOrderData();
     }, []);
+
     return {
         orders,
+        setOrders,
         fetchOrderData
     }
 }
