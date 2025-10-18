@@ -62,6 +62,42 @@ exports.requestReturn = async (requestBody, user) => {
 
 }
 
+exports.submitReturnTrackingIdService = async (req, body, user) => {
+    const { orderId } = req;
+    const { trackingId } = body;
+    try {
+        if (!trackingId || trackingId.trim() === "") {
+            throw new createError(400, "Tracking ID is required.");
+        }
+        
+        const returnReq = await ReturnRequest.findOne({ orderId: orderId, customerId: user._id });
+        if (!returnReq) throw new createError(404, "Return request not found for this order.");
+
+        if (returnReq.customerId.toString() !== user._id.toString()) {
+             throw new createError(403, "Unauthorized request.");
+        }
+        if (returnReq.status !== "APPROVED") {
+            throw new createError(400, `Cannot submit tracking ID. Return request status is ${returnReq.status}. Must be APPROVED.`);
+        }
+
+        returnReq.trackingId = trackingId.trim();
+        returnReq.status = "SHIPPED"; 
+        returnReq.response = `Tracking ID (${trackingId}) received. Waiting for vendor to confirm reception.`;
+        
+        await returnReq.save();
+
+        const order = await Order.findById(orderId);
+        if (order) {
+            order.orderTracking.push({statusKey: "RETURN_SHIPPED"})
+            await order.save();
+        }
+        
+        return returnReq;
+    } catch (error) {
+        throw error;
+    }
+}
+
 exports.processReturn = async (returnId, requestBody, user) => {
     try {
         const { status, response } = requestBody;
@@ -81,6 +117,8 @@ exports.processReturn = async (returnId, requestBody, user) => {
                 if (status === "APPROVED") {
                     returnReq.status = status;
                     returnReq.response = "Plese return the item to the vendor";
+                    order.orderTracking.push({statusKey: "APPROVED"}) 
+                    await order.save();
                 }
                 else if (status === "REJECTED") {
                     returnReq.status = status;
@@ -97,7 +135,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
         }
 
         if (hasRole(user, ["admin"]) || order.vendorId.toString() === user._id.toString()) {
-            if (returnReq.status === "APPROVED") {
+            if (returnReq.status === "SHIPPED") {
                 if (status === "COMPLETED") {
                     let totalRefunded = 0;
                     for (const item of returnReq.products) {

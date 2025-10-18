@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { getOrdersByCustomer, addOrderTrackingEvent, cancelCustomerOrder, requestOrderReturn } from "../libs/orderService"
+import { getOrdersByCustomer, addOrderTrackingEvent, cancelCustomerOrder, requestOrderReturn, submitReturnTrackingId } from "../libs/orderService"
 import { getMe } from "../libs/authService"
 
 const useOrderData = (page) => {
@@ -55,6 +55,8 @@ const useOrderData = (page) => {
                     const latestStatusKey = getLatestStatusKey(item);
                     return item.orderTracking.length > 1 && (
                         latestStatusKey.includes("REFUNDED") || 
+                        latestStatusKey.includes("APPROVED") || 
+                        latestStatusKey.includes("RETURN_SHIPPED") || 
                         latestStatusKey.includes("DISPUTED") 
                     );
                 })
@@ -105,6 +107,19 @@ const useOrderData = (page) => {
         }
     }
 
+    const submitTrackingId = async (orderId, trackingId) => {
+        try {
+            const result = await submitReturnTrackingId(orderId, trackingId);
+            await fetchOrderData(); // Re-fetch orders to update the list
+            alert(`Tracking ID ${trackingId} for Order ${orderId} submitted successfully!`);
+            return result;
+        } catch (err) {
+            console.error("Submission Failed:", err);
+            alert(err.message || "Failed to submit tracking ID. Please try again.");
+            return null;
+        }
+    }
+
     return {
         orders,
         setOrders,
@@ -112,7 +127,8 @@ const useOrderData = (page) => {
         filteredOrders,
         cancelOrder,
         confirmReceive, 
-        submitReturnRequest
+        submitReturnRequest,
+        submitTrackingId
     }
 }
 

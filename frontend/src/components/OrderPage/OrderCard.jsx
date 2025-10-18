@@ -1,8 +1,9 @@
 import { useState } from "react";
 import StatusTracking from "./StatusTracking";
 import { ReturnStatusDisplay } from "./ReturnStatusDisplay";
+import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
 
-const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn, latestStatusKey, page, storeAddress}) => {
+const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn, onSubmitTrackingId, latestStatusKey, page, storeAddress}) => {
   const [showstatus, setShowStatus] = useState(false);
 
   const showStatus = () => {
@@ -97,6 +98,13 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
         </div>
       )}
 
+      {page === 4 && latestStatusKey === 'APPROVED' && (
+          <ReturnTrackingIdForm 
+              orderId={orderId}
+              onSubmitTrackingId={onSubmitTrackingId}
+          />
+      )}
+
       {(!isOrderReceivePage&&!isOtherPage) && (
         <div className="w-full flex justify-center pb-3">
           <button
@@ -118,6 +126,7 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
           orderId={orderId}
           onReceive={onReceive}
           onSubmitReturn={onSubmitReturn}
+          latestStatusKey={latestStatusKey}
         />
       )}
     </div>

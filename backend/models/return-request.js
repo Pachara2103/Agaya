@@ -38,10 +38,16 @@ const returnRequestSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ["PENDING", "APPROVED", "REJECTED", "COMPLETED"],
+        enum: ["PENDING", "APPROVED", "REJECTED", "SHIPPED", "RECEIVED", "COMPLETED"],
         default: "PENDING",
     },
-
+    trackingId: {
+        type: String,
+        unique: true
+    },
+    trackingUrl: {
+        type: String, 
+    },
     refundAmount: {
         type: Number,
         default: 0
