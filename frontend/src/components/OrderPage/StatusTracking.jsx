@@ -8,7 +8,11 @@ const StatusTracking = ({
   showStatus,
   hideStatus,
   isOrderReceivePage,
-  products
+  products,
+  orderStatus,
+  orderId, 
+  onReceive, 
+  onSubmitReturn
 }) => {
   const [isReceive, setIsReceive] = useState(false);
   const [isReturn, setIsReturn] = useState(false);
@@ -27,12 +31,20 @@ const StatusTracking = ({
   const closeConfirmReturn = () => {
     setConfirmReturn(false);
   };
-  const handleConfirmReceive = () => {
-    setIsReceive(true);
+  const handleConfirmReceive = async () => {
+    // Call the hook function
+    await onReceive(orderId); 
+    console.log(orderId)
+    setIsReceive(true); 
     closeConfirmReceive();
   };
-  const handleConfirmReturn = () => {
-    setIsReturn(true);
+  const handleConfirmReturn = async (overallReason, productsToReturn) => {
+    const apiProducts = productsToReturn.map(p => ({ productId: p.productId, quantity: p.quantity }));
+    const success = await onSubmitReturn(orderId, apiProducts, overallReason); 
+    
+    if (success) {
+        setIsReturn(true); 
+    }
     closeConfirmReturn();
   };
 
@@ -67,7 +79,7 @@ const StatusTracking = ({
       {isOrderReceivePage && (
         <div className="space-y-2">
           <div className="h-0.5 mx-10 rounded-2xl bg-[#CCCCCC]"></div>
-          <OrderStatus Status={ex2} />
+          <OrderStatus Status={orderStatus} />
           <div className="h-0.5 mx-10 rounded-2xl bg-[#CCCCCC]"></div>
 
           <div className="w-full  p-3 pt-1 text-white flex items-center justify-center">

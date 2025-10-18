@@ -6,9 +6,9 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
   /*
     base on 2 boolean, using order hooks on this page
   */
-  const { filteredOrders, cancelOrder } = useOrderData(page)
+  const { filteredOrders, cancelOrder, confirmReceive, submitReturnRequest } = useOrderData(page)
   // fetchOrderData
-  // console.log("before filter", orders)
+  console.log("before filter", filteredOrders)
   const totalProducts = filteredOrders.length;
   // console.log("test")
   // orders.map((item, index) => {
@@ -34,13 +34,16 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
         <div className="space-y-6">
           {filteredOrders.map((item, index) => (
             <OrderCard
-              key={index}
+              key={item._id || index}
               orderId={item._id}
               shopName={item.storeName}
               products={item.contains}
+              orderStatus={item.orderTracking}
               isOrderReceivePage={isOrderReceivePage}
               isOtherPage={isOtherPage}
               onCancel={cancelOrder}
+              onReceive={confirmReceive} 
+              onSubmitReturn={submitReturnRequest}
             />
           ))}
         </div>

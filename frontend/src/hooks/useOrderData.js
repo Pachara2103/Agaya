@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { getOrdersByCustomer, addOrderTrackingEvent, cancelCustomerOrder } from "../libs/orderService"
+import { getOrdersByCustomer, addOrderTrackingEvent, cancelCustomerOrder, requestOrderReturn } from "../libs/orderService"
 import { getMe } from "../libs/authService"
 
 const useOrderData = (page) => {
@@ -70,12 +70,38 @@ const useOrderData = (page) => {
         }
     }
 
+    const confirmReceive = async (orderId) => {
+        try {
+            await addOrderTrackingEvent(orderId, "COMPLETED", null);
+            await fetchOrderData(); 
+            alert(`Order ${orderId} confirmed as COMPLETED.`);
+        } catch (err) {
+            console.error("Receive Confirmation Failed:", err);
+            alert("Failed to confirm order receipt.");
+        }
+    }
+
+    const submitReturnRequest = async (orderId, products, reason) => {
+        try {
+            const result = await requestOrderReturn(orderId, products, reason);
+            await fetchOrderData(); 
+            alert(`Return request for Order ${orderId} submitted successfully!`);
+            return result;
+        } catch (err) {
+            console.error("Return Request Failed:", err);
+            alert(err.message || "Failed to submit return request. Check console for details.");
+            return null;
+        }
+    }
+
     return {
         orders,
         setOrders,
         fetchOrderData,
         filteredOrders,
-        cancelOrder
+        cancelOrder,
+        confirmReceive, 
+        submitReturnRequest
     }
 }
 

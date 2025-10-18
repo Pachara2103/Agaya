@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StatusTracking from "./StatusTracking";
 
-const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel}) => {
+const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn}) => {
   const [showstatus, setShowStatus] = useState(false);
 
   const showStatus = () => {
@@ -87,6 +87,10 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
           hideStatus={hideStatus}
           isOrderReceivePage={isOrderReceivePage}
           products={products}
+          orderStatus={orderStatus}
+          orderId={orderId}
+          onReceive={onReceive}
+          onSubmitReturn={onSubmitReturn}
         />
       )}
     </div>
