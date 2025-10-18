@@ -135,6 +135,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
 exports.getReturnReqs = async (user, query = {}) => {
     try {
         const filter = hasRole(user, ["admin"]) ? {} : { customerId: user._id };
+        if (query.status) filter.status = query.status;
         let page = parseInt(query.page) > 0 ? parseInt(query.page) : 1;
         const limit = parseInt(query.limit) > 0 ? parseInt(query.limit) : 10;
         const totalRequest = await ReturnRequest.countDocuments(filter);
@@ -144,7 +145,42 @@ exports.getReturnReqs = async (user, query = {}) => {
 
         const skip = (page - 1) * limit;
         const returnReqs = await ReturnRequest.find(filter)
-            .populate("orderId productId")
+            .populate("orderId products.productId")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        
+        return {
+            returnReqs,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalRequest,
+                limit
+            }
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.getReturnReqsByVendor = async (user, query = {}) => {
+    try {
+        const filter = {};
+        const vendorOrders = await Order.find({ vendorId: user._id }).select("_id");
+        filter.orderId = { $in: vendorOrders.map(o => o._id) };
+        if (query.status) filter.status = query.status;
+
+        let page = parseInt(query.page) > 0 ? parseInt(query.page) : 1;
+        const limit = parseInt(query.limit) > 0 ? parseInt(query.limit) : 10;
+        const totalRequest = await ReturnRequest.countDocuments(filter);
+        const totalPages = Math.ceil(totalRequest / limit)||1;
+
+        if (page > totalPages) page = totalPages
+
+        const skip = (page - 1) * limit;
+        const returnReqs = await ReturnRequest.find(filter)
+            .populate("orderId products.productId")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
