@@ -9,7 +9,9 @@ const defaultDescriptions = {
     COMPLETED: "ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์",
     DISPUTED: "สินค้ากำลังอยู่ระหว่างการคืนสินค้า",
     REFUNDED: "สินค้าถูกส่งคืนไปยังผู้ขายเรียบร้อยแล้ว",
-    CANCELLED: "คำสั่งซื้อถูกยกเลิก"
+    CANCELLED: "คำสั่งซื้อถูกยกเลิก",
+    APPROVED: "คำขอคืนสินค้าได้รับการอนุมัติ กรุณาจัดส่งสินค้าคืน",
+    RETURN_SHIPPED: "ลูกค้าส่งสินค้าคืนแล้วและอยู่ระหว่างขนส่ง"
 };
 
 exports.trackingEventSubschema = new mongoose.Schema({
@@ -27,9 +29,9 @@ exports.trackingEventSubschema = new mongoose.Schema({
             'COMPLETED',
             'DISPUTED',
             'CANCELLED',
-            'REFUNDED'
-
-
+            'REFUNDED',
+            'APPROVED', 
+            'RETURN_SHIPPED'
             // when customer click receive button on order history
             // else after 7 days make it complete
         ]

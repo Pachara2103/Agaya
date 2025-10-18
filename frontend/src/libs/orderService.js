@@ -95,3 +95,28 @@ export const requestOrderReturn = async (orderId, products, reason) => {
         throw new Error(err.message || "Server Error: Could not submit return request.");
     }
 }
+
+// @desc    Submit Return Tracking ID
+// @route   PUT /api/v1/agaya/return/tracking/:orderId
+// @access  Private (customer)
+export const submitReturnTrackingId = async (orderId, trackingId) => {
+    try {
+        const res = await fetch(`${API_URL}/return/tracking/${orderId}`, { 
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                trackingId
+            })
+        });
+
+        if (!res.ok) {
+            const errorBody = await res.json();
+            throw new Error(errorBody.message || `HTTP error! Status: ${res.status}`);
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Error submitting return tracking ID: ", err);
+        throw new Error(err.message || "Server Error: Could not submit tracking ID.");
+    }
+}

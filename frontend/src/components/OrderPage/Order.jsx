@@ -6,7 +6,7 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
   /*
     base on 2 boolean, using order hooks on this page
   */
-  const { filteredOrders, cancelOrder, confirmReceive, submitReturnRequest } = useOrderData(page)
+  const { filteredOrders, cancelOrder, confirmReceive, submitReturnRequest, submitTrackingId } = useOrderData(page) 
   // fetchOrderData
   console.log("before filter", filteredOrders)
   const totalProducts = filteredOrders.length;
@@ -49,6 +49,7 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
                 onCancel={cancelOrder}
                 onReceive={confirmReceive} 
                 onSubmitReturn={submitReturnRequest}
+                onSubmitTrackingId={submitTrackingId}
               />
             )
           })}

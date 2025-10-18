@@ -46,3 +46,17 @@ exports.getReturnReqsByVendor = async (req, res, next) => {
     next(error);
   }
 }
+
+exports.submitReturnTrackingId = async (req, res, next) => {
+  try {
+    const updatedReturnReq = await submitReturnTrackingIdService(req.params, req.body, req.user);
+      res.status(200).json({
+        success: true,
+        message: "Tracking ID submitted successfully.",
+        data: updatedReturnReq,
+      });
+  } catch (error) {
+    next(error); 
+  }
+};
+
