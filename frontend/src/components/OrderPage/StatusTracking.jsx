@@ -12,7 +12,8 @@ const StatusTracking = ({
   orderStatus,
   orderId, 
   onReceive, 
-  onSubmitReturn
+  onSubmitReturn,
+  latestStatusKey
 }) => {
   const [isReceive, setIsReceive] = useState(false);
   const [isReturn, setIsReturn] = useState(false);
@@ -33,17 +34,26 @@ const StatusTracking = ({
   };
   const handleConfirmReceive = async () => {
     // Call the hook function
-    await onReceive(orderId); 
-    console.log(orderId)
-    setIsReceive(true); 
-    closeConfirmReceive();
+    if (latestStatusKey === "DELIVERED") {
+      await onReceive(orderId); 
+      console.log(orderId)
+      setIsReceive(true); 
+      closeConfirmReceive();
+    } else {
+      alert("ของยังส่งไม่ถึง ไม่สามารถยืนยันออเดอร์ได้")
+      closeConfirmReceive()
+    }
   };
   const handleConfirmReturn = async (overallReason, productsToReturn) => {
-    const apiProducts = productsToReturn.map(p => ({ productId: p.productId, quantity: p.quantity }));
-    const success = await onSubmitReturn(orderId, apiProducts, overallReason); 
-    
-    if (success) {
+    if (latestStatusKey === "DELIVERED") {
+      const apiProducts = productsToReturn.map(p => ({ productId: p.productId, quantity: p.quantity }));
+      const success = await onSubmitReturn(orderId, apiProducts, overallReason); 
+          
+      if (success) {
         setIsReturn(true); 
+      }
+    } else {
+      alert("ของยังส่งไม่ถึง ไม่สามารถคืนของได้")
     }
     closeConfirmReturn();
   };

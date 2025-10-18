@@ -118,6 +118,7 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
           orderId={orderId}
           onReceive={onReceive}
           onSubmitReturn={onSubmitReturn}
+          latestStatusKey={latestStatusKey}
         />
       )}
     </div>
