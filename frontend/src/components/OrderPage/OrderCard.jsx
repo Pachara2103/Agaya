@@ -1,7 +1,8 @@
 import { useState } from "react";
 import StatusTracking from "./StatusTracking";
+import { ReturnStatusDisplay } from "./ReturnStatusDisplay";
 
-const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn}) => {
+const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn, latestStatusKey, page}) => {
   const [showstatus, setShowStatus] = useState(false);
 
   const showStatus = () => {
@@ -17,14 +18,23 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
       }
   };
 
+  const renderHeaderStatus = () => {
+        if (page === 4) {
+            return <ReturnStatusDisplay latestStatusKey={latestStatusKey} />;
+        }
+        return (
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                cash on delivery
+            </span>
+        );
+    };
+
   return (
     <div className="bg-[#F8F8F8] shadow-sm border border-gray-200">
       {/* head*/}
       <div className="flex justify-between items-center p-4 px-10 border-b border-gray-200 bg-[#EFEFEF]">
         <h2 className="font-bold text-gray-700">{shopName}</h2>
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          cash on delivery
-        </span>
+        {renderHeaderStatus()}
       </div>
 
       {/* สินค้า */}

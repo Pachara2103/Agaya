@@ -32,20 +32,25 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
           products: ? populate on {quantity, price, name, }
         */}
         <div className="space-y-6">
-          {filteredOrders.map((item, index) => (
-            <OrderCard
-              key={item._id || index}
-              orderId={item._id}
-              shopName={item.storeName}
-              products={item.contains}
-              orderStatus={item.orderTracking}
-              isOrderReceivePage={isOrderReceivePage}
-              isOtherPage={isOtherPage}
-              onCancel={cancelOrder}
-              onReceive={confirmReceive} 
-              onSubmitReturn={submitReturnRequest}
-            />
-          ))}
+          {filteredOrders.map((item, index) => {
+            const latestStatusKey = item.orderTracking.length > 0 ? item.orderTracking[item.orderTracking.length - 1].statusKey : '';
+            return (
+              <OrderCard
+                key={item._id || index}
+                orderId={item._id}
+                shopName={item.storeName}
+                products={item.contains}
+                orderStatus={item.orderTracking}
+                isOrderReceivePage={isOrderReceivePage}
+                latestStatusKey={latestStatusKey}
+                isOtherPage={isOtherPage}
+                page={page}
+                onCancel={cancelOrder}
+                onReceive={confirmReceive} 
+                onSubmitReturn={submitReturnRequest}
+              />
+            )
+          })}
         </div>
 
 

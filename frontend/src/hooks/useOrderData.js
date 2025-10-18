@@ -32,8 +32,10 @@ const useOrderData = (page) => {
         }
         const getLatestStatusKey = (item) => item.orderTracking.length > 0 ? item.orderTracking[item.orderTracking.length - 1].statusKey : '';
         switch(page) {
+            // ที่ต้องจัดส่ง
             case 1:
                 return orders.filter((item) => (item.orderTracking.length === 1))
+            // ที่ต้องได้รับ
             case 2:
                 return orders.filter((item) => {
                     const latestStatusKey = getLatestStatusKey(item);
@@ -44,8 +46,10 @@ const useOrderData = (page) => {
                         latestStatusKey.includes("DELIVERED")
                     );
                 })
+            // จัดส่งสำเร็จ
             case 3:
                 return orders.filter((item) => getLatestStatusKey(item).includes("COMPLETED"));
+            // การคืนสินค้า/คืนเงิน
             case 4:
                 return orders.filter((item) => {
                     const latestStatusKey = getLatestStatusKey(item);
@@ -54,6 +58,7 @@ const useOrderData = (page) => {
                         latestStatusKey.includes("DISPUTED") 
                     );
                 })
+            // การยกเลิกคำสั่งซื้อ
             case 5:
                 return orders.filter((item) => getLatestStatusKey(item).includes("CANCELLED"));
             default:
