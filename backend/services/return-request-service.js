@@ -135,7 +135,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
         }
 
         if (hasRole(user, ["admin"]) || order.vendorId.toString() === user._id.toString()) {
-            if (returnReq.status === "APPROVED") {
+            if (returnReq.status === "SHIPPED") {
                 if (status === "COMPLETED") {
                     let totalRefunded = 0;
                     for (const item of returnReq.products) {
