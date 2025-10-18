@@ -6,7 +6,8 @@ const Transaction = require("../models/transaction");
 const Cart = require("../models/cart");
 const mongoose = require("mongoose");
 const createError = require('http-errors');
-const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js")
+const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js");
+const user = require("../models/user.js");
 
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
@@ -275,3 +276,67 @@ exports.getOrdersByVendor = async (vendorId, user, queryParams) =>
     ]
 }
 */
+
+exports.cancelOrder = async (orderId, user, cancelBody) => {
+  const session = await Order.startSession();
+  session.startTransaction();
+
+  try {
+    if (!orderId) throw new createError(400, "Missing order ID");
+
+    const order = await Order.findById(orderId).session(session);
+    if (!order) throw new createError(404, "Order not found");
+
+    const isAdmin = hasRole(user, ["admin"]);
+    const isOwner = user._id.toString() === order.customerId.toString();
+
+    if (!isAdmin && !isOwner) throw new createError(403, "You are not authorized to cancel this order");
+
+    const currentState = (order.orderTracking && order.orderTracking.length) ? order.orderTracking[order.orderTracking.length - 1].statusKey : null;
+
+    if (currentState !== 'ORDER_RECEIVED') throw new createError(400, `Cannot cancel order at status ${currentState}`);
+
+    const contains = await Contain.find({ orderId: order._id }).session(session);
+
+    for (const item of contains) {
+
+      const product = await Product.findById(item.productId).session(session);
+
+      if (!product) throw new createError(404, `Product ${item.productId} not found while cancelling order`);
+
+      product.stockQuantity += item.quantity;
+      await product.save({ session });
+    }
+
+    const transaction = await Transaction.findOne({ orderId: order._id }).session(session);
+
+    if (transaction) {
+      transaction.refunded = true;
+      transaction.refundDate = new Date();
+      transaction.refundAmount = transaction.amount;
+      transaction.refundNote = cancelBody.refundNote || "Cancelled by customer before shipping";
+      await transaction.save({ session });
+    }
+
+    const description = cancelBody.reason || defaultDescriptions.CANCELLED;
+
+    order.orderTracking.push({
+      statusKey: 'CANCELLED',
+      description: description,
+      timestamp: new Date()
+    });
+
+    await order.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    const updatedOrder = await Order.findById(order._id);
+    return updatedOrder;
+
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    throw err;
+  }
+};
