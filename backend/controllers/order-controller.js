@@ -1,4 +1,4 @@
-const {checkoutOrder, addOrderTrackingEvent, getOrdersByCustomer, getOrdersByVendor} = require("../services/order-service");
+const {checkoutOrder, addOrderTrackingEvent, getOrdersByCustomer, getOrdersByVendor, cancelOrder} = require("../services/order-service");
 
 // @desc    Checkout order
 // @route   POST /api/v1/agaya/orders/checkout
