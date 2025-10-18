@@ -43,6 +43,7 @@ const returnRequestSchema = new mongoose.Schema({
     },
     trackingId: {
         type: String,
+        unique: true
     },
     trackingUrl: {
         type: String, 
