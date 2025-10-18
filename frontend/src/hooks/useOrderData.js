@@ -47,7 +47,13 @@ const useOrderData = (page) => {
             case 3:
                 return orders.filter((item) => getLatestStatusKey(item).includes("COMPLETED"));
             case 4:
-                return orders.filter((item) => getLatestStatusKey(item).includes("REFUNDED"));
+                return orders.filter((item) => {
+                    const latestStatusKey = getLatestStatusKey(item);
+                    return item.orderTracking.length > 1 && (
+                        latestStatusKey.includes("REFUNDED") || 
+                        latestStatusKey.includes("DISPUTED") 
+                    );
+                })
             case 5:
                 return orders.filter((item) => getLatestStatusKey(item).includes("CANCELLED"));
             default:
