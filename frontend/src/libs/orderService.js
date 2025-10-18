@@ -49,3 +49,21 @@ export const addOrderTrackingEvent = async (oid, newStatus, description) => {
     throw new Error("Server Error");
   }
 }
+
+// @desc    Cancel Order
+// @route   PUT /api/v1/agaya/orders/:oid/cancel
+// @access  Private
+// for more detail please check in backend/services/order-service.js
+export const cancelCustomerOrder = async (oid, description) => {
+  try {
+    // description not using yet modify later
+    const res = await fetch(`${API_URL}/orders/${oid}/cancel`, {
+      method: "POST",
+      headers: getAuthHeaders()
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Server Error");
+  }
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { getOrdersByCustomer, addOrderTrackingEvent } from "../libs/orderService"
+import { getOrdersByCustomer, addOrderTrackingEvent, cancelCustomerOrder } from "../libs/orderService"
 import { getMe } from "../libs/authService"
 
 const useOrderData = (page) => {
@@ -57,10 +57,9 @@ const useOrderData = (page) => {
 
     const cancelOrder = async (orderId) => {
         try {
-            const newStatus = "CANCELLED";
             // const description = "T^T no design related"; 
             
-            await addOrderTrackingEvent(orderId, newStatus, null);
+            await cancelCustomerOrder(orderId, null);
             
             await fetchOrderData(); 
             
