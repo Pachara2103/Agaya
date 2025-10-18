@@ -55,6 +55,8 @@ const useOrderData = (page) => {
                     const latestStatusKey = getLatestStatusKey(item);
                     return item.orderTracking.length > 1 && (
                         latestStatusKey.includes("REFUNDED") || 
+                        latestStatusKey.includes("APPROVED") || 
+                        latestStatusKey.includes("RETURN_SHIPPED") || 
                         latestStatusKey.includes("DISPUTED") 
                     );
                 })

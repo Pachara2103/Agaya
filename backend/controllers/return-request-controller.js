@@ -1,4 +1,4 @@
-const {requestReturn, processReturn, getReturnReqs, getReturnReqsByVendor} = require("../services/return-request-service");
+const {requestReturn, processReturn, getReturnReqs, getReturnReqsByVendor, submitReturnTrackingIdService} = require("../services/return-request-service");
 
 // PATH : POST /api/v1/agaya/return/request
 /*

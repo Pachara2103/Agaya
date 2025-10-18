@@ -37,7 +37,7 @@ export const ReturnTrackingIdForm = ({ orderId, onSubmitTrackingId }) => {
                         value={trackingId}
                         onChange={(e) => setTrackingId(e.target.value)}
                         placeholder="กรอกหมายเลขพัสดุ (Tracking ID)"
-                        className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full text-black border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                         disabled={isSubmitting}
                     />
