@@ -117,6 +117,8 @@ exports.processReturn = async (returnId, requestBody, user) => {
                 if (status === "APPROVED") {
                     returnReq.status = status;
                     returnReq.response = "Plese return the item to the vendor";
+                    order.orderTracking.push({statusKey: "APPROVED"}) 
+                    await order.save();
                 }
                 else if (status === "REJECTED") {
                     returnReq.status = status;
