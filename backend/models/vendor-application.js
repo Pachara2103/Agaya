@@ -21,6 +21,7 @@ const vendorApplicationSchema = new mongoose.Schema({
   // modify later
   address: {
     type: String,
+    required: [true, 'Please provide your address it will use in return request'],
     maxlength: 300
   },
   status: {

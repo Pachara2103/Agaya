@@ -18,6 +18,11 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     required: true,
     maxlength: 100
+  },
+  address: { 
+    type: String,
+    required: true,
+    maxlength: 300
   }
 }, {
   timestamps: true
