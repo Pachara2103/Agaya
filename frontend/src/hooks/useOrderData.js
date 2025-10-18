@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { getOrdersByCustomer, addOrderTrackingEvent } from "../libs/orderService"
+import { getOrdersByCustomer, addOrderTrackingEvent, cancelCustomerOrder, requestOrderReturn } from "../libs/orderService"
 import { getMe } from "../libs/authService"
 
 const useOrderData = (page) => {
@@ -32,8 +32,10 @@ const useOrderData = (page) => {
         }
         const getLatestStatusKey = (item) => item.orderTracking.length > 0 ? item.orderTracking[item.orderTracking.length - 1].statusKey : '';
         switch(page) {
+            // ที่ต้องจัดส่ง
             case 1:
                 return orders.filter((item) => (item.orderTracking.length === 1))
+            // ที่ต้องได้รับ
             case 2:
                 return orders.filter((item) => {
                     const latestStatusKey = getLatestStatusKey(item);
@@ -44,10 +46,19 @@ const useOrderData = (page) => {
                         latestStatusKey.includes("DELIVERED")
                     );
                 })
+            // จัดส่งสำเร็จ
             case 3:
                 return orders.filter((item) => getLatestStatusKey(item).includes("COMPLETED"));
+            // การคืนสินค้า/คืนเงิน
             case 4:
-                return orders.filter((item) => getLatestStatusKey(item).includes("REFUNDED"));
+                return orders.filter((item) => {
+                    const latestStatusKey = getLatestStatusKey(item);
+                    return item.orderTracking.length > 1 && (
+                        latestStatusKey.includes("REFUNDED") || 
+                        latestStatusKey.includes("DISPUTED") 
+                    );
+                })
+            // การยกเลิกคำสั่งซื้อ
             case 5:
                 return orders.filter((item) => getLatestStatusKey(item).includes("CANCELLED"));
             default:
@@ -57,10 +68,9 @@ const useOrderData = (page) => {
 
     const cancelOrder = async (orderId) => {
         try {
-            const newStatus = "CANCELLED";
             // const description = "T^T no design related"; 
             
-            await addOrderTrackingEvent(orderId, newStatus, null);
+            await cancelCustomerOrder(orderId, null);
             
             await fetchOrderData(); 
             
@@ -71,12 +81,38 @@ const useOrderData = (page) => {
         }
     }
 
+    const confirmReceive = async (orderId) => {
+        try {
+            await addOrderTrackingEvent(orderId, "COMPLETED", null);
+            await fetchOrderData(); 
+            alert(`Order ${orderId} confirmed as COMPLETED.`);
+        } catch (err) {
+            console.error("Receive Confirmation Failed:", err);
+            alert("Failed to confirm order receipt.");
+        }
+    }
+
+    const submitReturnRequest = async (orderId, products, reason) => {
+        try {
+            const result = await requestOrderReturn(orderId, products, reason);
+            await fetchOrderData(); 
+            alert(`Return request for Order ${orderId} submitted successfully!`);
+            return result;
+        } catch (err) {
+            console.error("Return Request Failed:", err);
+            alert(err.message || "Failed to submit return request. Check console for details.");
+            return null;
+        }
+    }
+
     return {
         orders,
         setOrders,
         fetchOrderData,
         filteredOrders,
-        cancelOrder
+        cancelOrder,
+        confirmReceive, 
+        submitReturnRequest
     }
 }
 

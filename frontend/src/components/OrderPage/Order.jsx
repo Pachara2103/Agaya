@@ -6,9 +6,9 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
   /*
     base on 2 boolean, using order hooks on this page
   */
-  const { filteredOrders, cancelOrder } = useOrderData(page)
+  const { filteredOrders, cancelOrder, confirmReceive, submitReturnRequest } = useOrderData(page)
   // fetchOrderData
-  // console.log("before filter", orders)
+  console.log("before filter", filteredOrders)
   const totalProducts = filteredOrders.length;
   // console.log("test")
   // orders.map((item, index) => {
@@ -32,17 +32,26 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
           products: ? populate on {quantity, price, name, }
         */}
         <div className="space-y-6">
-          {filteredOrders.map((item, index) => (
-            <OrderCard
-              key={index}
-              orderId={item._id}
-              shopName={item.storeName}
-              products={item.contains}
-              isOrderReceivePage={isOrderReceivePage}
-              isOtherPage={isOtherPage}
-              onCancel={cancelOrder}
-            />
-          ))}
+          {filteredOrders.map((item, index) => {
+            const latestStatusKey = item.orderTracking.length > 0 ? item.orderTracking[item.orderTracking.length - 1].statusKey : '';
+            return (
+              <OrderCard
+                key={item._id || index}
+                orderId={item._id}
+                shopName={item.storeName}
+                products={item.contains}
+                orderStatus={item.orderTracking}
+                isOrderReceivePage={isOrderReceivePage}
+                latestStatusKey={latestStatusKey}
+                isOtherPage={isOtherPage}
+                page={page}
+                storeAddress={item.vendorAddress}
+                onCancel={cancelOrder}
+                onReceive={confirmReceive} 
+                onSubmitReturn={submitReturnRequest}
+              />
+            )
+          })}
         </div>
 
 
