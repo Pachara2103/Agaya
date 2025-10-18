@@ -2,7 +2,7 @@ import { useState } from "react";
 import StatusTracking from "./StatusTracking";
 import { ReturnStatusDisplay } from "./ReturnStatusDisplay";
 
-const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn, latestStatusKey, page}) => {
+const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn, latestStatusKey, page, storeAddress}) => {
   const [showstatus, setShowStatus] = useState(false);
 
   const showStatus = () => {
@@ -79,6 +79,23 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
           ))}
         </div>
       </div>
+
+      {page === 4 && storeAddress && (
+        <div className="p-4 px-10 pt-0 border-t border-gray-200 mt-4 bg-white">
+          <h3 className="font-bold text-md mt-2 text-gray-800 mb-2">
+            ที่อยู่สำหรับจัดส่งคืนสินค้า:
+          </h3>
+          <p className="text-sm text-gray-700 leading-relaxed">
+            ร้าน: {shopName}
+            <br />
+              ที่อยู่: {storeAddress}
+            <br />
+            <span className="text-red-500 font-semibold mt-1 block">
+              กรุณาจัดส่งสินค้าไปยังที่อยู่ด้านบนและแจ้งหมายเลขพัสดุกับผู้ดูแลระบบ
+            </span>
+          </p>
+        </div>
+      )}
 
       {(!isOrderReceivePage&&!isOtherPage) && (
         <div className="w-full flex justify-center pb-3">

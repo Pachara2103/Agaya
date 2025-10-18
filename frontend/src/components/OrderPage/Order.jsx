@@ -45,6 +45,7 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
                 latestStatusKey={latestStatusKey}
                 isOtherPage={isOtherPage}
                 page={page}
+                storeAddress={item.vendorAddress}
                 onCancel={cancelOrder}
                 onReceive={confirmReceive} 
                 onSubmitReturn={submitReturnRequest}
