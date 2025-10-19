@@ -1,11 +1,20 @@
 import {API_URL} from './api';
-const getUser = async () => {
+const getUsers = async () => {
   try {
     const data = await fetch(`${API_URL}/api/v1/Agaya/users`);
     const users = data.json();
     return users;
   } catch (err) {
     throw new Error("Can not get users");
+  }
+}
+const getUser = async (userId) => {
+  try {
+    const data = await fetch(`${API_URL}/users/${userId}`);
+    const users = data.json();
+    return users;
+  } catch (err) {
+    throw new Error("Can not get user");
   }
 }
 
@@ -59,4 +68,4 @@ const deleteUser = async (url, id) => {
     throw new Error("Can not delete user");
   }
 }
-export { getUser, createUser, updateUser, deleteUser }
+export { getUsers, getUser, createUser, updateUser, deleteUser }
