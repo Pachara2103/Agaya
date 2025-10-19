@@ -1,8 +1,10 @@
 import { useState } from "react";
 import "./disputePage.css";
 import { useEffect } from "react";
-import { getReturnRequests } from "../../libs/returnService";
+import { getReturnRequests, processReturnService } from "../../libs/returnService";
 import { getUser } from "../../libs/fetchUserUtils";
+import { AdminResponseForm } from "./DisputeComponent/AdminResponeForm";
+import { showDetail } from "./DisputeComponent/showDetail";
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -36,27 +38,29 @@ function StatusButton({ text, colorOn, colorOff, handler, state, setState }) {
   );
 }
 // #f8f8f8ff
-const showDetail = (disputeId, username, orderId, products, reason) => {
-  return (
-    <>
-      <div className="flex flex-col gap-2 min-h-30 bg-[#f8f8f8ff] text-black p-4">
-        <div>{"Dispute ID: " + disputeId}</div>
-        <div>{"customer: " + username}</div>
-        <div>{"Order ID: " + orderId}</div>
-        <div>{"Product: " + products}</div>
-        <div>{"Product ID: "}</div>
-        <div>{"Reason: " + reason}</div>
-      </div>
-    </>
-  );
-};
-function DisputeBox({ data }) {
-  console.log(data);
+// const showDetail = (disputeId, username, orderId, products, reason) => {
+//   console.log("hehe", products)
+//   return (
+//     <>
+//       <div className="flex flex-col gap-2 min-h-30 bg-[#f8f8f8ff] text-black p-4">
+//         <div>{"Dispute ID: " + disputeId}</div>
+//         <div>{"customer: " + username}</div>
+//         <div>{"Order ID: " + orderId}</div>
+//         <div>{"Product: " + products}</div>
+//         <div>{"Product ID: "}</div>
+//         <div>{"Reason: " + reason}</div>
+//       </div>
+//     </>
+//   );
+// };
+
+function DisputeBox({ data, onDisputeUpdate }) {
+  console.log("hehe3", data);
   const [username, setUsername] = useState("");
   const { _id, customerId, orderId, products, status, requestDate, reason } =
     data;
-  const reqDate = formatDate("2025-10-15T10:49:08.377Z");
-  const time = formatTime("2025-10-15T10:49:08.377Z");
+  const reqDate = formatDate(requestDate || "2025-10-15T10:49:08.377Z");
+  const time = formatTime(requestDate || "2025-10-15T10:49:08.377Z");
   const fetchUsername = async () => {
     const res = await getUser(customerId);
     setUsername(res.data.email);
@@ -128,13 +132,22 @@ function DisputeBox({ data }) {
               className="flex items-center justify-center h-10 w-24 bg-[#48B3AF] text-white font-[100] "
               onClick={() => setDetailState(!detailState)}
             >
-              {detailState ? "Confirm" : "Detail"}
+              {detailState ? "Close Detail" : "Detail"}
             </div>
           </div>
         </div>
         {/* detail */}
         {detailState ? (
-          showDetail(_id, username, orderId._id, products, reason)
+          <>
+            {showDetail(_id, username, customerId, orderId._id, products, reason)}
+            {/* {showDetail(_id, username, orderId._id, products, reason)} */}
+            {status === "PENDING" && (
+              <AdminResponseForm 
+                disputeId={_id} 
+                onProcessComplete={onDisputeUpdate} 
+              />
+            )}
+          </>
         ) : (
           <></>
         )}
@@ -150,6 +163,12 @@ function DisputePage() {
     setDisputes(res.data.returnReqs);
     return res;
   };
+
+  const handleDisputeUpdate = () => { 
+    setDisputes(null); // Op can comment this out
+    fetchDispute(); 
+  };
+
   const displayDisputes = (disputes, filter) => {
     if (!disputes) return null;
     const {
@@ -170,7 +189,7 @@ function DisputePage() {
     };
     return disputes.map((dispute, index) =>
       statusFilterMap[dispute.status] ? (
-        <DisputeBox key={index} data={dispute} />
+        <DisputeBox key={index} data={dispute} onDisputeUpdate={handleDisputeUpdate}/>
       ) : null
     );
   };
