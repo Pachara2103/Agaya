@@ -1,4 +1,4 @@
-function StatusButton({ text, colorOn, colorOff, handler, state, setState }) {
+export function StatusButton({ text, colorOn, colorOff, handler, state, setState }) {
     // const [state, setState] = useState(true);
     return (
         <>

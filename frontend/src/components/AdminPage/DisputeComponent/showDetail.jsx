@@ -31,3 +31,20 @@ export const showDetail = (disputeId, username, customerId, orderId, products, r
         </>
     );
 };
+// Bank Old showDetail
+// #f8f8f8ff
+// const showDetail = (disputeId, username, orderId, products, reason) => {
+//   console.log("hehe", products)
+//   return (
+//     <>
+//       <div className="flex flex-col gap-2 min-h-30 bg-[#f8f8f8ff] text-black p-4">
+//         <div>{"Dispute ID: " + disputeId}</div>
+//         <div>{"customer: " + username}</div>
+//         <div>{"Order ID: " + orderId}</div>
+//         <div>{"Product: " + products}</div>
+//         <div>{"Product ID: "}</div>
+//         <div>{"Reason: " + reason}</div>
+//       </div>
+//     </>
+//   );
+// };
