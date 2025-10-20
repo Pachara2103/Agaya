@@ -65,7 +65,7 @@ const Return = ({ isOrderReceivePage, isOtherPage, page }) => {
               className={`${
                 isFocus("Return/Refund") ? "text-pink-600" : "text-gray-600"
               }  pb-2 text-base font-medium cursor-pointer`}
-              onClick={() => changeSelect("To ship")}
+              onClick={() => changeSelect("Return/Refund")}
             >
               Return/Refund
             </button>
@@ -73,7 +73,7 @@ const Return = ({ isOrderReceivePage, isOtherPage, page }) => {
               className={`${
                 isFocus("Cancel") ? "text-pink-600" : "text-gray-600"
               }  pb-2 text-base font-medium cursor-pointer`}
-              onClick={() => changeSelect("Shipping")}
+              onClick={() => changeSelect("Cancel")}
             >
               Cancel
             </button>
