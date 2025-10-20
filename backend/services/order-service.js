@@ -23,36 +23,51 @@ exports.checkoutOrder = async (orderData, user) => {
     const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
     if (!carts)
       throw new createError(
-        404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
+        404,
+        `There no cart with id of ${cartId} that belong to customer ${customerId}`
       );
 
     if (!cartId || !customerId || !paymentMethod) {
-      throw new createError(
-        400, "Missing required fields"
-      );
+      throw new createError(400, "Missing required fields");
     }
 
-    if (!selectedItem || !selectedItem.length) throw new createError(400, "No select item");
-    const cartItems = await Addto.find({ _id: { $in: selectedItem } }).session(session); // Find product
+    if (!selectedItem || !selectedItem.length)
+      throw new createError(400, "No select item");
+    const cartItems = await Addto.find({ _id: { $in: selectedItem } }).session(
+      session
+    ); // Find product
     if (!cartItems.length) {
       throw new createError(404, "Select item not found");
     }
 
-    const invalidItem = cartItems.filter(item => item.cartId.toString() !== cartId.toString());
+    const invalidItem = cartItems.filter(
+      (item) => item.cartId.toString() !== cartId.toString()
+    );
     if (invalidItem.length > 0) {
-      throw new createError(404, `Item IDs: ${invalidItems.map(i => i._id).join(", ")} not belong to your cart`);
+      throw new createError(
+        404,
+        `Item IDs: ${invalidItems
+          .map((i) => i._id)
+          .join(", ")} not belong to your cart`
+      );
     }
     // console.log(cartItems)
 
     const itemsByVendor = {};
     for (let item of cartItems) {
       console.log(item);
-      const product = await Product.findOne({ _id: item.productId }).session(session);
-      if (!product) throw new createError(404, `Product ${item.productId} not found`);
+      const product = await Product.findOne({ _id: item.productId }).session(
+        session
+      );
+      if (!product)
+        throw new createError(404, `Product ${item.productId} not found`);
       if (product.stockQuantity < item.quantity) {
-        throw new createError(400, `Not enough stock for product ${item.productId}`);
+        throw new createError(
+          400,
+          `Not enough stock for product ${item.productId}`
+        );
       }
-      // Saperate item by vendor  
+      // Saperate item by vendor
       const vendorId = product.vendorId.toString();
       if (!itemsByVendor[vendorId]) itemsByVendor[vendorId] = [];
       itemsByVendor[vendorId].push({ item, product });
@@ -63,18 +78,18 @@ exports.checkoutOrder = async (orderData, user) => {
     for (const [vendorId, vendorItem] of Object.entries(itemsByVendor)) {
       let totalAmount = 0;
       const order = new Order({
-        // orderStatus: "PAID", 
-        // have to do payment first 
+        // orderStatus: "PAID",
+        // have to do payment first
         cartId,
         customerId,
         vendorId,
         orderTracking: [
           {
-            statusKey: 'ORDER_RECEIVED',
-            description: 'คำสั่งซื้อได้รับการยืนยันและรอเตรียมการจัดส่ง',
-            timestamp: new Date()
-          }
-        ]
+            statusKey: "ORDER_RECEIVED",
+            description: "คำสั่งซื้อได้รับการยืนยันและรอเตรียมการจัดส่ง",
+            timestamp: new Date(),
+          },
+        ],
       });
       await order.save({ session });
 
@@ -99,7 +114,6 @@ exports.checkoutOrder = async (orderData, user) => {
 
       await transaction.save({ session });
       createdOrders.push({ order, transaction });
-
     }
 
     await Addto.deleteMany({ _id: { $in: selectedItem } }).session(session);
@@ -108,7 +122,6 @@ exports.checkoutOrder = async (orderData, user) => {
     session.endSession();
 
     return createdOrders;
-
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
@@ -119,10 +132,13 @@ exports.checkoutOrder = async (orderData, user) => {
 const statusFlow = {
   ORDER_RECEIVED: { next: ["PICKED_UP", "CANCELLED"], roles: ["customer","vendor", "admin"] },
   PICKED_UP: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
-  IN_TRANSIT: { next: ["DELIVERED", "FAILED_ATTEMPT"], roles: ["vendor", "admin"] },
+  IN_TRANSIT: {
+    next: ["DELIVERED", "FAILED_ATTEMPT"],
+    roles: ["vendor", "admin"],
+  },
   FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   DELIVERED: { next: ["COMPLETED"], roles: ["customer", "admin"] },
-  COMPLETED: { next: [], roles: [] }
+  COMPLETED: { next: [], roles: [] },
 };
 const defaultDescriptions = {
   ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
@@ -140,15 +156,14 @@ const checkAuth = (Status, user, order) => {
   if (hasRole(user, allowRoles)) {
     if (hasRole(user, ["admin"]) && allowRoles.includes("admin")) return true;
     if (allowRoles.includes("customer")) {
-      if (user._id.toString() == order.customerId.toString()) return true
+      if (user._id.toString() == order.customerId.toString()) return true;
     }
     if (allowRoles.includes("vendor")) {
-      if (user._id.toString() == order.vendorId.toString()) return true
+      if (user._id.toString() == order.vendorId.toString()) return true;
     }
   }
   return false;
-  
-}
+};
 
 exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
   try {
@@ -167,53 +182,65 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
     ];
     if (!validStatuses.includes(newStatus)) {
       throw new createError(
-        400, `Invalid status. Valid values: ${validStatuses.join(", ")}`
+        400,
+        `Invalid status. Valid values: ${validStatuses.join(", ")}`
       );
     }
 
     const order = await Order.findById(orderId);
     if (!order) throw new createError(404, "Order not found");
 
-    const currentState = order.orderTracking[order.orderTracking.length - 1].statusKey;
+    const currentState =
+      order.orderTracking[order.orderTracking.length - 1].statusKey;
 
     if (!statusFlow[currentState].next.includes(newStatus)) {
-      throw new createError(404, `Cannot change status from ${currentState} to ${newStatus}`);
+      throw new createError(
+        404,
+        `Cannot change status from ${currentState} to ${newStatus}`
+      );
     }
 
     if (!checkAuth(currentState, user, order)) {
-      throw new createError(403, "You are not authorized to update this order status");
+      throw new createError(
+        403,
+        "You are not authorized to update this order status"
+      );
     }
 
     order.orderTracking.push({
       statusKey: newStatus,
       description: description || defaultDescriptions[newStatus],
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     //order.orderTracking.push(trackingEvent);
     await order.save();
 
     return order;
-
   } catch (err) {
     throw err;
   }
-}
+};
 
 const getOrders = async ({ field, id, user, queryParams = {} }) => {
   try {
     let filterId = new mongoose.Types.ObjectId(id);
 
     // If user is not admin, force filter to their own id
-    if (!hasRole(user, ["admin"])) {
+    if (!hasRole(user, ["admin", "vendor"])) {
       filterId = user._id;
     }
+
+    console.log("Filter ID:", filterId);
 
     // Pagination
     const matchStage = { [field]: filterId };
     const totalOrders = await Order.countDocuments(matchStage);
-    const { page, limit, totalPages, skip } = calculatePagination(totalOrders, queryParams);
-
+    console.log("Total Orders:", totalOrders);
+    const { page, limit, totalPages, skip } = calculatePagination(
+      totalOrders,
+      queryParams
+    );
 
     // Build pipeline instead
     const pipeline = [
@@ -224,6 +251,8 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
     ];
 
     const orders = await Order.aggregate(pipeline);
+    console.log("Orders fetched:", orders.length);
+    console.log(orders);
 
     return {
       orders,

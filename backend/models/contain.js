@@ -1,27 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const containSchema = new mongoose.Schema({
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    maxlength: 100,
-    ref: 'Product' // อ้างอิง Product
+const containSchema = new mongoose.Schema(
+  {
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      maxlength: 100,
+      ref: "Product", // อ้างอิง Product
+    },
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      maxlength: 100,
+      ref: "Order", // อ้างอิง Order
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 99999,
+    },
   },
-  orderId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    maxlength: 100,
-    ref: 'Order' // อ้างอิง Order
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 99999
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
-module.exports = mongoose.models.Contain || mongoose.model('Contain', containSchema);
-
+module.exports =
+  mongoose.models.Contain || mongoose.model("Contain", containSchema);
