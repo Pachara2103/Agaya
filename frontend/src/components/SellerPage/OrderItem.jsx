@@ -81,13 +81,86 @@ const ShippingTimeline = ({ history }) => (
   </div>
 );
 
-const OrderDetails = ({ order }) => {
-  if (order.orderTracking && order.orderTracking.length > 0) {
-    return <ShippingTimeline history={order.orderTracking} />;
-  }
+const OrderDetails = ({ order, onUpdateStatus }) => {
+  const [description, setDescription] = useState("");
+  const currentStatusKey =
+    order.orderTracking[order.orderTracking.length - 1].statusKey;
+
+  // Determine the next logical status
+  const getNextStatus = () => {
+    switch (currentStatusKey) {
+      case "ORDER_RECEIVED":
+        return "PICKED_UP";
+      case "PICKED_UP":
+        return "IN_TRANSIT";
+      case "IN_TRANSIT":
+        return "DELIVERED";
+      // Add other transitions as needed
+      default:
+        return null;
+    }
+  };
+
+  const nextStatus = getNextStatus();
+
+  const handleUpdateClick = () => {
+    if (!nextStatus) return;
+    if (nextStatus === "IN_TRANSIT" && !description.trim()) {
+      alert("Please provide a tracking number or shipping details.");
+      return;
+    }
+    // Call the function passed down from OrderList
+    onUpdateStatus(
+      order._id,
+      nextStatus,
+      description || `Status updated to ${nextStatus.replace("_", " ")}`
+    );
+    setDescription(""); // Clear the input field
+  };
+
   return (
-    <div className="mt-4 pt-4 border-t text-sm text-gray-600">
-      <p>No detailed shipping history available for this order yet.</p>
+    <div className="mt-4 pt-4 border-t">
+      {/* Conditionally render the update form */}
+      {nextStatus && (
+        <div className="p-4 mb-6 bg-gray-50 rounded-lg space-y-3">
+          <h4 className="font-semibold text-gray-700">Update Order Status</h4>
+          <p className="text-sm text-gray-600">
+            Current Status:{" "}
+            <span className="font-bold">
+              {currentStatusKey.replace("_", " ")}
+            </span>
+          </p>
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Tracking Number / Description (Optional for Picked Up)
+            </label>
+            <input
+              type="text"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={
+                nextStatus === "IN_TRANSIT"
+                  ? "Enter tracking number"
+                  : "e.g., Courier is on the way"
+              }
+              className="text-black w-full sm:w-2/3 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+          <button
+            onClick={handleUpdateClick}
+            className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition-colors shadow"
+          >
+            Mark as {nextStatus.replace("_", " ")}
+          </button>
+        </div>
+      )}
+
+      {/* The existing Shipping Timeline */}
+      <ShippingTimeline history={order.orderTracking} />
     </div>
   );
 };
@@ -114,7 +187,7 @@ const OrderItem = ({ order, onUpdateStatus }) => {
           >
             <div className="col-span-12 sm:col-span-5 flex items-center space-x-4">
               <img
-                src={`https://via.placeholder.com/150/EFEFEF/AAAAAA?text=No+Image`}
+                src={product.image[0]}
                 alt={product.name}
                 className="w-16 h-16 object-cover rounded-md bg-gray-200"
               />
@@ -145,7 +218,9 @@ const OrderItem = ({ order, onUpdateStatus }) => {
             </div>
           </div>
         ))}
-        {isOpen && <OrderDetails order={order} />}
+        {isOpen && (
+          <OrderDetails order={order} onUpdateStatus={onUpdateStatus} />
+        )}
       </div>
       <div className="bg-gray-50 p-4 rounded-b-lg flex justify-between items-center">
         <button
@@ -190,13 +265,14 @@ OrderItem.propTypes = {
     contains: PropTypes.arrayOf(containPropTypes).isRequired,
     orderTracking: PropTypes.arrayOf(trackingEventPropTypes).isRequired,
   }).isRequired,
-  onUpdateStatus: PropTypes.func,
+  onUpdateStatus: PropTypes.func.isRequired,
 };
 ShippingTimeline.propTypes = {
   history: PropTypes.arrayOf(trackingEventPropTypes).isRequired,
 };
 OrderDetails.propTypes = {
   order: OrderItem.propTypes.order,
+  onUpdateStatus: PropTypes.func.isRequired,
 };
 
 export default OrderItem;

@@ -42,6 +42,7 @@ exports.getOrderDetailsPipeline = () => {
           $push: {
             productId: "$product._id",
             name: "$product.productName",
+            image: "$product.image",
             price: "$product.price",
             quantity: "$contains.quantity",
             totalPrice: { $multiply: ["$product.price", "$contains.quantity"] },

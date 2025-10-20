@@ -13,12 +13,10 @@ import { getAuthHeaders } from "./authService";
 const fetchOrdersByVendor = async (vendorId, queryParams = {}) => {
   try {
     const headers = getAuthHeaders();
-    // Early check to ensure the user is logged in.
     if (!headers.Authorization) {
       throw new Error("Authentication token is missing. Please log in again.");
     }
 
-    // Construct URL with pagination parameters. Defaults to page 1, limit 10 if not provided.
     const params = new URLSearchParams({
       page: queryParams.page || 1,
       limit: queryParams.limit || 10,
@@ -32,21 +30,58 @@ const fetchOrdersByVendor = async (vendorId, queryParams = {}) => {
 
     const data = await res.json();
 
-    // Handle non-successful HTTP responses (like 401, 403, 500)
     if (!res.ok) {
-      // Throw an error using the specific message from the backend.
       throw new Error(data.message || `An error occurred: ${res.statusText}`);
     }
 
-    // The backend wraps the response in a 'data' object.
-    // We return the inner object for easier use in the components.
     return data.data;
   } catch (err) {
-    // Log the error for debugging purposes and re-throw it
-    // so the calling component can handle it (e.g., display an error message).
     console.error("Failed to fetch vendor orders:", err);
     throw new Error(err.message || "Could not get orders from the server.");
   }
 };
 
-export { fetchOrdersByVendor };
+/**
+ * Updates the tracking status of a specific order.
+ * This function now correctly uses the fetch API and targets the right backend endpoint.
+ * @param {string} orderId - The ID of the order to update.
+ * @param {object} trackingBody - The new tracking information.
+ * @param {string} trackingBody.newStatus - The next status key (e.g., 'PICKED_UP').
+ * @param {string} [trackingBody.description] - An optional description or tracking number.
+ * @returns {Promise<object>} The updated order object.
+ */
+const updateOrderStatus = async (orderId, trackingBody) => {
+  try {
+    const headers = getAuthHeaders();
+    if (!headers.Authorization) {
+      throw new Error("Authentication token is missing. Please log in again.");
+    }
+    // Add Content-Type header for the PUT request body
+    headers["Content-Type"] = "application/json";
+
+    // The backend route is PUT /orders/:orderId
+    const url = `${API_URL}/orders/${orderId}`;
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify(trackingBody),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `An error occurred: ${response.statusText}`
+      );
+    }
+
+    // The backend wraps the updated order in a 'data' object
+    return data.data;
+  } catch (err) {
+    console.error("Error updating order status:", err.message);
+    throw new Error(err.message || "Failed to update order status");
+  }
+};
+
+export { fetchOrdersByVendor, updateOrderStatus };

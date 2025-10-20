@@ -2,7 +2,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import OrderItem from "./OrderItem.jsx";
 import { getMe } from "../../libs/authService.js";
 import { getVendorId } from "../../libs/userService.js";
-import { fetchOrdersByVendor } from "../../libs/orderService.js";
+import {
+  fetchOrdersByVendor,
+  updateOrderStatus,
+} from "../../libs/orderService.js";
 
 // NOTE: To resolve the compilation errors, the required components and service
 // functions are included directly within this file as placeholders.
@@ -11,8 +14,8 @@ import { fetchOrdersByVendor } from "../../libs/orderService.js";
 // --- Main Component ---
 
 const statusMap = {
-  "To ship": ["ORDER_RECEIVED", "PICKED_UP"],
-  Shipping: ["IN_TRANSIT", "FAILED_ATTEMPT"],
+  "To ship": ["ORDER_RECEIVED"],
+  Shipping: ["PICKED_UP", "IN_TRANSIT", "FAILED_ATTEMPT"],
   Completed: ["DELIVERED", "COMPLETED"],
 };
 
@@ -65,6 +68,28 @@ const OrderList = () => {
     loadOrders();
   }, [loadOrders]);
 
+  const handleUpdateStatus = async (orderId, newStatus, description) => {
+    try {
+      const updatedOrder = await updateOrderStatus(orderId, {
+        newStatus,
+        description,
+      });
+
+      // Update the state to reflect the change immediately
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? updatedOrder : order
+        )
+      );
+      // Optionally, show a success message
+      alert("Order status updated successfully!");
+    } catch (err) {
+      console.error("Failed to update status from component:", err);
+      // Show an error message to the user
+      setError(err.message);
+    }
+  };
+
   const filteredOrders = orders.filter((order) => {
     if (activeTab === "All") return true;
     const currentStatus =
@@ -98,7 +123,11 @@ const OrderList = () => {
       );
     }
     return filteredOrders.map((order) => (
-      <OrderItem key={order._id} order={order} />
+      <OrderItem
+        key={order._id}
+        order={order}
+        onUpdateStatus={handleUpdateStatus}
+      />
     ));
   };
 
