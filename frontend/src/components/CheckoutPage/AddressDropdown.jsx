@@ -124,7 +124,7 @@ function AddressDropdown({onAddressSelect}) {
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-teal-500 text-white font-semibold px-4 py-3 rounded-md hover:bg-teal-600 transition-colors whitespace-nowrap"
+                    className="bg-teal-500 text-white font-semibold cursor-pointer px-4 py-3 rounded-md hover:bg-teal-600 transition-colors whitespace-nowrap"
                 >
                     + ที่อยู่ใหม่
                 </button>

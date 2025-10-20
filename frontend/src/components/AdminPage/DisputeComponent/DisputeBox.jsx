@@ -33,17 +33,17 @@ export function DisputeBox({ data, onDisputeUpdate }) {
   // ["PENDING", "APPROVED", "REJECTED", "SHIPPED", "RECEIVED", "COMPLETED"]
   const statusColor = (status) => {
     return status === "PENDING"
-      ? "bg-orange-500"
+      ? "bg-yellow-500"
       : status === "APPROVED"
-      ? "bg-blue-500"
+      ? "bg-blue-900"
       : status === "REJECTED"
-      ? "bg-red-500"
+      ? "bg-red-700"
       : status === "SHIPPED"
-      ? "bg-purple-500"
+      ? "bg-purple-700"
       : status === "RECEIVED"
       ? "bg-pink-500"
       : status === "COMPLETED"
-      ? "bg-green-500"
+      ? "bg-green-600"
       : "bg-white";
   };
   fetchUsername();

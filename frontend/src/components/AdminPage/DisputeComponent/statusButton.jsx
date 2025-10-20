@@ -3,7 +3,7 @@ export function StatusButton({ text, colorOn, colorOff, handler, state, setState
     return (
         <>
             <div
-                className={`flex items-center justify-center self-center p-4 h-8 w-24 text-black text-[13px] cursor-pointer ${state ? colorOn : colorOff
+                className={`flex items-center justify-center self-center p-4 h-8 w-24 text-white text-[13px] cursor-pointer ${state ? colorOn : colorOff
                     }`}
                 onClick={() => setState(!state)}
             >

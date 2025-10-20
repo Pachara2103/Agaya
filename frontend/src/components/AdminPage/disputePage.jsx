@@ -67,12 +67,12 @@ function DisputePage() {
   // ["PENDING", "APPROVED", "REJECTED", "SHIPPED", "RECEIVED", "COMPLETED"],
 
   const statusButtonsData = [
-    { text: "PENDING", state: pendingFilter, setState: setPendingFilter, colorOn: "bg-[rgba(255,219,110,1)]", colorOff: "bg-[rgba(255,243,208,1)]" },
-    { text: "APPROVED", state: approvedFilter, setState: setApprovedFilter, colorOn: "bg-[rgba(161,152,255,1)]", colorOff: "bg-[rgba(208,214,255,1)]" },
-    { text: "SHIPPED", state: shippedFilter, setState: setShippedFilter, colorOn: "bg-[rgba(200,132,255,1)]", colorOff: "bg-[rgba(243,205,255,1)]" },
-    { text: "RECEIVED", state: receivedFilter, setState: setReceivedFilter, colorOn: "bg-[rgba(255,152,234,1)]", colorOff: "bg-[rgba(255,219,249,1)]" },
-    { text: "COMPLETED", state: completedFilter, setState: setCompletedFilter, colorOn: "bg-[rgba(110,255,120,1)]", colorOff: "bg-[rgba(208,255,216,1)]" },
-    { text: "REJECTED", state: rejectedFilter, setState: setRejectedFilter, colorOn: "bg-[rgba(255,110,110,1)]", colorOff: "bg-[rgba(255,208,208,1)]" },
+    { text: "PENDING", state: pendingFilter, setState: setPendingFilter, colorOn: "bg-blue-500", colorOff: "bg-gray-400" },
+    { text: "APPROVED", state: approvedFilter, setState: setApprovedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400" },
+    { text: "SHIPPED", state: shippedFilter, setState: setShippedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400" },
+    { text: "RECEIVED", state: receivedFilter, setState: setReceivedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400" },
+    { text: "COMPLETED", state: completedFilter, setState: setCompletedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400" },
+    { text: "REJECTED", state: rejectedFilter, setState: setRejectedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400"},
   ];
   return (
     <>
