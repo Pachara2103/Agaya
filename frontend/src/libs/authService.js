@@ -1,8 +1,8 @@
 import { API_URL } from "./api";
 import Cookies from "js-cookie";
 
-const getAuthHeaders = () => {
-  const token = Cookies.get('token');
+export const getAuthHeaders = () => {
+  const token = Cookies.get("token");
   // const token = localStorage.getItem("authToken");
   if (!token) {
     return { "Content-Type": "application/json" };

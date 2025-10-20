@@ -80,4 +80,16 @@ const getMe = async () => {
   }
 };
 
-export { findByEmail, sendOTP, verifyOTP, setnewPassword, getMe  };
+const getVendorId = async (userId) => {
+  try {
+    const res = await fetch(`${API_URL}/users/vendor/${userId}`);
+    const data = await res.json();
+    console.log("Vendor ID response data:", data.data);
+
+    return data.data;
+  } catch (err) {
+    throw new Error("Can not get users");
+  }
+};
+
+export { findByEmail, sendOTP, verifyOTP, setnewPassword, getMe, getVendorId };
