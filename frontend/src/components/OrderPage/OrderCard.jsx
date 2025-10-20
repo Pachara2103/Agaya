@@ -1,10 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatusTracking from "./StatusTracking";
 import { ReturnStatusDisplay } from "./ReturnStatusDisplay";
 import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
+import CompleteTracking from "../SellerPage/CompleteTracking";
+import ToShip from '../SellerPage/ToShip';
 
-const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderId, onCancel, orderStatus, onReceive, onSubmitReturn, onSubmitTrackingId, latestStatusKey, page, storeAddress}) => {
+const OrderCard = ({
+  isSellerPage,
+  shopName,
+  products,
+  isOrderReceivePage,
+  isOtherPage,
+  orderId,
+  onCancel,
+  orderStatus,
+  onReceive,
+  onSubmitReturn,
+  onSubmitTrackingId,
+  latestStatusKey,
+  page,
+  storeAddress,
+  selectFilter,
+}) => {
   const [showstatus, setShowStatus] = useState(false);
+  const [sellerpage, setSellerPage] = useState(false);
+  const [completeFilter, setCompleteFilter] = useState(false);
+  const [toshipFilter, setToshipFilter] = useState(false);
+
+  useEffect(() => {
+    if (isSellerPage) {
+      setSellerPage(true);
+    } else {
+      setSellerPage(false);
+    }
+
+    if (selectFilter) {
+      if (selectFilter == "Completed") {
+        setCompleteFilter(true);
+      } else {
+        setCompleteFilter(false);
+      }
+      if (selectFilter == "ToShip") {
+        setToshipFilter(true);
+      } else {
+        setToshipFilter(false);
+      }
+    }
+  }, [selectFilter]);
 
   const showStatus = () => {
     setShowStatus(true);
@@ -14,21 +56,21 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
   };
   // tmp module will use confirmation modal later
   const handleCancel = () => {
-      if (window.confirm("really?")) {
-          onCancel(orderId);
-      }
+    if (window.confirm("really?")) {
+      onCancel(orderId);
+    }
   };
 
   const renderHeaderStatus = () => {
-        if (page === 4) {
-            return <ReturnStatusDisplay latestStatusKey={latestStatusKey} />;
-        }
-        return (
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                cash on delivery
-            </span>
-        );
-    };
+    if (page === 4) {
+      return <ReturnStatusDisplay latestStatusKey={latestStatusKey} />;
+    }
+    return (
+      <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        cash on delivery
+      </span>
+    );
+  };
 
   return (
     <div className="bg-[#F8F8F8] shadow-sm border border-gray-200">
@@ -43,25 +85,16 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
         <div className="space-y-6">
           {products.map((product) => (
             <div key={product._id} className="flex items-center space-x-4">
-              {
-                product &&
-                product.image &&
-                product.image.length > 0 &&
-                (
-                  <img 
-                    src={product.image[0]} 
-                    alt={product.name || 'Product Image'} 
-                    className="w-20 h-20 object-contain rounded-md"
-                  />
-                )
-              }
+              {product && product.image && product.image.length > 0 && (
+                <img
+                  src={product.image[0]}
+                  alt={product.name || "Product Image"}
+                  className="w-20 h-20 object-contain rounded-md"
+                />
+              )}
               <div className="flex-grow flex flex-row gap-5">
-                <p className="text-gray-800 font-medium">
-                  {product.name}
-                </p>
-                <p className="text-black  font-medium">
-                  x{product.quantity}
-                </p>
+                <p className="text-gray-800 font-medium">{product.name}</p>
+                <p className="text-black  font-medium">x{product.quantity}</p>
               </div>
               <div className="w-24 text-right">
                 <p className="text-gray-800 font-semibold">
@@ -89,7 +122,7 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
           <p className="text-sm text-gray-700 leading-relaxed">
             ร้าน: {shopName}
             <br />
-              ที่อยู่: {storeAddress}
+            ที่อยู่: {storeAddress}
             <br />
             <span className="text-red-500 font-semibold mt-1 block">
               กรุณาจัดส่งสินค้าไปยังที่อยู่ด้านบนและแจ้งหมายเลขพัสดุกับผู้ดูแลระบบ
@@ -98,24 +131,25 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
         </div>
       )}
 
-      {page === 4 && latestStatusKey === 'APPROVED' && (
-          <ReturnTrackingIdForm 
-              orderId={orderId}
-              onSubmitTrackingId={onSubmitTrackingId}
-          />
+      {page === 4 && latestStatusKey === "APPROVED" && (
+        <ReturnTrackingIdForm
+          orderId={orderId}
+          onSubmitTrackingId={onSubmitTrackingId}
+        />
       )}
 
-      {(!isOrderReceivePage&&!isOtherPage) && (
+      {!isOrderReceivePage && !isOtherPage && (
         <div className="w-full flex justify-center pb-3">
           <button
             onClick={handleCancel}
-            className="w-50 py-5 bg-[#B71F3B] rounded-md font-medium hover:bg-[#951a31] cursor-pointer">
+            className="w-50 py-5 bg-[#B71F3B] rounded-md font-medium hover:bg-[#951a31] cursor-pointer"
+          >
             Cancel
           </button>
         </div>
       )}
 
-      {isOrderReceivePage && (
+      {isOrderReceivePage && !sellerpage && (
         <StatusTracking
           showstatus={showstatus}
           showStatus={showStatus}
@@ -127,6 +161,26 @@ const OrderCard = ({ shopName, products, isOrderReceivePage, isOtherPage, orderI
           onReceive={onReceive}
           onSubmitReturn={onSubmitReturn}
           latestStatusKey={latestStatusKey}
+        />
+      )}
+
+      {sellerpage && completeFilter && (
+        <CompleteTracking
+          showstatus={showstatus}
+          showStatus={showStatus}
+          hideStatus={hideStatus}
+          completedFilter={completeFilter}
+          orderStatus={orderStatus}
+          latestStatusKey={latestStatusKey}
+        />
+      )}
+
+      {sellerpage&& toshipFilter&&!completeFilter && (
+        <ToShip
+          showstatus={showstatus}
+          showStatus={showStatus}
+          hideStatus={hideStatus}
+       
         />
       )}
     </div>

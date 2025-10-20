@@ -5,8 +5,10 @@ import DashBoard from "./DashBoard";
 import Sidebar from "./SideBar";
 import MyProductsPage from "./MyProductsPage";
 import AddProductsPage from "./AddProductsPage";
+import MyOrder from "./MyOrder";
 
 import { getMe } from "../../libs/authService";
+import Return from "./Return";
 
 import "./.css";
 
@@ -15,6 +17,8 @@ const icon = {
   สินค้าของฉัน: 1,
   เพิ่มสินค้าใหม่: 2,
   edit: 3,
+  คำสั่งซื้อของฉัน: 4,
+  ขอคืนสินค้า: 5,
 };
 
 function SellerPage() {
@@ -22,12 +26,12 @@ function SellerPage() {
   const [editproduct, setEditProduct] = useState(null);
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    getMe().then(data => {
+    getMe().then((data) => {
       if (data.success) {
         setUser(data.data);
       }
@@ -48,7 +52,8 @@ function SellerPage() {
     setEditProduct(p);
   };
 
-  const displaySidebar = pageSelected !== "เพิ่มสินค้าใหม่" && pageSelected !== "edit";
+  const displaySidebar =
+    pageSelected !== "เพิ่มสินค้าใหม่" && pageSelected !== "edit";
 
   const userClick = () => {
     switch (icon[pageSelected]) {
@@ -71,6 +76,15 @@ function SellerPage() {
             isEdit={true}
           />
         );
+      case 4:
+        return (
+          <MyOrder isOtherPage={true} page={5} />
+        );
+
+      case 5:
+        return (
+          <Return isOrderReceivePage={false} isOtherPage={true} page={5} />
+        );
       default:
         return null;
     }
@@ -78,7 +92,6 @@ function SellerPage() {
 
   return (
     <div className="flex flex-col bg-gray-100 min-h-screen font-sans">
-      
       <header className="flex justify-between items-center px-10 py-3 border-b bg-white shadow-sm w-full">
         <h1
           className="text-xl font-bold text-gray-800 cursor-pointer"
@@ -86,18 +99,23 @@ function SellerPage() {
         >
           Agaya <span className="font-normal text-gray-500">Seller Centre</span>
         </h1>
-        
+
         <div className="relative" ref={dropdownRef}>
-          <div 
+          <div
             className="flex items-center space-x-3 border rounded-full p-1 pr-4 cursor-pointer hover:bg-gray-50"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <img
-              src={user?.profileImageUrl || "https://i.postimg.cc/br0yv892/user-1.png"}
+              src={
+                user?.profileImageUrl ||
+                "https://i.postimg.cc/br0yv892/user-1.png"
+              }
               className="w-8 h-8 object-cover rounded-full"
               alt="Profile"
             />
-            <span className="text-sm text-gray-700">{user?.username || "ชื่อร้านค้า"}</span>
+            <span className="text-sm text-gray-700">
+              {user?.username || "ชื่อร้านค้า"}
+            </span>
           </div>
 
           {isDropdownOpen && (
@@ -106,7 +124,7 @@ function SellerPage() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate('/');
+                  navigate("/");
                 }}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
@@ -123,10 +141,8 @@ function SellerPage() {
           pageSelected={pageSelected}
           display={displaySidebar}
         />
-        
-        <main className="flex-1 p-8 overflow-y-auto">
-          {userClick()}
-        </main>
+
+        <main className="flex-1 p-8 overflow-y-auto">{userClick()}</main>
       </div>
     </div>
   );
