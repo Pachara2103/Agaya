@@ -6,6 +6,7 @@ import Sidebar from "./SideBar";
 import MyProductsPage from "./MyProductsPage";
 import AddProductsPage from "./AddProductsPage";
 import OrderList from "./OrderList";
+import ReturnRefundCancelList from "./ReturnRefundCancelList";
 
 import { getMe } from "../../libs/authService";
 
@@ -78,7 +79,7 @@ function SellerPage() {
       case 4:
         return <OrderList />;
       case 5:
-        return <div>ขอยกเลิก/คืนเงิน/คืนสินค้า</div>;
+        return <ReturnRefundCancelList />;
       default:
         return null;
     }
