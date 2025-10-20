@@ -1,4 +1,4 @@
-const {checkoutOrder, addOrderTrackingEvent, getOrdersByCustomer, getOrdersByVendor} = require("../services/order-service");
+const {checkoutOrder, addOrderTrackingEvent, getOrdersByCustomer, getOrdersByVendor, cancelOrder} = require("../services/order-service");
 
 // @desc    Checkout order
 // @route   POST /api/v1/agaya/orders/checkout
@@ -69,3 +69,12 @@ exports.getOrdersByVendor = async (req, res, next) => {
     ]
 }
 */
+
+exports.cancelOrder = async (req, res, next) => {
+  try {
+    const updatedOrder = await cancelOrder(req.params.id, req.user, req.body);
+    res.status(200).json({ success: true, data: updatedOrder });
+  } catch (err) {
+    next(err);
+  }
+};

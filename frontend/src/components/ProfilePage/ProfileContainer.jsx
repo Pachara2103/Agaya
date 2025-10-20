@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 import ChangePasswordForm from "../ProfilePage/ChangePasswordForm";
 import { getMe } from "../../libs/authService";
 import "./scrollbar.css";
-import {ordersByShop} from '../OrderPage/exampleOrder.js';   //example product
-
+import { ordersByShop } from "../OrderPage/exampleOrder.js"; //example product
 
 import Profile from "./Profile.jsx";
 import Address from "./Address.jsx";
 import Order from "../OrderPage/Order.jsx";
+import { useLocation } from "react-router-dom";
 
 // rgba(221, 221, 221, 0.7)
 function ProfileContainer() {
@@ -21,6 +21,15 @@ function ProfileContainer() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const location = useLocation();
+  useEffect(() => {
+
+    if (location.state && location.state.panel) {
+      const receivedPanel = location.state.patnel;
+      setCurrrentPanel(receivedPanel);
+    }
+  }, [location.state]);
 
   const checkPanel = (panelName, currentPanel) => {
     if (currentPanel === panelName) return "text-pink-600";
@@ -173,11 +182,31 @@ function ProfileContainer() {
           {currentPanel === "profile" && <Profile userData={userData} />}
           {currentPanel === "change-password" ? <ChangePasswordForm /> : ""}
           {currentPanel === "addresses" ? <Address /> : ""}
-          {currentPanel === "order" ? <Order isOrderReceivePage={false} isOtherPage={false} ordersByShop={ordersByShop} /> : ""}
-          {currentPanel === "order-receive" ? <Order isOrderReceivePage={true} isOtherPage={false} ordersByShop={ordersByShop}/> : ""}
-          {currentPanel === "complete" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
-          {currentPanel === "return-refund" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
-          {currentPanel === "cancelled" ? <Order isOrderReceivePage={false} isOtherPage={true} ordersByShop={ordersByShop} /> : ""}
+          {currentPanel === "order" ? (
+            <Order isOrderReceivePage={false} isOtherPage={false} page={1} />
+          ) : (
+            ""
+          )}
+          {currentPanel === "order-receive" ? (
+            <Order isOrderReceivePage={true} isOtherPage={false} page={2} />
+          ) : (
+            ""
+          )}
+          {currentPanel === "complete" ? (
+            <Order isOrderReceivePage={false} isOtherPage={true} page={3} />
+          ) : (
+            ""
+          )}
+          {currentPanel === "return-refund" ? (
+            <Order isOrderReceivePage={false} isOtherPage={true} page={4} />
+          ) : (
+            ""
+          )}
+          {currentPanel === "cancelled" ? (
+            <Order isOrderReceivePage={false} isOtherPage={true} page={5} />
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

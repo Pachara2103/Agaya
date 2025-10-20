@@ -5,11 +5,9 @@ const Product = require("../models/product");
 const Transaction = require("../models/transaction");
 const Cart = require("../models/cart");
 const mongoose = require("mongoose");
-const createError = require("http-errors");
-const {
-  getOrderDetailsPipeline,
-  calculatePagination,
-} = require("../utils/orderUtil.js");
+const createError = require('http-errors');
+const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js");
+const user = require("../models/user.js");
 
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
@@ -132,7 +130,7 @@ exports.checkoutOrder = async (orderData, user) => {
 };
 
 const statusFlow = {
-  ORDER_RECEIVED: { next: ["PICKED_UP"], roles: ["vendor", "admin"] },
+  ORDER_RECEIVED: { next: ["PICKED_UP", "CANCELLED"], roles: ["customer","vendor", "admin"] },
   PICKED_UP: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   IN_TRANSIT: {
     next: ["DELIVERED", "FAILED_ATTEMPT"],
@@ -143,12 +141,13 @@ const statusFlow = {
   COMPLETED: { next: [], roles: [] },
 };
 const defaultDescriptions = {
-  ORDER_RECEIVED: "คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง",
-  PICKED_UP: "ผู้ส่งได้นำพัสดุมาส่งที่จุดรับแล้ว",
-  IN_TRANSIT: "พัสดุอยู่ระหว่างขนส่ง",
-  FAILED_ATTEMPT: "การจัดส่งพัสดุไม่สำเร็จ",
-  DELIVERED: "จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว",
-  COMPLETED: "ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์",
+  ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
+  PICKED_UP: 'ผู้ส่งได้นำพัสดุมาส่งที่จุดรับแล้ว',
+  IN_TRANSIT: 'พัสดุอยู่ระหว่างขนส่ง',
+  FAILED_ATTEMPT: 'การจัดส่งพัสดุไม่สำเร็จ',
+  DELIVERED: 'จัดส่งสำเร็จ: พัสดุถูกจัดส่งถึงผู้รับเรียบร้อยแล้ว',
+  COMPLETED: 'ลูกค้าได้รับสินค้าและการสั่งซื้อเสร็จสมบูรณ์',
+  CANCELLED: 'คำสั่งซื้อถูกยกเลิก'
 };
 
 const checkAuth = (Status, user, order) => {
@@ -174,11 +173,12 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
     if (!newStatus) throw new createError(400, "Missing status fields");
 
     const validStatuses = [
-      "PICKED_UP",
-      "IN_TRANSIT",
-      "DELIVERED",
-      "FAILED_ATTEMPT",
-      "COMPLETED",
+      'PICKED_UP',
+      'IN_TRANSIT',
+      'DELIVERED',
+      'FAILED_ATTEMPT',
+      'COMPLETED',
+      'CANCELLED'
     ];
     if (!validStatuses.includes(newStatus)) {
       throw new createError(
@@ -305,3 +305,67 @@ exports.getOrdersByVendor = async (vendorId, user, queryParams) =>
     ]
 }
 */
+
+exports.cancelOrder = async (orderId, user, cancelBody) => {
+  const session = await Order.startSession();
+  session.startTransaction();
+
+  try {
+    if (!orderId) throw new createError(400, "Missing order ID");
+
+    const order = await Order.findById(orderId).session(session);
+    if (!order) throw new createError(404, "Order not found");
+
+    const isAdmin = hasRole(user, ["admin"]);
+    const isOwner = user._id.toString() === order.customerId.toString();
+
+    if (!isAdmin && !isOwner) throw new createError(403, "You are not authorized to cancel this order");
+
+    const currentState = (order.orderTracking && order.orderTracking.length) ? order.orderTracking[order.orderTracking.length - 1].statusKey : null;
+
+    if (currentState !== 'ORDER_RECEIVED') throw new createError(400, `Cannot cancel order at status ${currentState}`);
+
+    const contains = await Contain.find({ orderId: order._id }).session(session);
+
+    for (const item of contains) {
+
+      const product = await Product.findById(item.productId).session(session);
+
+      if (!product) throw new createError(404, `Product ${item.productId} not found while cancelling order`);
+
+      product.stockQuantity += item.quantity;
+      await product.save({ session });
+    }
+
+    const transaction = await Transaction.findOne({ orderId: order._id }).session(session);
+
+    if (transaction) {
+      transaction.refunded = true;
+      transaction.refundDate = new Date();
+      transaction.refundAmount = transaction.amount;
+      transaction.refundNote = cancelBody.refundNote || "Cancelled by customer before shipping";
+      await transaction.save({ session });
+    }
+
+    const description = cancelBody.reason || defaultDescriptions.CANCELLED;
+
+    order.orderTracking.push({
+      statusKey: 'CANCELLED',
+      description: description,
+      timestamp: new Date()
+    });
+
+    await order.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    const updatedOrder = await Order.findById(order._id);
+    return updatedOrder;
+
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    throw err;
+  }
+};

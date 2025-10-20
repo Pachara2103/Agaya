@@ -62,12 +62,12 @@ export const PaymentBox = ({
         <div className="flex flex-row gap-4">
             <button
                 onClick={onPlaceOrder}
-                className="w-full bg-[#48B3AF] hover:bg-teal-600 text-white py-3 rounded-md transition-colors text-lg font-semibold">
+                className="w-full bg-[#48B3AF] hover:bg-teal-600 text-white py-3 rounded-md transition-colors text-lg font-semibold cursor-pointer">
                 Place Order
             </button>
             <button
                 onClick={onCancelOrder}
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-md transition-colors text-lg font-semibold">
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-md transition-colors text-lg font-semibold cursor-pointer">
                 Cancel Order
             </button>
         </div>

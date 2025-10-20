@@ -1,87 +1,122 @@
 import { API_URL } from "./api";
-import { getAuthHeaders } from "./authService";
+import Cookies from "js-cookie";
 
-/**
- * Fetches orders for a specific vendor with support for pagination.
- * @param {string} vendorId - The ID of the vendor whose orders are to be fetched.
- * @param {object} [queryParams] - Optional parameters for pagination.
- * @param {number} [queryParams.page=1] - The page number to retrieve.
- * @param {number} [queryParams.limit=10] - The number of items per page.
- * @returns {Promise<object>} A promise that resolves to the data object from the API, containing orders and pagination details.
- * @throws {Error} Throws a detailed error if the fetch operation fails or the API returns an error.
- */
-const fetchOrdersByVendor = async (vendorId, queryParams = {}) => {
+const getAuthHeaders = () => {
+  const token = Cookies.get('token');
+  if (!token) {
+    return { "Content-Type": "application/json" };
+  }
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+// @desc    Fetch Orders By CustomerId and token
+// @route   GET /api/v1/agaya/orders/customer/:cid
+// @access  Private
+export const getOrdersByCustomer = async (cid) => {
   try {
-    const headers = getAuthHeaders();
-    if (!headers.Authorization) {
-      throw new Error("Authentication token is missing. Please log in again.");
-    }
-
-    const params = new URLSearchParams({
-      page: queryParams.page || 1,
-      limit: queryParams.limit || 10,
-    });
-    const url = `${API_URL}/orders/vendor/${vendorId}?${params.toString()}`;
-
-    const res = await fetch(url, {
+    // fetch from route
+    const res = await fetch(`${API_URL}/orders/customer/${cid}`, {
       method: "GET",
-      headers: headers,
+      headers: getAuthHeaders()
     });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || `An error occurred: ${res.statusText}`);
-    }
-
-    return data.data;
+    return await res.json();
   } catch (err) {
-    console.error("Failed to fetch vendor orders:", err);
-    throw new Error(err.message || "Could not get orders from the server.");
+    console.error("Error: ", err);
+    throw new Error("Server Error");
   }
 };
 
-/**
- * Updates the tracking status of a specific order.
- * This function now correctly uses the fetch API and targets the right backend endpoint.
- * @param {string} orderId - The ID of the order to update.
- * @param {object} trackingBody - The new tracking information.
- * @param {string} trackingBody.newStatus - The next status key (e.g., 'PICKED_UP').
- * @param {string} [trackingBody.description] - An optional description or tracking number.
- * @returns {Promise<object>} The updated order object.
- */
-const updateOrderStatus = async (orderId, trackingBody) => {
+// @desc    Add Order Tracking Status to OrderTracking
+// @route   PUT /api/v1/agaya/orders/:oid
+// @access  Private (relative to customer, vendor, admin)
+// for more detail please check in backend/services/order-service.js
+export const addOrderTrackingEvent = async (oid, newStatus, description) => {
   try {
-    const headers = getAuthHeaders();
-    if (!headers.Authorization) {
-      throw new Error("Authentication token is missing. Please log in again.");
-    }
-    // Add Content-Type header for the PUT request body
-    headers["Content-Type"] = "application/json";
-
-    // The backend route is PUT /orders/:orderId
-    const url = `${API_URL}/orders/${orderId}`;
-
-    const response = await fetch(url, {
+    const res = await fetch(`${API_URL}/orders/${oid}`, {
       method: "PUT",
-      headers: headers,
-      body: JSON.stringify(trackingBody),
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        newStatus: newStatus,
+        description: description
+      })
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.message || `An error occurred: ${response.statusText}`
-      );
-    }
-
-    // The backend wraps the updated order in a 'data' object
-    return data.data;
+    return await res.json();
   } catch (err) {
-    console.error("Error updating order status:", err.message);
-    throw new Error(err.message || "Failed to update order status");
+    console.error("Error: ", err);
+    throw new Error("Server Error");
   }
-};
+}
 
-export { fetchOrdersByVendor, updateOrderStatus };
+// @desc    Cancel Order
+// @route   PUT /api/v1/agaya/orders/:oid/cancel
+// @access  Private
+// for more detail please check in backend/services/order-service.js
+export const cancelCustomerOrder = async (oid, description) => {
+  try {
+    // description not using yet modify later
+    const res = await fetch(`${API_URL}/orders/${oid}/cancel`, {
+      method: "POST",
+      headers: getAuthHeaders()
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Server Error");
+  }
+}
+
+// @desc    Request Return/Refund
+// @route   POST /api/v1/agaya/return/request
+// @access  Private (customer)
+// this will result order to be in status DISPUTED to be handle furthur
+export const requestOrderReturn = async (orderId, products, reason) => {
+    try {
+        const res = await fetch(`${API_URL}/return/request`, { 
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                orderId,
+                products, 
+                reason
+            })
+        });
+
+        if (!res.ok) {
+            const errorBody = await res.json();
+            throw new Error(errorBody.message || `HTTP error! Status: ${res.status}`);
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Error requesting return: ", err);
+        throw new Error(err.message || "Server Error: Could not submit return request.");
+    }
+}
+
+// @desc    Submit Return Tracking ID
+// @route   PUT /api/v1/agaya/return/tracking/:orderId
+// @access  Private (customer)
+export const submitReturnTrackingId = async (orderId, trackingId) => {
+    try {
+        const res = await fetch(`${API_URL}/return/tracking/${orderId}`, { 
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                trackingId
+            })
+        });
+
+        if (!res.ok) {
+            const errorBody = await res.json();
+            throw new Error(errorBody.message || `HTTP error! Status: ${res.status}`);
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Error submitting return tracking ID: ", err);
+        throw new Error(err.message || "Server Error: Could not submit tracking ID.");
+    }
+}

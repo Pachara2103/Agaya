@@ -21,6 +21,7 @@ function Nav() {
     if (token) {
       getMe().then(data => {
         if (data.success) {
+          console.log('user= ', data.data.userType)
           setUser(data.data);
         }
       });

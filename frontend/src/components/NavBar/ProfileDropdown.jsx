@@ -5,24 +5,29 @@ function ProfileDropdown({ user, handleLogout, onClose }) {
 
   const handleNavigate = (path) => {
     nav(path);
-    onClose(); 
+    onClose();
   };
 
   const handleLogoutClick = () => {
     handleLogout();
-  }
+  };
+  const handleOrderPage = (path) => {
+    console.log("im here");
+    nav(path, {
+      state: {
+        panel: "order",
+      },
+    });
+  };
 
   return (
     <div className="dropdown-menu">
-      <div
-        className="dropdown-item"
-        onClick={() => handleNavigate("/profile")}
-      >
+      <div className="dropdown-item" onClick={() => handleNavigate("/profile")}>
         บัญชีของฉัน
       </div>
 
-      {user && user.userType.includes('admin') && (
-        <div 
+      {user && user.userType.includes("admin") && (
+        <div
           className="dropdown-item"
           onClick={() => handleNavigate("/dashboard")}
         >
@@ -30,7 +35,7 @@ function ProfileDropdown({ user, handleLogout, onClose }) {
         </div>
       )}
 
-      <div className="dropdown-item">การซื้อของฉัน</div>
+      <div className="dropdown-item" onClick={()=>handleOrderPage("/profile")}>การซื้อของฉัน</div>
       <div className="dropdown-item" onClick={handleLogoutClick}>
         ออกจากระบบ
       </div>

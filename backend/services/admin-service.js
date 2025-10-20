@@ -35,7 +35,8 @@ exports.processApplication = async (applicationId, newStatus, reason = null) => 
     if (user) {
       await Vendor.create({
         userId: user._id,
-        storeName: application.storeName
+        storeName: application.storeName,
+        address: application.address
       })
     }
   }

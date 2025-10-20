@@ -23,7 +23,7 @@ function NavLinks({ user }) {
   return (
     <ul className="nav medium">
       <li className="cursor-pointer" onClick={handleApplyClick}>
-        เปิดร้านค้าใหม่
+        {user?.userType?.includes("vendor") ? "ร้านค้าของฉัน" : "เปิดร้านค้าใหม่"}
       </li>
       <li>ช่วยเหลือ</li>
       <li

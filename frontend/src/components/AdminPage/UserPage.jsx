@@ -7,7 +7,7 @@ const ButtonStyle = ({ text, textColor, bgColor, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`flex h-10 w-24 ${bgColor} ${textColor} items-center justify-center`}
+      className={`flex h-10 w-24 ${bgColor} ${textColor} items-center justify-center cursor-pointer`}
     >
       {text}
     </button>

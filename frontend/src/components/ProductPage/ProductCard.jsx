@@ -33,7 +33,7 @@ const ProductCard = ({ product}) => {
 
         <span
           class="absolute bottom-0 left-0 w-full bg-black text-white py-2.5 text-center
-                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
         >
           Add To Cart
         </span>

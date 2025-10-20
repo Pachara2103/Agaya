@@ -12,41 +12,54 @@ exports.calculatePagination = (totalItems, queryParams) => {
 };
 
 exports.getOrderDetailsPipeline = () => {
-  return [
-    {
-      $lookup: {
-        from: "contains",
-        localField: "_id",
-        foreignField: "orderId",
-        as: "contains",
-      },
-    },
-    { $unwind: "$contains" },
-    {
-      $lookup: {
-        from: "products",
-        localField: "contains.productId",
-        foreignField: "_id",
-        as: "product",
-      },
-    },
-    { $unwind: "$product" },
-    {
-      $group: {
-        _id: "$_id",
-        orderDate: { $first: "$orderDate" },
-        customerId: { $first: "$customerId" },
-        vendorId: { $first: "$vendorId" },
-        orderTracking: { $first: "$orderTracking" },
-        contains: {
-          $push: {
-            productId: "$product._id",
-            name: "$product.productName",
-            image: "$product.image",
-            price: "$product.price",
-            quantity: "$contains.quantity",
-            totalPrice: { $multiply: ["$product.price", "$contains.quantity"] },
-          },
+    return [
+        {
+            $lookup: {
+                from: "contains",
+                localField: "_id",
+                foreignField: "orderId", 
+                as: "contains",
+            },
+        },
+        { $unwind: "$contains" },
+        {
+            $lookup: {
+                from: "products",
+                localField: "contains.productId", 
+                foreignField: "_id",
+                as: "product",
+            },
+        },
+        { $unwind: "$product" },
+        {
+            $lookup: {
+                from: "vendors",
+                localField: "vendorId",
+                foreignField: "_id",
+                as: "vendorDetails"
+            }
+        },
+        {$unwind: "$vendorDetails" },
+        {
+            $group: {
+                _id: "$_id",
+                orderDate: { $first: "$orderDate" },
+                customerId: { $first: "$customerId" },
+                vendorId: { $first: "$vendorId" },
+                storeName: { $first: "$vendorDetails.storeName" },
+                vendorAddress: { $first: "$vendorDetails.address" },
+                orderTracking: { $first: "$orderTracking" }, 
+                contains: {
+                    $push: {
+                        productId: "$product._id",
+                        name: "$product.productName",
+                        price: "$product.price",
+                        quantity: "$contains.quantity",
+                        image: "$product.image",
+                        totalPrice: { $multiply: ["$product.price", "$contains.quantity"] },
+                    },
+                },
+            },
         },
       },
     },

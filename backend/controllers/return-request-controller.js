@@ -1,4 +1,4 @@
-const {requestReturn, processReturn, getReturnReqs} = require("../services/return-request-service");
+const {requestReturn, processReturn, getReturnReqs, getReturnReqsByVendor, submitReturnTrackingIdService} = require("../services/return-request-service");
 
 // PATH : POST /api/v1/agaya/return/request
 /*
@@ -38,3 +38,25 @@ exports.getReturnReqs = async (req, res, next) => {
     next(error);
   }
 }
+exports.getReturnReqsByVendor = async (req, res, next) => {
+  try {
+    const returnReqs = await getReturnReqsByVendor(req.user, req.query);
+    res.status(200).json({success: true, data : returnReqs});
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.submitReturnTrackingId = async (req, res, next) => {
+  try {
+    const updatedReturnReq = await submitReturnTrackingIdService(req.params, req.body, req.user);
+      res.status(200).json({
+        success: true,
+        message: "Tracking ID submitted successfully.",
+        data: updatedReturnReq,
+      });
+  } catch (error) {
+    next(error); 
+  }
+};
+
