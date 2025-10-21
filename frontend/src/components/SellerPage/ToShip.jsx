@@ -1,19 +1,37 @@
 import { useState } from "react";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 
-const ShippingPage = ({ setTrackingId, trackingId }) => {
+const ShippingPage = ({
+  setTrackingId,
+  trackingId,
+  shippingAddress, 
+  orderId,        
+  onUpdateStatus,  
+}) => {
+
+  const handleShip = () => {
+    if (!trackingId || trackingId.trim() === "") {
+      alert("กรุณากรอกหมายเลขพัสดุ (Tracking ID)");
+      return;
+    }
+    onUpdateStatus(orderId, "PICKED_UP", trackingId);
+  };
+
   return (
     <div className="w-full mx-auto overflow-hidden border">
       <div className="p-6 px-10 min-h-[300px] ">
         <div className="space-y-3">
-          <p className="text-base text-gray-800">ชื่อ-นามสกุลผู้ซื้อ :</p>
-          <p className="text-base text-gray-800">ที่อยู่ :</p>
+          <p className="text-base text-gray-800">
+            ชื่อ-นามสกุลผู้ซื้อ : {shippingAddress?.name || "N/A"}
+          </p>
+          <p className="text-base text-gray-800">
+            ที่อยู่ : {shippingAddress?.address || "N/A"}
+          </p>
         </div>
       </div>
 
       <div className="border-t border-gray-200 bg-gray-50 p-4">
         <div className="flex items-center space-x-3">
-
           <input
             type="text"
             value={trackingId}
@@ -27,6 +45,7 @@ const ShippingPage = ({ setTrackingId, trackingId }) => {
             "
           />
           <button
+            onClick={handleShip}
             className="
               flex-shrink-0 px-6 py-3 
               text-black font-medium bg-[#48B3AF]
@@ -42,7 +61,14 @@ const ShippingPage = ({ setTrackingId, trackingId }) => {
   );
 };
 
-const ToShip = ({ showstatus, showStatus, hideStatus }) => {
+const ToShip = ({
+  showstatus,
+  showStatus,
+  hideStatus,
+  shippingAddress, 
+  orderId,         
+  onUpdateStatus, 
+}) => {
   const [trackingId, setTrackingId] = useState("");
 
   return (
@@ -59,7 +85,13 @@ const ToShip = ({ showstatus, showStatus, hideStatus }) => {
       {showstatus && (
         <div className="space-y-2">
           <div className="h-0.5 mx-10 rounded-2xl bg-[#CCCCCC]"></div>
-          <ShippingPage setTrackingId={setTrackingId} trackingId={trackingId} />
+          <ShippingPage
+            setTrackingId={setTrackingId}
+            trackingId={trackingId}
+            shippingAddress={shippingAddress} 
+            orderId={orderId}                
+            onUpdateStatus={onUpdateStatus}   
+          />
 
           <div
             onClick={hideStatus}

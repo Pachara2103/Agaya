@@ -119,7 +119,7 @@ const MyOrder = ({ isOtherPage }) => {
                   onUpdateStatus={updateOrderStatus}
                   isSellerPage={true}
                   selectFilter = {select}
-
+                  shippingAddress={item.shippingAddress}
                 />
 
               </div>

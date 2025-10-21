@@ -1,6 +1,25 @@
 const mongoose = require('mongoose');
 const {trackingEventSubschema} = require("./orderTracking.subschema")
 
+// เอาไว้นี่ก่อน เดะย้ายใหม่
+const shippingAddressSubschema = new mongoose.Schema({
+    name: { 
+        type: String, 
+        required: true, 
+        maxlength: 72 
+    }, 
+    phoneNumber: { 
+        type: String, 
+        required: true, 
+        match: /^[0-9]{10}$/ 
+    }, 
+    address: { 
+        type: String, 
+        required: true, 
+        maxlength: 255 
+    } 
+}, { _id: false });
+
 const orderSchema = new mongoose.Schema({
   orderDate: {
     type: Date,
@@ -10,6 +29,10 @@ const orderSchema = new mongoose.Schema({
   orderTracking: {
     type: [trackingEventSubschema],
     required: true
+  },
+  shippingAddress: {
+    type: shippingAddressSubschema,
+    // required: true, future improvement // it will crashed mongodb now if uncomment
   },
   cartId: {
     type: mongoose.Schema.Types.ObjectId,

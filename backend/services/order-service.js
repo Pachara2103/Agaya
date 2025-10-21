@@ -18,7 +18,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, paymentMethod, selectedItem } = orderData;
+    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress } = orderData;
 
     const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
     if (!carts)
@@ -26,7 +26,7 @@ exports.checkoutOrder = async (orderData, user) => {
         404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
       );
 
-    if (!cartId || !customerId || !paymentMethod) {
+    if (!cartId || !customerId || !paymentMethod || !selectedAddress) {
       throw new createError(
         400, "Missing required fields"
       );
@@ -68,6 +68,7 @@ exports.checkoutOrder = async (orderData, user) => {
         cartId,
         customerId,
         vendorId,
+        shippingAddress: selectedAddress,
         orderTracking: [
           {
             statusKey: 'ORDER_RECEIVED',

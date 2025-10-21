@@ -35,6 +35,7 @@ function CheckoutPage() {
 
     const handleAddressSelect = (address) => {
         setSelectedAddress(address);
+        console.log(address)
     };
 
     const handleCancelOrder = () => {
@@ -65,7 +66,8 @@ function CheckoutPage() {
             const orderPayload = {
                 cartId: cartId,
                 selectedItem: selectedItemIds,
-                paymentMethod: paymentMethod
+                paymentMethod: paymentMethod,
+                selectedAddress: selectedAddress
             };
 
             const response = await axios.post('http://localhost:5000/api/v1/Agaya/orders/checkout', orderPayload, {
