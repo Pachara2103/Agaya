@@ -45,6 +45,7 @@ exports.getOrderDetailsPipeline = () => {
                 orderDate: { $first: "$orderDate" },
                 customerId: { $first: "$customerId" },
                 vendorId: { $first: "$vendorId" },
+                shippingAddress: { $first: "$shippingAddress" },
                 storeName: { $first: "$vendorDetails.storeName" },
                 vendorAddress: { $first: "$vendorDetails.address" },
                 orderTracking: { $first: "$orderTracking" }, 

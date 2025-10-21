@@ -10,10 +10,10 @@ const StatusTracking = ({
   isOrderReceivePage,
   products,
   orderStatus,
-  orderId, 
-  onReceive, 
+  orderId,
+  onReceive,
   onSubmitReturn,
-  latestStatusKey
+  latestStatusKey,
 }) => {
   const [isReceive, setIsReceive] = useState(false);
   const [isReturn, setIsReturn] = useState(false);
@@ -35,57 +35,34 @@ const StatusTracking = ({
   const handleConfirmReceive = async () => {
     // Call the hook function
     if (latestStatusKey === "DELIVERED") {
-      await onReceive(orderId); 
-      console.log(orderId)
-      setIsReceive(true); 
+      await onReceive(orderId);
+      console.log(orderId);
+      setIsReceive(true);
       closeConfirmReceive();
     } else {
-      alert("ของยังส่งไม่ถึง ไม่สามารถยืนยันออเดอร์ได้")
-      closeConfirmReceive()
+      alert("ของยังส่งไม่ถึง ไม่สามารถยืนยันออเดอร์ได้");
+      closeConfirmReceive();
     }
   };
   const handleConfirmReturn = async (overallReason, productsToReturn) => {
     if (latestStatusKey === "DELIVERED") {
-      const apiProducts = productsToReturn.map(p => ({ productId: p.productId, quantity: p.quantity }));
-      const success = await onSubmitReturn(orderId, apiProducts, overallReason); 
-          
+      const apiProducts = productsToReturn.map((p) => ({
+        productId: p.productId,
+        quantity: p.quantity,
+      }));
+      const success = await onSubmitReturn(orderId, apiProducts, overallReason);
+
       if (success) {
-        setIsReturn(true); 
+        setIsReturn(true);
       }
     } else {
-      alert("ของยังส่งไม่ถึง ไม่สามารถคืนของได้")
+      alert("ของยังส่งไม่ถึง ไม่สามารถคืนของได้");
     }
     closeConfirmReturn();
   };
 
   return (
     <div>
-
-      {/* {!showstatus && !isOrderReceivePage && (
-        <div
-          onClick={showStatus}
-          className="flex justify-center items-center p-3 border-t border-gray-200 text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors"
-        >
-          <FaChevronDown />
-          <span className="ml-2">ดูรายละเอียดเพิ่มเติม</span>
-        </div>
-      )}
-      {showstatus && !isOrderReceivePage && (
-        <div className="space-y-2">
-          <div className="h-0.5 mx-10 rounded-2xl bg-[#CCCCCC]"></div>
-          <OrderStatus Status={ex2} />
-
-          <div
-            onClick={hideStatus}
-            className="flex justify-center items-center p-3 border-t border-gray-200 text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors"
-          >
-            <FaChevronUp />
-            <span className="ml-2">ซ่อน</span>
-          </div>
-        </div> 
-      )} */}
-      {/* ดูรายละเอียดเพิ่มเติม & ซ่อน comment ไว้เผื่อใช้ในอันอื่น */}
-
       {isOrderReceivePage && (
         <div className="space-y-2">
           <div className="h-0.5 mx-10 rounded-2xl bg-[#CCCCCC]"></div>
@@ -115,7 +92,9 @@ const StatusTracking = ({
               </p>
             )}
             {isReturn && (
-              <p className="font-bold text-xl text-[#B71F3B] py-5">ส่งคำขอคืนเงินเเล้ว</p>
+              <p className="font-bold text-xl text-[#B71F3B] py-5">
+                ส่งคำขอคืนเงินเเล้ว
+              </p>
             )}
           </div>
           {confirmReceive && (
@@ -135,6 +114,7 @@ const StatusTracking = ({
           )}
         </div>
       )}
+
     </div>
   );
 };
