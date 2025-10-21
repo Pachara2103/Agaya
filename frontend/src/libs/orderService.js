@@ -120,3 +120,20 @@ export const submitReturnTrackingId = async (orderId, trackingId) => {
         throw new Error(err.message || "Server Error: Could not submit tracking ID.");
     }
 }
+
+// @desc    Fetch Orders By VendorId and token
+// @route   GET /api/v1/agaya/orders/vendor/:vid
+// @access  Private
+export const getOrdersByVendor = async (vid) => {
+  try {
+    // fetch from route
+    const res = await fetch(`${API_URL}/orders/vendor/${vid}`, {
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Error: ", err);
+    throw new Error("Server Error");
+  }
+};

@@ -1,6 +1,6 @@
 import OrderCard from "../OrderPage/OrderCard";
 import "../OrderPage/scrollbar.css";
-import useOrderData from "../../hooks/useOrderData";
+import useVendorOrderData from "../../hooks/useVendorOrderData";
 
 import { use, useEffect, useState } from "react";
 
@@ -13,19 +13,17 @@ const MyOrder = ({ isOtherPage }) => {
 
   const filterSelected = {
     All: 6,
-    ToShip: 3,
+    ToShip: 1,
     Completed: 3,
+    Shipping: 2
   };
 
   const currentFilterValue = filterSelected[select];
 
   const {
     filteredOrders,
-    cancelOrder,
-    confirmReceive,
-    submitReturnRequest,
-    submitTrackingId,
-  } = useOrderData(currentFilterValue);
+    updateOrderStatus
+  } = useVendorOrderData(currentFilterValue);
 
   useEffect(() => {
     if (filteredOrders) {
@@ -118,10 +116,7 @@ const MyOrder = ({ isOtherPage }) => {
                   isOtherPage={isOtherPage}
                   page={page}
                   storeAddress={item.vendorAddress}
-                  onCancel={cancelOrder}
-                  onReceive={confirmReceive}
-                  onSubmitReturn={submitReturnRequest}
-                  onSubmitTrackingId={submitTrackingId}
+                  onUpdateStatus={updateOrderStatus}
                   isSellerPage={true}
                   selectFilter = {select}
 
