@@ -49,6 +49,7 @@ const useVendorOrderData = (page) => {
       const vendorOrders = await getOrdersByVendor(vid);
       
       if (vendorOrders?.success) {
+        console.log(" vendorOrders",  vendorOrders)
         setOrders(vendorOrders.data?.orders || []);
       } else {
         throw new Error(vendorOrders?.message || "Failed to fetch vendor orders.");
