@@ -68,5 +68,5 @@ exports.deleteUser = async (id) => {
     if (!user) {
         throw createError(404, "User not found");
     }
-    return user;
+    return;
 };
