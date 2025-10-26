@@ -20,10 +20,10 @@ function AddressList({addresses = [], onEdit, onDelete}) {
                     </div>
 
                     <div>
-                        <button-white onClick={() => onEdit(address)} className="text-blue-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">
+                        <button-white onClick={() => onEdit(address)} className="cursor-pointer text-blue-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">
                             แก้ไข
                         </button-white>
-                        <button-white onClick={() => onDelete(address._id)} className="text-red-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">
+                        <button-white onClick={() => onDelete(address._id)} className="cursor-pointer text-red-500 hover:underline text-sm w-30 h-10 flex items-center justify-center">
                             ลบ
                         </button-white>
                     </div>

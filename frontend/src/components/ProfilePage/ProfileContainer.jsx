@@ -26,8 +26,9 @@ function ProfileContainer() {
   useEffect(() => {
 
     if (location.state && location.state.panel) {
+      console.log("มาเเล้ววววว")
       const receivedPanel = location.state.patnel;
-      setCurrrentPanel(receivedPanel);
+      setCurrrentPanel("order");
     }
   }, [location.state]);
 

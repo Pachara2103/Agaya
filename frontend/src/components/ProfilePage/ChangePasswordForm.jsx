@@ -86,7 +86,7 @@ function PasswordForm() {
 
                         {error && <p className="text-red-700 bg-red-200 p-3 rounded text-center my-3">{error}</p>}
 
-                        <button className="w-full bg-teal-300 text-white rounded-md font-bold transition-colors duration-300 hover:bg-teal-500" 
+                        <button className="cursor-pointer w-full bg-teal-300 text-white rounded-md font-bold transition-colors duration-300 hover:bg-teal-500" 
                          style={{ padding: '16px 0px' }}
                          onClick={handleSubmit}
                          disabled={isLoading}

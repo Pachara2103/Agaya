@@ -181,7 +181,7 @@ function Address() {
 
             {!isFormVisible && (
                 <button onClick={() => setShowAddForm(true)}
-                    className="!bg-red-700 text-white font-semibold py-2 px-5 w-30 h-10 rounded-md hover:bg-red-700 flex items-center justify-center">
+                    className="!bg-red-700 text-white font-semibold py-2 px-5 w-30 h-10 rounded-md hover:bg-red-700 flex items-center justify-center cursor-pointer">
                         เพิ่มที่อยู่ใหม่
                 </button>
             )}

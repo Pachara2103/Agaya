@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const createError = require("http-errors");
 const bcrypt = require('bcryptjs');
+const Vendor = require("../models/vendor")
 
 exports.findAll = async () => {
     const users = await User.find();
@@ -69,4 +70,15 @@ exports.deleteUser = async (id) => {
         throw createError(404, "User not found");
     }
     return user;
+};
+
+exports.getVendorId = async (userId) => {
+  const vendor = await Vendor.findOne({ userId: userId });
+  console.log("Looking for vendor with user ID:", userId);
+  console.log("Vendor found:", vendor);
+  if (!vendor) {
+    throw createError(404, "User not found or is not a vendor");
+  }
+  console.log("Vendor ID found:", vendor._id);
+  return vendor._id;
 };

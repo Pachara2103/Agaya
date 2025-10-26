@@ -21,6 +21,8 @@ const OrderCard = ({
   page,
   storeAddress,
   selectFilter,
+  shippingAddress,
+  onUpdateStatus,
 }) => {
   const [showstatus, setShowStatus] = useState(false);
   const [sellerpage, setSellerPage] = useState(false);
@@ -180,7 +182,9 @@ const OrderCard = ({
           showstatus={showstatus}
           showStatus={showStatus}
           hideStatus={hideStatus}
-       
+          shippingAddress={shippingAddress}
+          orderId={orderId}
+          onUpdateStatus={onUpdateStatus}
         />
       )}
     </div>
