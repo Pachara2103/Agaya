@@ -27,4 +27,5 @@ config/config.env
 # vscode extension
 .vscode
 node_modules
-test
+coverage
+tests/user-service-test.txt
