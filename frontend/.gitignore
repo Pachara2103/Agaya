@@ -23,3 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+playwright
+tests/images
+playwright.config.ts
+test-results
+playwright-report
+
+tests

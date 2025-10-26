@@ -89,7 +89,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
         productDescription: description,
         price: parseFloat(price) || 0,
         stockQuantity: parseInt(stock, 10) || 0,
-        image: imageUrl ? [imageUrl] : [], 
+        image: imageUrl ? [imageUrl] : [],
       };
 
       let res;
@@ -183,6 +183,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                   </label>
 
                   <input
+                    id="name"
                     type="text"
                     placeholder="ชื่อสินค้า + ชื่อแบรนด์ + คุณลักษณะของสินค้า"
                     className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none"
@@ -198,6 +199,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                     <span className="text-red-500">*</span> หมวดหมู่
                   </label>
                   <select
+                    id="category"
                     className="border-3 border-[#c6c6c6] text-[#878787] w-full p-4 outline-none"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -215,6 +217,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
             <div className="mt-6 flex flex-row gap-5">
               <label className="text-sm text-gray-600 w-1/10">รายละเอียด</label>
               <textarea
+                id="description"
                 rows="8"
                 placeholder={`กรุณากรอกรายละเอียดของสินค้า\n\n• ไซส์ / ขนาดของสินค้า\n• น้ำหนัก\n• คุณสมบัติพิเศษ\n• วิธีการใช้\n• การรับประกันสินค้า`}
                 className="border-3 border-[#c6c6c6] text-[#878787]  w-full p-4 outline-none resize-none"
@@ -236,6 +239,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                   <span className="text-red-500">*</span> ราคาสินค้า
                 </label>
                 <input
+                  id="price"
                   type="text"
                   className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none"
                   value={price}
@@ -249,6 +253,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                   <span className="text-red-500">*</span> คลังสินค้า
                 </label>
                 <input
+                  id="stock"
                   type="text"
                   className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none"
                   value={stock}

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { FcGoogle } from "react-icons/fc";
 import { Login } from "../../libs/authService.js";
-import Cookies from 'js-cookie'; 
+import Cookies from "js-cookie";
 import { API_URL } from "../../libs/api.js";
 
 function Signin() {
@@ -11,7 +11,7 @@ function Signin() {
   const [password, setPassword] = useState("");
   const [aleart, setAleart] = useState("อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
   const [invalid, setInvalid] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
@@ -33,18 +33,18 @@ function Signin() {
     }
     try {
       const data = await Login(email, password);
-      
+
       if (data.success && data.token) {
         console.log("Login success, saving token...");
 
-        Cookies.set('token', data.token, { 
-          expires: 7, 
-          secure: true, 
-          sameSite: 'strict' 
+        Cookies.set('token', data.token, {
+          expires: 7,
+          secure: true,
+          sameSite: 'strict'
         });
 
-        navigate("/"); 
-        window.location.reload(); 
+        navigate("/");
+        window.location.reload();
       } else {
         throw new Error(data.message || "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
       }
@@ -88,6 +88,7 @@ function Signin() {
               </h1>
 
               <input
+                id="email"
                 type="email"
                 placeholder="อีเมล"
                 onChange={fillEmail}
@@ -95,6 +96,7 @@ function Signin() {
               />
 
               <input
+                id="password"
                 type="password"
                 placeholder="รหัสผ่าน"
                 onChange={fillPassword}
@@ -113,7 +115,7 @@ function Signin() {
               )}
 
               <button class="mb-2.5 button1" onClick={login}>เข้าสู่ระบบ</button>
-              
+
               <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                 <FcGoogle size={30} />
                 <p className="text-[14px] text-gray-800">Sign in with Google</p>
