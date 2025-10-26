@@ -59,6 +59,7 @@ const useCartData = () => {
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     const quantity = Math.max(1, newQuantity);
+    if( quantity>99999) {quantity=99999};
 
     setCartItems(
       cartItems.map((item) =>

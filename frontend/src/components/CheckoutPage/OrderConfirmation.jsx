@@ -5,11 +5,11 @@ function OrderConfirmation() {
     const navigate = useNavigate();
 
     const handleConfirm = () => {
-        //navigate('');
+        navigate('/cart');
     };
 
     return (
-        <div class="flex flex-col relative">
+        <div class="flex flex-col relative" id='place-order-success'>
 
             <main>
                 <div className="flex justify-center items-center min-h-[80vh] bg-gray-100">

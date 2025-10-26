@@ -7,13 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.2",
     "@mui/x-charts": "^8.11.2",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.12.1",
     "js-cookie": "^3.0.5",

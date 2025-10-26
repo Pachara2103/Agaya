@@ -9,7 +9,7 @@ export const CartTotalsSummary = ({
     <div className="space-y-6">
       <div className="flex justify-between border-b pb-2">
         <span>ยอดรวมสินค้า:</span>
-        <span>${subtotal.toFixed(2)}</span>
+        <span id="total-price">${subtotal.toFixed(2)}</span>
       </div>
       <div className="flex justify-between border-b pb-2">
         <span>ค่าจัดส่ง:</span>
@@ -21,6 +21,7 @@ export const CartTotalsSummary = ({
       </div>
     </div>
     <button
+      id="proceed-to-checkout"
       onClick={onProcessToCheckout} 
       className="w-full bg-[#48B3AF] hover:bg-[#48b3afa6] text-white mt-6 py-4 rounded-md transition-colors cursor-pointer">
       ดำเนินการชำระเงิน
