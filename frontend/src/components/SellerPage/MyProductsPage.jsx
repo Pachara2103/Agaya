@@ -90,7 +90,7 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
                 className="w-16 h-16 object-contain mr-4 border p-1"
               />
               <span className="font-semibold text-gray-800">
-                {product.product_name}
+                {product.productName}
               </span>
             </div>
 

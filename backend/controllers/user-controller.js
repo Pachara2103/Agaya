@@ -44,3 +44,13 @@ exports.deleteUser = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.getVendorId = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const vendorId = await userService.getVendorId(userId);
+    res.status(200).json({ success: true, data: vendorId });
+  } catch (err) {
+    next(err);
+  }
+};
