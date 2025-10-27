@@ -77,9 +77,10 @@ const ProductDetailPage = () => {
     }
   }, [product]);
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const increaseQuantity = () => {
+    setQuantity((prev) => Math.min(prev + 1, product.stockQuantity));
+  };
+  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleAddToCart = async () => {
     console.log(`Added ${quantity} of ${product.productName} to cart!`);

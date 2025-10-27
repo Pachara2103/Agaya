@@ -34,7 +34,7 @@ exports.getAddToByCartId = async(cartId) => {
     const result = await AddTo.find({cartId: cartId})
     .populate({
         path: "productId",
-        select: "productName productDescription price image vendorId",
+        select: "productName productDescription price image vendorId stockQuantity",
         populate: {
             path: "vendorId",
             select: "storeName"

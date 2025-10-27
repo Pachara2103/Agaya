@@ -33,17 +33,33 @@ const useCartData = () => {
 
       const fetchedItems = await getCartItems(fetchedCartId);
 
-      setCartItems(
-        fetchedItems.map((item) => ({
-          _id: item._id,
-          productId: item.productId,
-          quantity: item.quantity,
-          productName: item.productId.productName || "Product",
-          price: item.productId.price,
-          image: item.productId.image,
-          storeName: item.productId.vendorId?.storeName || "Unknown Store",
-        }))
-      );
+      let processedItems = fetchedItems.map((item) => ({
+        _id: item._id,
+        productId: item.productId,
+        quantity: item.quantity,
+        productName: item.productId.productName || "Product",
+        price: item.productId.price,
+        image: item.productId.image,
+        storeName: item.productId.vendorId?.storeName || "Unknown Store",
+        stockQuantity: item.productId.stockQuantity,
+      }));
+
+      // Adjust quantities if they exceed stock and update backend
+      for (let i = 0; i < processedItems.length; i++) {
+        const item = processedItems[i];
+        if (item.quantity > item.stockQuantity) {
+          console.warn(
+            `Adjusting quantity for ${item.productName} from ${item.quantity} to ${item.stockQuantity} due to insufficient stock.`
+          );
+          item.quantity = item.stockQuantity;
+          await updateCartItemQuantity(item._id, {
+            productId: item.productId._id,
+            cartId: fetchedCartId,
+            quantity: item.stockQuantity,
+          });
+        }
+      }
+      setCartItems(processedItems);
     } catch (error) {
       console.error("Cart fetch error:", error);
       setError(error.message || "Failed to load cart.");
@@ -58,8 +74,14 @@ const useCartData = () => {
   }, []);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
+    const itemToUpdate = cartItems.find((item) => item._id === itemId);
+    if (!itemToUpdate) return;
+
     let quantity = Math.max(1, newQuantity);
-    if( quantity>99999) {quantity=99999};
+    if (itemToUpdate.stockQuantity !== undefined && quantity > itemToUpdate.stockQuantity) {
+      quantity = itemToUpdate.stockQuantity;
+      console.warn(`Quantity for ${itemToUpdate.productName} maximum at available stock: ${quantity}`);
+    }
 
     setCartItems(
       cartItems.map((item) =>
@@ -67,9 +89,7 @@ const useCartData = () => {
       )
     );
 
-    const itemToUpdate = cartItems.find((item) => item._id === itemId);
-
-    if (itemToUpdate && cartId) {
+    if (cartId) {
       try {
         await updateCartItemQuantity(itemId, {
           productId: itemToUpdate.productId._id,
@@ -78,7 +98,7 @@ const useCartData = () => {
         });
       } catch (e) {
         console.error("Failed to update quantity on backend:", e);
-        fetchCartData();
+        fetchCartData(); 
       }
     }
   };
