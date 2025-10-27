@@ -8,7 +8,7 @@ export const CreateCategory = ({ onSuccess }) => {
     const addCategory = async () =>{
         try {
 
-            const response = await createCategory("http://localhost:5000/api/v1/Agaya", {category_name: name});
+            const response = await createCategory({categoryName: name});
             console.log("Category created:", response);
             alert("Category created successfully!");
             if (onSuccess) onSuccess();
