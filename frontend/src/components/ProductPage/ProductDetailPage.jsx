@@ -6,6 +6,7 @@ import {
 } from "../../libs/cartService";
 import { getMe } from "../../libs/authService";
 import Cookies from "js-cookie";
+import { useCart } from "../../context/CartContext"; 
 
 import {
   ProductImageGallery,
@@ -16,6 +17,7 @@ const ProductDetailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { refreshCart } = useCart(); // Get refreshCart from useCart
 
   const initialProduct = location.state?.product;
   const [product, setProduct] = useState(initialProduct);
@@ -113,6 +115,7 @@ const ProductDetailPage = () => {
 
       console.log("Added to cart successfully:", result);
       alert(`${quantity} of ${product.productName} added to cart!`);
+      refreshCart(); 
     } catch (error) {
       console.error("Error adding to cart:", error.message);
       alert(`Failed to add to cart: ${error.message}. Please log in again.`);

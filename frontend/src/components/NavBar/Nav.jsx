@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { getMe } from "../../libs/authService"; 
-import useCartData from "../../hooks/useCartData";
+import { useCart } from "../../context/CartContext"; 
+import { useAuth } from "../../context/AuthContext";
 
 import NavLinks from "./NavLinks";
 import NavIcons from "./NavIcons";
@@ -13,23 +14,12 @@ import SearchBar from "./SearchBar";
 
 function Nav() {
   const nav = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, logout, setUser } = useAuth(); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null); 
-  const { groupedCartItems } = useCartData();
+  const { groupedCartItems } = useCart();
   const numberOfStoresInCart = Object.keys(groupedCartItems).length;
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (token) {
-      getMe().then(data => {
-        if (data.success) {
-          console.log('user= ', data.data.userType)
-          setUser(data.data);
-        }
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,11 +32,9 @@ function Nav() {
   }, []);
 
   const handleLogout = () => {
-    Cookies.remove("token");
-    setUser(null);
+    logout(); // Use logout from AuthContext
     setIsDropdownOpen(false);
     nav("/signin");
-    window.location.reload();
   };
   
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -58,7 +46,6 @@ function Nav() {
         <div className="header-left">
           <h2 className="text-[#000] text-[18px] cursor-pointer font-bold" onClick={() => {
             nav("/")
-            window.location.reload(); 
           }}>
             Agaya
           </h2>

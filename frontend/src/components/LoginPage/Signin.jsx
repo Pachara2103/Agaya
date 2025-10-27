@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { Login } from "../../libs/authService.js";
 import Cookies from "js-cookie";
 import { API_URL } from "../../libs/api.js";
+import { useAuth } from "../../context/AuthContext";
 
 function Signin() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ function Signin() {
   const [invalid, setInvalid] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleGoogleLogin = () => {
     window.location.href = `${API_URL}/auth/google`;
@@ -25,7 +27,7 @@ function Signin() {
     setPassword(e.target.value);
   };
 
-  const login = async () => {
+  const loginUser = async () => {
     if (!email || !password) {
       setInvalid(true);
       setAleart("กรุณาใส่ข้อมูลให้ครบถ้วน");
@@ -36,15 +38,8 @@ function Signin() {
 
       if (data.success && data.token) {
         console.log("Login success, saving token...");
-
-        Cookies.set('token', data.token, {
-          expires: 7,
-          secure: true,
-          sameSite: 'strict'
-        });
-
+        login(data.data.user, data.token);
         navigate("/");
-        window.location.reload();
       } else {
         throw new Error(data.message || "อีเมล หรือ รหัสผ่าน ไม่ถูกต้อง");
       }
@@ -102,7 +97,7 @@ function Signin() {
                 onChange={fillPassword}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    login();
+                    loginUser();
                   }
                 }}
                 className="bg-white h-[45px] border-b border-gray-400 mb-8 px-2 outline-none text-gray-500 focus:text-black"
@@ -114,7 +109,7 @@ function Signin() {
                 </p>
               )}
 
-              <button class="mb-2.5 button1" onClick={login}>เข้าสู่ระบบ</button>
+              <button class="mb-2.5 button1" onClick={loginUser}>เข้าสู่ระบบ</button>
 
               <div onClick={handleGoogleLogin} className="flex flex-row items-center justify-center gap-3 border border-gray-400 rounded-[3px] py-[8px] cursor-pointer mb-4">
                 <FcGoogle size={30} />

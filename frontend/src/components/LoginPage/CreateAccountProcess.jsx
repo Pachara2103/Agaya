@@ -49,8 +49,7 @@ function CreateAccountProcess({ account }) {
   useEffect(() => {
     if (state != 2) return;
     if (countdown <= 0) {
-      navigate("/");
-      window.location.reload(); 
+      navigate("/"); 
       return;
     }
     const timer = setTimeout(() => {

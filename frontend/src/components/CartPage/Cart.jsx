@@ -1,4 +1,4 @@
-import useCartData from "../../hooks/useCartData";
+import { useCart } from "../../context/CartContext"; 
 import useCartDeleteModal from "../../hooks/useCartDeleteModal";
 import { CartTable } from "./CartTable";
 import { CartActionButtons } from "./CartActionButtons";
@@ -11,7 +11,7 @@ const Cart = () => {
     isLoading,
     error,
     selectedItemIds,
-    fetchCartData,
+    refreshCart: fetchCartData, 
     handleQuantityChange,
     deleteItem,
     toggleSelectItem,
@@ -21,7 +21,7 @@ const Cart = () => {
     selectedShipping,
     selectedTotal,
     cartId
-  } = useCartData();
+  } = useCart(); 
   
   const { 
     isModalOpen, 
