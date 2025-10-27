@@ -7,9 +7,10 @@ import { FaRegEyeSlash } from "react-icons/fa";
 
 import { createUser } from "../../libs/fetchUserUtils";
 import { setnewPassword } from "../../libs/userService";
-import Cookies from 'js-cookie';
+import { useAuth} from "../../context/AuthContext"
 
 const PasswordInput = ({ onNext, onBack, type, account, details }) => {
+  const { login } = useAuth()
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -61,15 +62,8 @@ const PasswordInput = ({ onNext, onBack, type, account, details }) => {
       });
 
       if (res.success && res.token) {
-        
-        Cookies.set('token', res.token, { 
-          expires: 7, 
-          secure: true, 
-          sameSite: 'strict' 
-        });
-
+        login(res.data.user, res.token);
         onNext();
-
       } else {
         throw new Error(res.message || "การสมัครสมาชิกล้มเหลว");
       }

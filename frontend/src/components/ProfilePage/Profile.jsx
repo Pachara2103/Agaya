@@ -12,6 +12,7 @@ import "./DatePicker.css";
 import ProfileImageUploader from "./ProfileImageUploader"; 
 import { updateMe } from "../../libs/authService";
 import { uploadProductImage } from "../../libs/productService";
+import { useAuth } from "../../context/AuthContext";
 // rgba(221, 221, 221, 0.7)
 function Profile({ userData }) {
   // const { email, name, phoneNumber, dob } = {
@@ -20,6 +21,8 @@ function Profile({ userData }) {
   //   phoneNumber: "0000000098",
   //   dob: new Date(2025, 8, 15),
   // };
+
+  const { setUser } = useAuth();
 
   const {
     username: originalName,
@@ -105,7 +108,7 @@ function Profile({ userData }) {
       const res = await updateMe(dataToUpdate);
       if (res.success) {
         alert("อัปเดตข้อมูลสำเร็จ!");
-        window.location.reload();
+        setUser(res.data); // Update global user state
       } else {
         alert("อัปเดตข้อมูลไม่สำเร็จ: " + (res.message || ""));
       }

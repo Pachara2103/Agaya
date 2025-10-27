@@ -8,6 +8,7 @@ function NavIcons({
   isDropdownOpen,
   toggleDropdown,
   onClose,
+  numberOfStoresInCart,
 }) {
   const navigate = useNavigate();
   const goToCart = () => {
@@ -16,7 +17,14 @@ function NavIcons({
   return (
     <div className="nav-icons">
       <CiHeart size={28} className="nav-icon" />
-      <CiShoppingCart size={28} className="nav-icon" onClick={()=> goToCart()}/>
+      <div className="relative">
+        <CiShoppingCart size={28} className="nav-icon" onClick={()=> goToCart()}/>
+        {numberOfStoresInCart > 0 && (
+          <div className="absolute -top-2 -right-2 bg-[#B71F3B] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+            {numberOfStoresInCart}
+          </div>
+        )}
+      </div>
 
       {user && (
         <div className="profile-container">

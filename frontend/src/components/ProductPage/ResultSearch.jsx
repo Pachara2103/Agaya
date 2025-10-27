@@ -1,10 +1,11 @@
 import { ProductGrid } from "./GridProduct";
 
 import "./.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ResultSearch = () => {
   const location = useLocation();
+  const nav = useNavigate();
   const isSearchPage = location.pathname === "/result-search";
 
   const { products } = location.state || { products: [] };
@@ -14,7 +15,7 @@ const ResultSearch = () => {
       {isSearchPage && (
         <button
           className="button-white absolute top-0 left-0 m-10 w-20"
-          onClick={() => (backToHome())}
+          onClick={() => (nav("/"))}
         >
           ย้อนกลับ
         </button>

@@ -13,21 +13,15 @@ const getAuthHeaders = () => {
 export const getProducts = async (value) => {
   let res;
   if (value) {
-    res = await fetch(`${API_URL}/products/?keyword=${value}`, {
-      headers: getAuthHeaders(),
-    });
+    res = await fetch(`${API_URL}/products/?keyword=${value}`);
   } else {
-    res = await fetch(`${API_URL}/products/`, {
-      headers: getAuthHeaders(),
-    });
+    res = await fetch(`${API_URL}/products/`);
   }
   return res.json();
 };
 
 export const getProductsById = async (id) => {
-  const res = await fetch(`${API_URL}/products/${id}`, {
-    headers: getAuthHeaders(),
-  });
+  const res = await fetch(`${API_URL}/products/${id}`);
   return res.json();
 };
 

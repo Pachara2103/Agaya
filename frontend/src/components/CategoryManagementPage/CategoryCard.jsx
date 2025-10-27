@@ -4,7 +4,7 @@ import { editCategory, deleteCategory } from "../../libs/categoryService";
 export const CategoryCard = ({Category, onSuccess}) => {
 
     const [isEditing, setIsEditing] = useState(false); // track edit mode
-    const [name, setName] = useState(Category.category_name);
+    const [name, setName] = useState(Category.categoryName);
     const [isDelete, setisDelete] = useState(false);
 
     const handleEdit = () => {
@@ -12,7 +12,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
     };
 
     const handleCancel = () => {
-        setName(Category.category_name); // reset to original
+        setName(Category.categoryName); // reset to original
         setIsEditing(false);
         setisDelete(false);
     };
@@ -20,7 +20,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
     const handleConfirm = async({ mode }) => { //mode 1 is editing, mode 2 is deleting 
         if(mode == 1){
             try {
-                const response = await editCategory("http://localhost:5000/api/v1/Agaya", Category._id, {category_name: name });
+                const response = await editCategory(Category._id, {categoryName: name });
                 console.log("Category edited:", response);
                 alert("Category edited successfully!");
                 if (onSuccess) onSuccess();
@@ -31,7 +31,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
         }  
         else {
              try {
-                const response = await deleteCategory("http://localhost:5000/api/v1/Agaya", Category._id);
+                const response = await deleteCategory(Category._id);
                 console.log("Category deleted:", response);
                 alert("Category deleted successfully!");
                 if (onSuccess) onSuccess();
@@ -62,7 +62,7 @@ export const CategoryCard = ({Category, onSuccess}) => {
                         className="border border-gray-300 rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 ):(
-                    Category.category_name
+                    Category.categoryName
                 )}
             </div>
 

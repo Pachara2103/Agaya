@@ -11,7 +11,7 @@ export const CategoryManagement = () => {
     const getData = async () => {
 
         try {
-            const categorydata = await getCategories("http://localhost:5000/api/v1/Agaya");
+            const categorydata = await getCategories();
             console.log(categorydata);
             const category = categorydata.data;
             setcategory(category);

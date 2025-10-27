@@ -5,7 +5,9 @@ const {
   approveApplication,
   rejectApplication,
   updateUserRole, 
-  banUser 
+  banUser,
+  getTotalOrdersCount,
+  getTotalVendorsCount
 } = require("../controllers/admin-controller");
 const { protect, authorize } = require("../middleware/auth");
 
@@ -18,5 +20,7 @@ router.put("/vendor-applications/:id/reject", rejectApplication);
 router.put("/users/:id/role", updateUserRole);
 router.put("/users/:id/ban", banUser);
 
+router.get("/orders/count", getTotalOrdersCount);
+router.get("/vendors/count", getTotalVendorsCount);
 
 module.exports = router;

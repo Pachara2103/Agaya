@@ -6,6 +6,7 @@ import AddressDropdown from "./AddressDropdown";
 import {PaymentBox} from "./PaymentBox";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useCart } from "../../context/CartContext"; 
 
 function CheckoutPage() {
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -15,6 +16,7 @@ function CheckoutPage() {
     const [submitError, setSubmitError] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
+    const { refreshCart } = useCart();
 
     const checkoutData = location.state;
 
@@ -87,6 +89,7 @@ function CheckoutPage() {
                     //navigate('order-history');
                 }
             }
+            refreshCart()
         } catch(err) {
             setSubmitError(err.response?.data?.message || err.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
         } finally {

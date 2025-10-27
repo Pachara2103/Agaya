@@ -28,6 +28,8 @@ import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
 import AdminPageContainer from "./components/AdminPage/AdminPageContainer.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import GoogleAuthHandler from "./components/LoginPage/GoogleAuthHandler.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 
 let router = createBrowserRouter([
   {
@@ -125,6 +127,10 @@ let router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
   </StrictMode>
 );

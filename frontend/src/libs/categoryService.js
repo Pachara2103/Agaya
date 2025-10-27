@@ -1,6 +1,23 @@
-const getCategoryById = async(url, id) => {
+import { API_URL } from "./api";
+import Cookies from "js-cookie";
+
+const getAuthHeaders = () => {
+    const token = Cookies.get('token');
+    if (!token) {
+        return { "Content-Type": "application/json" };
+    }
+    return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+};
+
+export const getCategoryById = async(id) => {
     try {
-        const res = await fetch(`${url}/category/${id}`);
+        const headers = getAuthHeaders();
+        const res = await fetch(`${API_URL}/category/${id}`, {
+            headers: headers,
+        });
         if (!res.ok) {
              throw new Error("Failed to fetch Category");
         }
@@ -11,9 +28,12 @@ const getCategoryById = async(url, id) => {
     }
 }
 
-const getCategories = async(url) =>  {
+export const getCategories = async() =>  {
     try {
-        const res = await fetch(`${url}/category/`);
+        const headers = getAuthHeaders();
+        const res = await fetch(`${API_URL}/category/`, {
+            headers: headers,
+        });
         if (!res.ok) {
              throw new Error("Failed to fetch Categories");
         }
@@ -24,13 +44,12 @@ const getCategories = async(url) =>  {
     }
 }
 
-const createCategory = async(url, Categorydata) => {
+export const createCategory = async(Categorydata) => {
     try {
-        const response = await fetch(`${url}/category`, {
+        const headers = getAuthHeaders();
+        const response = await fetch(`${API_URL}/category`, {
              method: "POST",
-             headers: {
-             "Content-Type": "application/json",
-            },
+             headers: headers,
              body: JSON.stringify(Categorydata), 
         });
 
@@ -44,13 +63,12 @@ const createCategory = async(url, Categorydata) => {
     }
 }
 
-const editCategory = async(url, id, Categorydata) => {
+export const editCategory = async(id, Categorydata) => {
     try {
-        const response = await fetch(`${url}/category/${id}`, {
+        const headers = getAuthHeaders();
+        const response = await fetch(`${API_URL}/category/${id}`, {
              method: "PUT",
-             headers: {
-             "Content-Type": "application/json",
-            },
+             headers: headers,
              body: JSON.stringify(Categorydata), 
         });
 
@@ -64,10 +82,12 @@ const editCategory = async(url, id, Categorydata) => {
     }
 }
 
-const deleteCategory = async(url, id) => {
+export const deleteCategory = async(id) => {
     try {
-        const response = await fetch(`${url}/category/${id}`, {
-             method: "DELETE"
+        const headers = getAuthHeaders();
+        const response = await fetch(`${API_URL}/category/${id}`, {
+             method: "DELETE",
+             headers: headers,
         });
 
         if (!response.ok) {
@@ -79,5 +99,3 @@ const deleteCategory = async(url, id) => {
         throw new Error("Cannot delete Categories");
     }
 }
-
-export { getCategoryById, getCategories, editCategory, createCategory, deleteCategory}

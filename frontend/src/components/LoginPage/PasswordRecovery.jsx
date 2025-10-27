@@ -18,15 +18,13 @@ const Done = ({ countdown }) => {
         <p class="">เปลี่ยนรหัสผ่านบัญชีนี้สำเร็จ</p>
         <p class="">คุณจะย้ายไปยังหน้าเข้าสู่ระบบภายใน {countdown} วินาที</p>
 
-        <button className="button1" onClick={redirectToHomePage}>ตกลง</button>
+        <button className="button1" onClick={() => navigate("/signin")}>ตกลง</button>
       </div>
     </div>
   );
 };
 
-const redirectToHomePage = () => {
-  window.location.href = "/";
-};
+
 
 const PasswordRecovery = ({}) => {
   const [state, setState] = useState(0);
@@ -40,7 +38,6 @@ const PasswordRecovery = ({}) => {
     if (state !== 3) return;
     if (countdown <= 0) {
       navigate("/signin");
-      window.location.reload(); 
       return;
     }
     const timer = setTimeout(() => {
@@ -48,7 +45,7 @@ const PasswordRecovery = ({}) => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [countdown, state]);
+  }, [countdown, state, navigate]);
 
   // countdown when success //
 
@@ -69,7 +66,7 @@ const PasswordRecovery = ({}) => {
   };
 
   const backToSignin = () => {
-    window.location.href = "/signin";
+    navigate("/signin");
     return;
   };
 

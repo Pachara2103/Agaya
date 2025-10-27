@@ -11,6 +11,46 @@ const getAuthHeaders = () => {
   };
 };
 
+export const getAllUsersCount = async () => {
+  const res = await fetch(`${API_URL}/users`, {
+    method: 'GET',
+    headers: getAuthHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to fetch total users count');
+  const data = await res.json();
+  return data.count;
+};
+
+export const getAllProductsCount = async () => {
+  const res = await fetch(`${API_URL}/products`, {
+    method: 'GET',
+    headers: getAuthHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to fetch total products count');
+  const data = await res.json();
+  return data.pagination.total;
+};
+
+export const getTotalOrdersCount = async () => {
+  const res = await fetch(`${API_URL}/admin/orders/count`, {
+    method: 'GET',
+    headers: getAuthHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to fetch total orders count');
+  const data = await res.json();
+  return data.count;
+};
+
+export const getTotalVendorsCount = async () => {
+  const res = await fetch(`${API_URL}/admin/vendors/count`, {
+    method: 'GET',
+    headers: getAuthHeaders()
+  });
+  if (!res.ok) throw new Error('Failed to fetch total vendors count');
+  const data = await res.json();
+  return data.count;
+};
+
 export const getPendingApplications = async () => {
   const res = await fetch(`${API_URL}/admin/vendor-applications`, {
     method: 'GET',
