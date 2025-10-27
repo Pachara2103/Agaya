@@ -45,3 +45,21 @@ exports.banUser = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getTotalOrdersCount = async (req, res, next) => {
+  try {
+    const count = await adminService.getTotalOrdersCount();
+    res.status(200).json({ success: true, count });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getTotalVendorsCount = async (req, res, next) => {
+  try {
+    const count = await adminService.getTotalVendorsCount();
+    res.status(200).json({ success: true, count });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,7 +1,8 @@
 const User = require('../models/user');
 const VendorApplication = require('../models/vendor-application');
 const createError = require('http-errors');
-const Vendor = require('../models/vendor')
+const Vendor = require('../models/vendor');
+const Order = require('../models/order'); // Import Order model
 
 exports.getPendingApplications = async () => {
   const applications = await VendorApplication.find({ status: 'pending' })
@@ -71,4 +72,14 @@ exports.banUser = async (id) => {
   user.status = 'banned'; 
   await user.save();
   return user;
+};
+
+exports.getTotalOrdersCount = async () => {
+  const count = await Order.countDocuments();
+  return count;
+};
+
+exports.getTotalVendorsCount = async () => {
+  const count = await Vendor.countDocuments();
+  return count;
 };
