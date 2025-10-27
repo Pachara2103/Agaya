@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { getOrCreateCartByUserId, getCartItems, updateCartItemQuantity, deleteCartItem } from '../libs/cartService';
-import { useAuth } from './AuthContext'; // Assuming AuthContext is in the same directory
+import { useAuth } from './AuthContext'; 
 
 const CartContext = createContext();
 
