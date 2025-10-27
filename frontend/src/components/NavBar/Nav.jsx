@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { getMe } from "../../libs/authService"; 
+import useCartData from "../../hooks/useCartData";
 
 import NavLinks from "./NavLinks";
 import NavIcons from "./NavIcons";
@@ -15,6 +16,8 @@ function Nav() {
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null); 
+  const { groupedCartItems } = useCartData();
+  const numberOfStoresInCart = Object.keys(groupedCartItems).length;
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -72,6 +75,7 @@ function Nav() {
               isDropdownOpen={isDropdownOpen}
               toggleDropdown={toggleDropdown}
               onClose={closeDropdown} 
+              numberOfStoresInCart={numberOfStoresInCart}
             />
           </div>
         </div>
