@@ -17,12 +17,16 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
     const res = await getProductsByVendorId();
     console.log(res);
     setProducts(res.data);
+    console.log(res.data);
   };
   return (
     <div className="mt-6 bg-white p-6 rounded-lg shadow">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">สินค้าของฉัน</h2>
-        <button className="p-5 flex flex-row items-center button-red " onClick={() => setPageSelected("เพิ่มสินค้าใหม่")}>
+        <button
+          className="p-5 flex flex-row items-center button-red "
+          onClick={() => setPageSelected("เพิ่มสินค้าใหม่")}
+        >
           <svg
             className="w-5 h-5 mr-2"
             fill="none"
@@ -96,16 +100,16 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
 
             <div className="col-span-1 text-center text-gray-700">N/A</div>
             <div className="col-span-2 text-center text-gray-700">
-              ${product.price.toLocaleString()}
+              {product.price.toLocaleString()}
             </div>
             <div className="col-span-1 text-center text-gray-700">
-              {product.stock_quantity}
+              {product.stockQuantity}
             </div>
             <div
               className="col-span-3 text-gray-500 truncate text-center"
-              title={product.product_description}
+              title={product.productDescription}
             >
-              {product.product_description}
+              {product.productDescription}
             </div>
             <div className="col-span-2 text-right">
               <button

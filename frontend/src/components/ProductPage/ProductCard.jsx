@@ -10,7 +10,7 @@ const StarRating = ({ rating, reviewCount }) => (
 
 const PriceDisplay = ({ price, originalPrice }) => (
   <div class="flex items-center gap-3 my-2">
-    <span class="font-semibold text-red-500">${price}</span>
+    <span class="font-semibold text-red-500">{price} {" Bath"}</span>
     {originalPrice && (
       <span class="text-gray-400 line-through">${originalPrice}</span>
     )}

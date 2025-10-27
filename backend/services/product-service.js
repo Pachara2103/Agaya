@@ -2,7 +2,9 @@ const Product = require('../models/product');
 const AuditLog = require('../models/audit-log');
 const createError = require('http-errors');
 const auditService = require('./audit-service');
-const Vendor = require('../models/vendor')
+const Vendor = require('../models/vendor');
+const {getVendorId} = require('../services/user-service')
+const { connection } = require('mongoose');
 
 
 // Get all products
@@ -127,8 +129,9 @@ exports.updateProduct = async (id, updateData, user) => {
         }
 
         // Move here
+        const vendorId = await getVendorId(user._id);
         const isAdmin = user.userType.includes('admin');
-        const isOwner = product.vendorId.toString() === user._id.toString();
+        const isOwner = product.vendorId.toString() === vendorId.toString();
 
         if (!isAdmin && !isOwner) {
             throw createError(403, "You do not have permission to modify this product.");
