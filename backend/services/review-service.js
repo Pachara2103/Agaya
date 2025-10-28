@@ -3,9 +3,9 @@ const Transaction = require("../models/transaction");
 const Contain = require("../models/contain");
 const createError = require("http-errors");
 
-exports.createReview = async (data) => {
+exports.createReview = async (data, user) => {
   const { transactionId, productId, customerId, vendorId, vendorResponse, reviewDate, rating, reviewContent } = data;
-
+if(customerId !== user._id) throw createError(400, "User doesn't match - unauthorize.");
   const transaction = await Transaction.findById(transactionId);
   if (!transaction) throw createError(404, "Transaction not found.");
   const contain = await Contain.find({orderId: transaction.orderId, productId: productId});
