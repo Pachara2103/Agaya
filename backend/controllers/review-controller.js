@@ -45,7 +45,7 @@ exports.updateReview = async (req, res, next) => {
 
 exports.deleteReview = async (req, res, next) => {
   try {
-    await reviewService.deleteReview(req.params.id);
+    await reviewService.deleteReview(req.params.id, req.user);
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error) {
     next(error);

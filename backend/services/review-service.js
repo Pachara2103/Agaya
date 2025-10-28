@@ -1,18 +1,18 @@
 const Review = require("../models/review");
+const Transaction = require("../models/transaction");
+const Contain = require("../models/contain");
 const createError = require("http-errors");
 
 exports.createReview = async (data) => {
-  const {
-    transactionId,
-    productId,
-    customerId,
-    vendorId,
-    vendorResponse,
-    reviewDate,
-    rating,
-    reviewContent,
-  } = data;
+  const { transactionId, productId, customerId, vendorId, vendorResponse, reviewDate, rating, reviewContent } = data;
 
+  const transaction = await Transaction.findById(transactionId);
+  if (!transaction) throw createError(404, "Transaction not found.");
+  const contain = await Contain.find({orderId: transaction.orderId, productId: productId});
+  if (contain.length === 0) throw createError(404, "User does not purchase this product.");
+  const review = await Review.find({productId: productId, customerId: customerId});
+  console.log(review);
+  if(review.length > 0) throw createError(400, "User has reviewed this product.");
   const newReview = await Review.create({
     transactionId,
     productId,
@@ -34,10 +34,7 @@ exports.getReviews = async (productId, page = 1, limit = 10) => {
 
   const filter = productId ? { productId: productId } : {};
 
-  const reviews = await Review.find(filter)
-    .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+  const reviews = await Review.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 });
 
   const total = await Review.countDocuments(filter);
   return {
@@ -68,7 +65,9 @@ exports.updateReview = async (id, updateData) => {
   return updatedReview;
 };
 
-exports.deleteReview = async (id) => {
+exports.deleteReview = async (id, user) => {
+  const review = await Review.findById(id);
+  if(review.customerId !== user._id && !user.userType.includes("admin")) throw createError(400, "User doesn't own this review.");
   const deletedReview = await Review.findByIdAndDelete(id);
   if (!deletedReview) {
     throw createError(404, "Review not found.");
