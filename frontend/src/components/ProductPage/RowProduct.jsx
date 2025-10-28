@@ -3,8 +3,8 @@ import "./.css";
 
 const RowProduct = ({ products }) => {
   return (
-    <div class="flex items-center justify-center w-full">
-      <div class="w-full flex flex-row gap-15 overflow-x-auto items-start hide-scrollbar">
+    <div class="flex items-center w-full">
+      <div class="w-full grid grid-flow-col auto-cols-[200px] gap-x-15 overflow-x-auto hide-scrollbar">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

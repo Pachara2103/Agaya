@@ -1,25 +1,38 @@
-import { getProducts } from "../../libs/productService.js";
+import { getProducts, getPromotionProduct, updatePromotionStatus } from "../../libs/productService.js";
 import { useEffect, useState } from "react";
-
 import GridProductAndTitle from "../ProductPage/GridProduct.jsx";
 import Advertisement from "../ProductPage/Advertisement.jsx";
 import Service from "../ProductPage/Service.jsx";
 import RowProductAndTitle from "../ProductPage/RowProduct.jsx";
-import CategoryAndTitle from "../ProductPage/Category.jsx";
 import { useNavigate } from "react-router-dom";
+import { getRecommendations } from "../../libs/cookieService.js";
 
 function Home() {
   const [showproducts, setShowProducts] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [promotionproducts, setPromotionProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
       const res = await getProducts();
-      console.log(res.data);
-      console.log(Array.isArray(res.data));
       setShowProducts(res.data);
     };
+    const recommendation = async () => {
+      const productRecomendation = await getRecommendations();
+      setRecommendations(productRecomendation)
+    };
+    const promotion = async () => {
+      const promotionProduct = await getPromotionProduct();
+      setPromotionProducts(promotionProduct);
+    }
+    const updatepromotionStatus = async () => {
+      await updatePromotionStatus();
+    }
     fetchProduct();
+    recommendation();
+    promotion();
+    updatepromotionStatus();
   }, []);
 
   const seeAllProducts = () => {
@@ -32,10 +45,22 @@ function Home() {
         <div class="flex flex-col gap-10 px-30">
           <Advertisement />
 
+          {recommendations != [] && (<RowProductAndTitle
+            title=" Recommendation"
+            products={recommendations}
+            details="เเนะนำสำหรับคุณ"
+          />)}
+
+          {promotionproducts != [] && (<RowProductAndTitle
+            title=" Exclusive Products"
+            products={promotionproducts}
+            details="โปรโมชั่นพิเศษ"
+          />)}
+
           <div className="h-210 overflow-hidden">
             <GridProductAndTitle
               products={showproducts}
-              details="Explore Our Products"
+              details="สินค้าของเรา"
               title="Our Products"
             />
           </div>

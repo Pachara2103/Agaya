@@ -1,4 +1,18 @@
-export const ProductItemRow = ({item}) => {
+import { getFinalPrice } from '../../libs/productService';
+import { useEffect, useState } from "react";
+
+
+export const ProductItemRow = ({ item }) => {
+    const [finalPrice, setFinalPrice] = useState("");
+
+    useEffect(() => {
+        const getfinalPrice = async () => {
+            const finalprice = await getFinalPrice(item.productId._id);
+            setFinalPrice(finalprice);
+        }
+        getfinalPrice();
+    }, [])
+
     return (
         <div
             key={item._id}
@@ -10,15 +24,15 @@ export const ProductItemRow = ({item}) => {
                     alt={item.productName}
                     className="w-16 h-12 object-contain"
                 />
-                <span>{item.productName}</span>  
+                <span>{item.productName}</span>
             </div>
 
-            <div className="col-span-2">${item.price}</div>
+            <div className="col-span-2">${finalPrice}</div>
 
             <div className="col-span-2">x {item.quantity}</div>
 
             <div className="col-span-1 text-center font-semibold">
-                ${(item.price * item.quantity).toFixed(2)}
+                ${(finalPrice * item.quantity).toFixed(2)}
             </div>
         </div>
     );

@@ -7,7 +7,8 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-  findProductsByVendor
+  findProductsByVendor,
+  updatePromotionStatus
 } = require("../controllers/product-controller");
 
 const { protect, authorize } = require("../middleware/auth");
@@ -20,6 +21,7 @@ router.get("/vendor/my-products", protect, authorize("vendor", "admin"), findPro
 router.get("/", findAllProduct);
 router.get("/:id", findProductById);
 router.post("/", protect, authorize("vendor", "admin"), createProduct);
+router.post("/update-promotions", updatePromotionStatus);
 router.put("/:id", protect, authorize("vendor", "admin"), updateProduct);
 router.delete("/:id", protect, authorize("vendor", "admin"), deleteProduct);
 

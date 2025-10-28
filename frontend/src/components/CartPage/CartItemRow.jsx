@@ -1,14 +1,19 @@
 import { ChevronDownIcon, ChevronUpIcon } from "./CartIcon";
 import { SelectionCircle } from "./SelectionCircle";
+import { getFinalPrice } from '../../libs/productService';
+import { useEffect, useState } from "react";
 
-export const CartItemRow = ({
-  item,
-  handleQuantityChange,
-  handleRemoveClick,
-  isSelected,
-  onToggleSelect,
-}) => {
-  console.log("TEST", isSelected);
+
+export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick, isSelected, onToggleSelect, }) => {
+  const [finalPrice, setFinalPrice] = useState("");
+  
+  useEffect(() => {
+    const getfinalPrice = async () => {
+      const finalprice = await getFinalPrice(item.productId._id);
+      setFinalPrice(finalprice);
+    }
+    getfinalPrice();
+  }, [])
   return (
     <div
       key={item._id}
@@ -33,7 +38,8 @@ export const CartItemRow = ({
       </div>
 
       {/* Price */}
-      <div className="col-span-1 md:col-span-2 ">${item.price}</div>
+      <span class="col-span-1 md:col-span-2">{finalPrice}</span>
+
 
       {/* Quantity */}
       <div className="col-span-1 md:col-span-2 flex justify-center items-center">
@@ -71,13 +77,13 @@ export const CartItemRow = ({
       {/* Subtotal */}
       <div className="col-span-1 md:col-span-1">
         <span className="md:hidden font-medium">ราคารวม: </span>$
-        {(item.price * item.quantity).toFixed(2)}
+        {(finalPrice * item.quantity).toFixed(2)}
       </div>
 
       {/* Remove Button */}
       <div className="col-span-1 md:col-span-2 flex justify-center">
         <button
-        id="delete"
+          id="delete"
           onClick={() => handleRemoveClick(item._id)}
           className="bg-[#B71F3B] text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors cursor-pointer"
         >

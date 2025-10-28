@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
+import { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { getOrCreateCartByUserId, getCartItems, updateCartItemQuantity, deleteCartItem } from '../libs/cartService';
-import { useAuth } from './AuthContext'; 
+import { useAuth } from './AuthContext';
+import { getFinalPrice, getTotalPrice } from '../libs/productService';
 
 const CartContext = createContext();
 
@@ -11,6 +12,7 @@ export const CartProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const [selectedSubtotal, setSelectedSubtotal] = useState(0);
 
   const fetchCartData = useCallback(async () => {
     if (!isAuthenticated || authLoading) {
@@ -97,7 +99,7 @@ export const CartProvider = ({ children }) => {
         });
       } catch (e) {
         console.error("Failed to update quantity on backend:", e);
-        setCartItems(originalCartItems); 
+        setCartItems(originalCartItems);
       }
     }
   }, [cartItems, cartId]);
@@ -110,7 +112,7 @@ export const CartProvider = ({ children }) => {
       await deleteCartItem(itemId);
     } catch (e) {
       console.error("Failed to delete item from cart:", e);
-      setCartItems(originalCartItems); 
+      setCartItems(originalCartItems);
     }
   }, [cartItems]);
 
@@ -139,7 +141,15 @@ export const CartProvider = ({ children }) => {
 
   const selectedItems = useMemo(() => cartItems.filter(item => selectedItemIds.includes(item._id)), [cartItems, selectedItemIds]);
 
-  const selectedSubtotal = useMemo(() => selectedItems.reduce((acc, item) => acc + item.price * item.quantity, 0), [selectedItems]);
+  useEffect(() => {
+    const calculateSubtotal = async () => {
+      const total = await getTotalPrice(selectedItems);
+      setSelectedSubtotal(total);
+    };
+    calculateSubtotal();
+  }, [selectedItems, getFinalPrice]);
+
+  // const selectedSubtotal = useMemo(() => selectedItems.reduce((acc, item) => acc + await getfinalPrice(item._id) * item.quantity, 0), [selectedItems]);
   const selectedShipping = 0;
   const selectedTotal = useMemo(() => selectedSubtotal + selectedShipping, [selectedSubtotal, selectedShipping]);
 

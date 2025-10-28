@@ -14,13 +14,20 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
+  const [promotion, setPromotion] = useState("");
+  const [haspromotion, setHasPromotion] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [confirmdelete, setConfirmDelete] = useState(false);
-
   const [selectedFile, setSelectedFile] = useState(null);
 
   const clickDelete = () => {
     setConfirmDelete(true);
   };
+
+  const handlePromotion = (value) => {
+    setHasPromotion(value)
+  }
 
   const DeleteProduct = async () => {
     const res = await deleteProduct(product._id);
@@ -35,7 +42,6 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
 
   useEffect(() => {
     if (product) {
-      console.log(" AddProductsPage p = ", product);
       let price = product.price.toString();
       let q = product.stockQuantity.toString();
       setName(product.productName);
@@ -43,15 +49,23 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       setCategory(product.type);
       setPrice(price);
       setStock(q);
+      if (product.promotion.active) {
+        const startdate = new Date(product.promotion.startDate);
+        const enddate = new Date(product.promotion.endDate);
+        const thStartDate = new Date(startdate.getTime() + 7 * 60 * 60 * 1000);
+        const thEndDate = new Date(enddate.getTime() + 7 * 60 * 60 * 1000);
+
+        setHasPromotion(product.promotion.active)
+        setPromotion(product.promotion.promoDiscount.toString())
+        setStartDate((thStartDate.toISOString()).split("T")[0])
+        setEndDate((thEndDate.toISOString()).split("T")[0])
+      }
+
     }
   }, []);
 
-  useEffect(() => {
-    console.log(" AddProductsPage nameeeee = ", name);
-  }, [name]);
   //callback
   const handleFileSelect = (file) => {
-    console.log("file = ", file);
     setSelectedFile(file);
   };
 
@@ -72,7 +86,6 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       if (selectedFile) {
         const formData = new FormData();
         formData.append("image", selectedFile);
-        console.log("select file = ", selectedFile);
 
         const uploadRes = await uploadProductImage(formData);
 
@@ -82,16 +95,30 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
           throw new Error("Image upload failed");
         }
       }
+      let productData;
 
-      const productData = {
-        productName: name,
-        type: category,
-        productDescription: description,
-        price: parseFloat(price) || 0,
-        stockQuantity: parseInt(stock, 10) || 0,
-        image: imageUrl ? [imageUrl] : [],
-      };
+      if (haspromotion) {
+        productData = {
+          productName: name,
+          type: category,
+          productDescription: description,
+          price: parseFloat(price) || 0,
+          stockQuantity: parseInt(stock, 10) || 0,
+          image: imageUrl ? [imageUrl] : [],
+          promotion: { active: haspromotion, promoDiscount: parseInt(promotion, 10), startDate: startDate, endDate: endDate }
+        };
 
+      } else {
+        productData = {
+          productName: name,
+          type: category,
+          productDescription: description,
+          price: parseFloat(price) || 0,
+          stockQuantity: parseInt(stock, 10) || 0,
+          image: imageUrl ? [imageUrl] : [],
+        };
+
+      }
       let res;
       if (!isEdit) {
         res = await createProduct(productData);
@@ -233,15 +260,17 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
             <h3 className="text-lg font-semibold text-gray-800 mb-6">
               ข้อมูลการขาย
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
-                <label className="block text-sm text-gray-600 mb-2">
+                <label className="text-sm text-gray-600">
                   <span className="text-red-500">*</span> ราคาสินค้า
                 </label>
                 <input
                   id="price"
                   type="text"
-                  className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none"
+                  className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none mt-2"
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
@@ -249,18 +278,85 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-2">
+                <label className="text-sm text-gray-600">
                   <span className="text-red-500">*</span> คลังสินค้า
                 </label>
                 <input
                   id="stock"
                   type="text"
-                  className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none"
+                  className="border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none mt-2"
                   value={stock}
                   onChange={(e) => {
                     setStock(e.target.value);
                   }}
                 />
+              </div>
+
+              <div className="col-span-2">
+
+                <label className="text-sm text-gray-600 flex items-center gap-1">
+                  <span className="text-red-500">*</span> โปรโมชั่น
+
+                  <div className="flex flex-row gap-2 items-center">
+                    <button className={`w-4 h-4 rounded-full border-2 border-gray-500 cursor-pointer ml-4 ${haspromotion ? "bg-green-500" : ""}`}
+                      onClick={() => handlePromotion(true)}  >
+                    </button>
+                    <p>Yes</p>
+                  </div>
+
+                  <div className="flex flex-row gap-2 items-center">
+                    <button className={`w-4 h-4 rounded-full border-2 border-gray-500 cursor-pointer ml-4 ${haspromotion ? "" : "bg-green-500"}`}
+                      onClick={() => handlePromotion(false)}  >
+                    </button>
+                    <p>No</p>
+                  </div>
+
+                  {haspromotion && (
+                    <div className="text-black ml-5"> Example Date:
+                      <span className="text-red-500 font-bold"> 2025-10-31</span>
+                    </div>
+                  )}
+
+
+                </label>
+
+                <div className="grid grid-cols-10 gap-x-2">
+                  <input
+                    id="stock"
+                    type="text"
+                    placeholder="5=discount 5%"
+                    disabled={!haspromotion}
+                    className={`border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none mt-2 ${haspromotion ? '' : 'bg-gray-200'} col-span-3`}
+                    value={haspromotion ? promotion : ''}
+                    onChange={(e) => {
+                      setPromotion(e.target.value);
+                    }}
+                  />
+                  <input
+                    id="text"
+                    type="text"
+                    placeholder="Start Date"
+                    disabled={!haspromotion}
+                    className={`border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none mt-2 ${haspromotion ? '' : 'bg-gray-200'} col-span-3`}
+                    value={haspromotion ? startDate : 'No Promotion'}
+                    onChange={(e) => {
+                      setStartDate(e.target.value);
+                    }}
+                  />
+                  <input
+                    id="stock"
+                    type="text"
+                    placeholder="End Date"
+                    disabled={!haspromotion}
+                    className={`border-3 border-[#c6c6c6] text-[#656565] w-full p-4 outline-none mt-2 ${haspromotion ? '' : 'bg-gray-200'} col-span-3`}
+                    value={haspromotion ? endDate : 'No Promotion'}
+                    onChange={(e) => {
+                      setEndDate(e.target.value);
+                    }}
+                  />
+
+                </div>
+
               </div>
             </div>
           </div>

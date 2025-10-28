@@ -35,7 +35,6 @@ export default function OrderStatus({ Status }) {
     setNowStatus(Status[Status.length - 1].statusKey);
   }, [Status]);
 
-  // console.log(Status)
 
   const toDateString = (value) => {
     const date = new Date(value);
@@ -46,7 +45,7 @@ export default function OrderStatus({ Status }) {
     const hour = String(date.getHours()).padStart(2, "0");
     const minute = String(date.getMinutes()).padStart(2, "0");
 
-    return `${day}/${month}/${year} ${hour}:${minute}`;
+    return [`${day}/${month}/${year}`, `${hour}:${minute}`];
   };
   const isLast = (i) => {
     return i == Status.length - 1;
@@ -57,47 +56,29 @@ export default function OrderStatus({ Status }) {
       <div className="max-w-2xl mx-auto">
         <ul>
           {statusType.map((i, index) => {
-            const actualEvent = Status.find(
-              (event) => event.statusKey === i.statusKey
-            );
+            const actualEvent = Status.find((event) => event.statusKey === i.statusKey);
             return (
-              <li
-                key={i.statusKey}
-                className={`relative ${index !== 5 ? "pb-3" : ""}`}
-              >
+              <li key={i.statusKey} className={`relative ${index !== 5 ? "pb-3" : ""}`}                 >
+                {/* เส้นเชื่อม circle  */}
                 {index !== 5 && (
-                  <div
-                    className={`absolute top-5 left-5 -ml-px w-0.5 h-full ${
-                      index < Status.length - 1 ? "bg-teal-500" : "bg-[#7D8184]"
-                    }`}
-                  />
+                  <div className={`absolute top-5 left-5 -ml-px w-0.5 h-full ${index < Status.length - 1 ? "bg-teal-500" : "bg-[#7D8184]"}`} />
                 )}
 
                 <div className="relative flex space-x-3">
-                  <RenderIcon
-                    statusType={i.statusKey}
-                    completed={!!actualEvent}
-                  />
+                  <RenderIcon statusType={i.statusKey} completed={actualEvent} />
 
                   <div className="min-w-0 flex-1 pt-2">
                     <p className="text-md text-gray-700 pt-1 flex flex-row">
                       <span className="font-semibold mr-2 text-black">
-                        {actualEvent ? (
-                          <div>{toDateString(actualEvent.timestamp)}</div>
-                        ) : (
-                          <div>dd/mm/yyyy --:--</div>
-                        )}
+                        {actualEvent ? (<div className="text-[16px]">{toDateString(actualEvent.timestamp)[0]} <span className="ml-2">{toDateString(actualEvent.timestamp)[1]}</span></div>) : (<div className="mr-11">DD/MM/YYYY</div>)}
                       </span>
 
-                      <span
-                        className={`ml-1 ${
-                          isLast(index) ? "text-teal-500" : "text-gray-500"
-                        }`}
-                      >
-                        {actualEvent ? actualEvent.description : i.description}
+                      <span className={`ml-1 ${isLast(index) ? "text-teal-500" : "text-gray-500"}`}                    >
+                        {i.description}
                       </span>
                     </p>
                   </div>
+                  
                 </div>
               </li>
             );

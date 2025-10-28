@@ -33,17 +33,14 @@ const useOrderData = (page) => {
   }, []);
 
   useEffect(() => {
-    console.log("orders= ", orders.contain);
+    console.log("orders= ", orders);
   }, [orders]);
 
   const filteredOrders = useMemo(() => {
     if (!orders || orders.length === 0) {
       return [];
     }
-    const getLatestStatusKey = (item) =>
-      item.orderTracking.length > 0
-        ? item.orderTracking[item.orderTracking.length - 1].statusKey
-        : "";
+    const getLatestStatusKey = (item) => item.orderTracking.length > 0 ? item.orderTracking[item.orderTracking.length - 1].statusKey : "";
     switch (page) {
       // ที่ต้องจัดส่ง
       case 1:

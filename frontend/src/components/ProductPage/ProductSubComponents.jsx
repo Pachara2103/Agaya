@@ -1,4 +1,5 @@
-import React from "react";
+import { useState, useEffect } from 'react';
+import { getFinalPrice } from '../../libs/productService';
 
 export const StarIcon = ({ filled }) => (
   <svg
@@ -35,7 +36,7 @@ export const renderStars = (rating) => {
 
 export const ProductImageGallery = ({ product, selectedImage, setSelectedImage, onBack }) => (
   <div className="flex flex-col md:flex-row-reverse gap-6 relative">
-    
+
     <div className="flex-grow flex items-center bg-gray-100 p-4 rounded-lg shadow-inner">
       <img
         src={selectedImage}
@@ -50,9 +51,8 @@ export const ProductImageGallery = ({ product, selectedImage, setSelectedImage, 
         <a
           key={index}
           onClick={() => setSelectedImage(img)}
-          className={`w-20 h-20 p-1 flex-shrink-0 rounded-md border-2 cursor-pointer transition duration-200 ${
-            selectedImage === img ? "border-red-500 shadow-lg" : "border-gray-200 hover:border-gray-400"
-          }`}
+          className={`w-20 h-20 p-1 flex-shrink-0 rounded-md border-2 cursor-pointer transition duration-200 ${selectedImage === img ? "border-red-500 shadow-lg" : "border-gray-200 hover:border-gray-400"
+            }`}
         >
           <img
             src={img}
@@ -65,36 +65,53 @@ export const ProductImageGallery = ({ product, selectedImage, setSelectedImage, 
   </div>
 );
 
-export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decreaseQuantity, onAddToCart, onBuyNow }) => (
-  <div className="flex flex-col">
-    <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-      {product.productName}
-    </h1>
+export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decreaseQuantity, onAddToCart, onBuyNow }) => {
+  const [finalPrice, setFinalPrice] = useState("");
+  useEffect(() => {
+    const getfinalPrice = async () => {
+      const finalprice = await getFinalPrice(product._id);
+      setFinalPrice(finalprice);
+    }
+    getfinalPrice();
+  }, [])
+  return (
+    <div className="flex flex-col">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+        {product.productName}
+      </h1>
 
-    <div className="flex items-center my-4">
-      <div className="flex">{renderStars(product.rating)}</div>
-      <span className="text-gray-500 ml-3 text-sm">(150 Reviews)</span>
-      <span className="mx-4 text-gray-300">|</span>
-      <span
-        className={`font-semibold text-sm ${
-          product.stockQuantity > 0 ? "text-green-600" : "text-red-600"
-        }`}
-      >
-        {product.stockQuantity > 0 ? `${product.stockQuantity} In Stock` : "Out of Stock"}
-      </span>
-    </div>
+      <div className="flex items-center my-4">
+        <div className="flex">{renderStars(product.rating)}</div>
+        <span className="text-gray-500 ml-3 text-sm">(150 Reviews)</span>
+        <span className="mx-4 text-gray-300">|</span>
+        <span
+          className={`font-semibold text-sm ${product.stockQuantity > 0 ? "text-green-600" : "text-red-600"
+            }`}
+        >
+          {product.stockQuantity > 0 ? `${product.stockQuantity} In Stock` : "Out of Stock"}
+        </span>
+      </div>
 
-    <p className="text-4xl font-bold text-gray-900 mt-2 mb-6">
-      ฿{product.price.toLocaleString()}
-    </p>
+      {product.promotion.active && (
+        <div className="mt-2 mb-6 text-4xl ">
+          <span class="text-gray-400 line-through mr-2">{product.price}</span>
+          <span class="font-bold text-red-500 ">{finalPrice} {" Bath"}</span>
+        </div>
+      )}
+      {!product.promotion.active && (
+        <div className="mt-2 mb-6">
+          <span class="text-4xl font-bold text-gray-900 ">{product.price} {" Bath"}</span>
+        </div>
+      )}
 
-    <p className="text-gray-600 leading-relaxed border-b pb-6 mb-6">
-      {product.productDescription || "No description available."}
-    </p>
 
-    <div className="flex items-center gap-4 mb-8">
-      
-      <div className="flex items-center border border-gray-600 rounded-md overflow-hidden">
+      <p className="text-gray-600 leading-relaxed border-b pb-6 mb-6">
+        {product.productDescription || "No description available."}
+      </p>
+
+      <div className="flex items-center gap-4 mb-8">
+
+        <div className="flex items-center border border-gray-600 rounded-md overflow-hidden">
           <button
             onClick={decreaseQuantity}
             className="px-4 py-2 text-xl font-bold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
@@ -108,48 +125,49 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
           >
             +
           </button>
-      </div>
+        </div>
 
-      <button 
+        <button
           onClick={onAddToCart}
           className="px-8 py-3 bg-gray-500 text-white font-semibold rounded-md hover:bg-black transition shadow-md cursor-pointer"
-      >
+        >
           Add To Cart
-      </button>
+        </button>
 
-      {/* <button 
+        {/* <button 
           onClick={onBuyNow}
           className="px-8 py-3 bg-[#48B3AF] text-white font-semibold cursor-pointer rounded-md hover:bg-[#48B3AF]/70 transition shadow-md"
       >
           Buy Now
       </button> */}
 
-      {/* <a className="p-3 border border-gray-300 rounded-md hover:bg-gray-100 transition cursor-pointer ml-2">
+        {/* <a className="p-3 border border-gray-300 rounded-md hover:bg-gray-100 transition cursor-pointer ml-2">
           <HeartIcon />
       </a> */}
-    </div>
-
-    <div className="border border-gray-300 rounded-lg divide-y divide-gray-300">
-
-      <div className="p-5 flex items-start gap-4">
-        <span className="text-2xl text-gray-700"></span>
-        {/* <MdOutlineLocalShipping /> */}
-        <div>
-          <span className="font-semibold block text-lg text-black">Free Delivery</span>
-          <p className="text-sm text-gray-500">Enter your postal code for Delivery Availability</p>
-        </div>
       </div>
 
+      <div className="border border-gray-300 rounded-lg divide-y divide-gray-300">
 
-      <div className="p-5 flex items-start gap-4">
-        <span className="text-2xl text-gray-700"></span>
-        <div>
-          <span className="font-semibold block text-lg text-black">Return Delivery</span>
-          <p className="text-sm text-gray-500">
-            Free 30 Days Delivery Returns. <span className="underline cursor-pointer">Details</span>
-          </p>
+        <div className="p-5 flex items-start gap-4">
+          <span className="text-2xl text-gray-700"></span>
+          {/* <MdOutlineLocalShipping /> */}
+          <div>
+            <span className="font-semibold block text-lg text-black">Free Delivery</span>
+            <p className="text-sm text-gray-500">Enter your postal code for Delivery Availability</p>
+          </div>
+        </div>
+
+
+        <div className="p-5 flex items-start gap-4">
+          <span className="text-2xl text-gray-700"></span>
+          <div>
+            <span className="font-semibold block text-lg text-black">Return Delivery</span>
+            <p className="text-sm text-gray-500">
+              Free 30 Days Delivery Returns. <span className="underline cursor-pointer">Details</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};

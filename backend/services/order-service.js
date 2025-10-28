@@ -118,7 +118,7 @@ exports.checkoutOrder = async (orderData, user) => {
 };
 
 const statusFlow = {
-  ORDER_RECEIVED: { next: ["PICKED_UP", "CANCELLED"], roles: ["customer","vendor", "admin"] },
+  ORDER_RECEIVED: { next: ["PICKED_UP", "CANCELLED"], roles: ["customer", "vendor", "admin"] },
   PICKED_UP: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   IN_TRANSIT: { next: ["DELIVERED", "FAILED_ATTEMPT"], roles: ["vendor", "admin"] },
   FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
@@ -148,7 +148,7 @@ const checkAuth = (Status, user, order) => {
     }
   }
   return false;
-  
+
 }
 
 exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
@@ -205,16 +205,14 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
   try {
     let filterId = new mongoose.Types.ObjectId(id);
 
-    // If user is not admin, force filter to their own id
-    if (!hasRole(user, ["admin"])) {
-      filterId = user._id;
-    }
+    // if (!hasRole(user, ["admin"])) {
+    //   filterId = user._id;
+    // }
 
     // Pagination
     const matchStage = { [field]: filterId };
     const totalOrders = await Order.countDocuments(matchStage);
     const { page, limit, totalPages, skip } = calculatePagination(totalOrders, queryParams);
-
 
     // Build pipeline instead
     const pipeline = [
@@ -225,6 +223,7 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
     ];
 
     const orders = await Order.aggregate(pipeline);
+    console.log("orders = ", orders)
 
     return {
       orders,
@@ -241,11 +240,13 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
 };
 
 // Exported helper functions
-exports.getOrdersByCustomer = async (customerId, user, queryParams) =>
-  getOrders({ field: "customerId", id: customerId, user, queryParams });
+exports.getOrdersByCustomer = async (customerId, user, queryParams) => {
+  return await getOrders({ field: "customerId", id: customerId, user, queryParams });
+}
 
-exports.getOrdersByVendor = async (vendorId, user, queryParams) =>
-  getOrders({ field: "vendorId", id: vendorId, user, queryParams });
+exports.getOrdersByVendor = async (vendorId, user, queryParams) => {
+  return await getOrders({ field: "vendorId", id: vendorId, user, queryParams });
+}
 
 /* Output example
 {

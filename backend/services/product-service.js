@@ -3,7 +3,7 @@ const AuditLog = require('../models/audit-log');
 const createError = require('http-errors');
 const auditService = require('./audit-service');
 const Vendor = require('../models/vendor');
-const {getVendorId} = require('../services/user-service')
+const { getVendorId } = require('../services/user-service')
 const { connection } = require('mongoose');
 
 
@@ -28,7 +28,7 @@ exports.findAllProduct = async (queryParams) => {
     const products = await Product.find(query)
         .limit(limitNumber)
         .skip(skip)
-        .sort({ createdAt: -1 }); 
+        .sort({ createdAt: -1 });
 
     const productsWithPromoPrize = products.map((product) => {
         const obj = product.toObject();
@@ -52,13 +52,13 @@ exports.findAllProduct = async (queryParams) => {
 // Get product by ID 
 exports.findProductById = async (id) => {
     const product = await Product.findById(id);
-        
+
     if (product) {
         return product;
     }
 
     const deleteLog = await AuditLog.findOne({ resource: 'Product', resourceId: id, action: 'delete' }).sort({ timestamp: -1 });
-    
+
     if (deleteLog) {
         const deletedAt = deleteLog.timestamp.toISOString();
         throw createError(410, `Product was deleted at ${deletedAt}`);
@@ -68,7 +68,7 @@ exports.findProductById = async (id) => {
 }
 
 exports.findProductsByVendorId = async (userId) => {
-    const vendor = await Vendor.findOne({ userId: userId})
+    const vendor = await Vendor.findOne({ userId: userId })
     if (!vendor) {
         throw createError(404, `You are not vendor brother`);
     }
@@ -78,14 +78,14 @@ exports.findProductsByVendorId = async (userId) => {
 
 exports.createProduct = async (createData, user) => {
     try {
-        const { productName, stockQuantity, price, rating, type, productDescription, image, promotion} = createData;
+        const { productName, stockQuantity, price, rating, type, productDescription, image, promotion } = createData;
 
         const vendor = await Vendor.findOne({ userId: user._id })
 
         if (!vendor) {
             throw createError(404, `You are not vendor brother`);
         }
-        
+
         const newProduct = await Product.create({
             productName,
             stockQuantity,
@@ -123,6 +123,7 @@ exports.createProduct = async (createData, user) => {
 
 exports.updateProduct = async (id, updateData, user) => {
     try {
+       
         const product = await Product.findById(id);
         if (!product) {
             throw createError(404, "Product not found");
@@ -198,9 +199,31 @@ exports.deleteProduct = async (id, user) => {
             action: "delete",
             resource: "Product",
             resourceId: product._id,
-            changes: product.toObject() 
+            changes: product.toObject()
         });
     }
 
     return;
+}
+
+exports.updatePromotionStatus = async () => {
+    const today = new Date();
+    await Product.updateMany(
+        {
+            "promotion.active": true,
+            "promotion.endDate": { $lte: today }
+        },
+        { $set: { "promotion.active": false } }
+    );
+
+    await Product.updateMany(
+        {
+            "promotion.active": false,
+            "promotion.startDate": { $gte: today }
+        },
+        { $set: { "promotion.active": true } }
+    );
+
+    return;
+
 }

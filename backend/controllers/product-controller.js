@@ -64,3 +64,14 @@ exports.deleteProduct = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.updatePromotionStatus = async (req, res, next) => {
+    try {
+        await productService.updatePromotionStatus();
+        res.status(200).json({ success: true, message: "update promotion status successfully" });
+    } catch (err) {
+        next(err);
+    }
+};
+
+
