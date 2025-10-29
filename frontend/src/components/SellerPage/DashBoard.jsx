@@ -1,4 +1,17 @@
+import useDashboardData from '../../hooks/useDashboardData';
+
 const DashBoard = () => {
+  const {
+    toShipCount,
+    shippingCount,
+    disputedCount,
+    totalOrdersCount,
+    totalRevenue,
+    productsSoldCount,
+    bestSellerProduct,
+    bestSellerSales,
+  } = useDashboardData();
+
   return (
     <div className="max-w-[1100px] justify-center mx-auto space-y-6 ">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
@@ -9,26 +22,21 @@ const DashBoard = () => {
           
           <div className="grid grid-cols-2 gap-6 text-center h-full ">
             <div className="flex flex-col justify-center">
-              <p className="text-5xl font-bold text-[#B71F3B]">0</p>
+              <p className="text-5xl font-bold text-[#B71F3B]">{toShipCount}</p>
               <p className="text-xl text-black mt-2">ที่ต้องจัดส่ง</p>
             </div>
             
             <div className="flex flex-col justify-center">
-              <p className="text-5xl font-bold text-[#B71F3B]">0</p>
-              <p className="text-xl text-black mt-2">คำสั่งจัดส่ง</p>
+              <p className="text-5xl font-bold text-[#B71F3B]">{shippingCount}</p>
+              <p className="text-xl text-black mt-2">อยู่ระหว่างการจัดส่ง</p>
             </div>
 
             <div className="flex flex-col justify-center">
-              <p className="text-5xl font-bold text-[#B71F3B]">0</p>
-              <p className="text-xl text-black mt-2">คำขอยกเลิกสินค้า/</p>
-              <p className="text-xl text-black">คืนเงิน/คืนสินค้า</p>
+              <p className="text-5xl font-bold text-[#B71F3B]">{disputedCount}</p>
+              <p className="text-xl text-black mt-2">คำขอที่มีปัญหา</p>
             </div>
 
-            <div className="flex flex-col justify-center">
-              <p className="text-5xl font-bold text-[#B71F3B]">0</p>
-              <p className="text-xl text-black mt-2">สินค้าที่ถูกระงับ/</p>
-              <p className="text-xl text-black">รอการโปรโมต</p>
-            </div>
+            <div></div>
           </div>
         </div>
 
@@ -37,17 +45,21 @@ const DashBoard = () => {
             สินค้าขายดี
           </div>
           <div className="flex-grow flex items-center justify-center">
-            <div className="text-center">
-              <img
-                src="https://res.cloudinary.com/djpeia078/image/upload/v1757964044/agaya-products/product-1757964042052.png"
-                alt="LCD Monitor"
-                className="mx-auto h-40 object-contain"
-              />
-              <p className="mt-4 font-semibold text-2xl text-black">LCD Monitor</p>
-              <p className="text-black mt-1 text-xl">
-                ยอดขาย <span className="text-blue-600 font-bold">27</span> ชิ้น
-              </p>
-            </div>
+            {bestSellerProduct ? (
+              <div className="text-center">
+                <img
+                  src={bestSellerProduct.image}
+                  alt={bestSellerProduct.name}
+                  className="mx-auto h-40 object-contain"
+                />
+                <p className="mt-4 font-semibold text-2xl text-black">{bestSellerProduct.name}</p>
+                <p className="text-black mt-1 text-xl">
+                  ยอดขาย <span className="text-blue-600 font-bold">{bestSellerSales}</span> ชิ้น
+                </p>
+              </div>
+            ) : (
+              <p>No sales data available.</p>
+            )}
           </div>
         </div>
       </div>
@@ -59,21 +71,18 @@ const DashBoard = () => {
         <div className="flex-grow flex items-center justify-center">
           <div className="grid grid-cols-4 gap-6 text-center w-full">
             <div>
-              <p className="text-4xl font-bold text-black">$0</p>
+              <p className="text-4xl font-bold text-black">฿{totalRevenue.toFixed(2)}</p>
               <p className="text-xl text-black mt-1">ยอดขาย</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-black">0</p>
-              <p className="text-xl text-black mt-1">จำนวนผู้เยี่ยมชม</p>
+              <p className="text-4xl font-bold text-black">{productsSoldCount}</p>
+              <p className="text-xl text-black mt-1">สินค้าที่ขายได้</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-black">0</p>
+              <p className="text-4xl font-bold text-black">{totalOrdersCount}</p>
               <p className="text-xl text-black mt-1">คำสั่งซื้อ</p>
             </div>
-            <div>
-              <p className="text-4xl font-bold text-black">0</p>
-              <p className="text-xl text-black mt-1">อัตราการสั่งซื้อ</p>
-            </div>
+            <div></div>
           </div>
         </div>
       </div>

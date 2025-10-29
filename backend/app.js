@@ -44,6 +44,7 @@ const returnRoutes = require('./routes/return-request-routes');
 const containRoutes = require('./routes/contain-routes');
 const supportTicketRoutes = require('./routes/support-ticket-routes');
 const reviewRoutes = require("./routes/review-routes");
+const transactionRoutes = require('./routes/transaction-routes');
 
 //Mount upload route
 app.use('/api/v1/Agaya/upload', uploadRoutes);
@@ -58,6 +59,7 @@ app.use('/api/v1/Agaya/otp', otpRoutes);
 app.use('/api/v1/Agaya/vendor-applications', vendorAppRoutes);
 app.use('/api/v1/Agaya/admin', adminRoutes);
 app.use('/api/v1/Agaya/orders', orderRoutes);
+app.use('/api/v1/Agaya/transactions', transactionRoutes);
 app.use('/api/v1/Agaya/addto', addToRoutes);
 app.use('/api/v1/Agaya/cart', cartRoutes);
 app.use('/api/v1/Agaya/return', returnRoutes);
