@@ -14,7 +14,7 @@ export const PaymentBox = ({
         <div className="space-y-6">
             <div className="flex justify-between border-b pb-2">
                 <span>ยอดรวมสินค้า:</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>{subtotal.toFixed(2)}{" ฿"}</span>
             </div>
             <div className="flex justify-between border-b pb-2">
                 <span>ค่าจัดส่ง:</span>
@@ -22,7 +22,7 @@ export const PaymentBox = ({
             </div>
             <div className="flex justify-between">
                 <span>รวม:</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{total.toFixed(2)} {" ฿"}</span>
             </div>
         </div>
 

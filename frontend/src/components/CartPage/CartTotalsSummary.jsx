@@ -9,7 +9,7 @@ export const CartTotalsSummary = ({
     <div className="space-y-6">
       <div className="flex justify-between border-b pb-2">
         <span>ยอดรวมสินค้า:</span>
-        <span id="total-price">${subtotal.toFixed(2)}</span>
+        <span id="total-price">{subtotal.toFixed(2)}{" ฿"}</span>
       </div>
       <div className="flex justify-between border-b pb-2">
         <span>ค่าจัดส่ง:</span>
@@ -17,7 +17,7 @@ export const CartTotalsSummary = ({
       </div>
       <div className="flex justify-between ">
         <span>ยอดรวมสินค้า:</span>
-        <span>${total.toFixed(2)}</span>
+        <span>{total.toFixed(2)}{" ฿"}</span>
       </div>
     </div>
     <button

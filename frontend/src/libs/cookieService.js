@@ -3,7 +3,7 @@ import { getProducts, getProductsById } from './productService';
 
 export const getRecommendations = async () => {
     try {
-        const res = await getProducts();
+        const res = await getProducts("",1,10,"");
         const allProducts = res.data;
         const viewedItemsCookie = Cookies.get("viewedItems");
 

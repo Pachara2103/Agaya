@@ -16,11 +16,11 @@ const PriceDisplay = ({ product, price }) => {
       {product.promotion.active && (
         <div>
           <span class="text-gray-400 line-through mr-2">{product.price}</span>
-          <span class="font-semibold text-red-500">{price} {" Bath"}</span>
+          <span class="font-semibold text-red-500">{price} {" ฿"}</span>
         </div>
       )}
       {!product.promotion.active && (
-        <div><span class="font-semibold text-red-500">{product.price} {" Bath"}</span></div>
+        <div><span class="font-semibold text-red-500">{product.price} {" ฿"}</span></div>
       )}
     </div>
   );
