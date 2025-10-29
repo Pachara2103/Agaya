@@ -10,14 +10,9 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getProducts = async (value) => {
-  let res;
-  if (value) {
-    res = await fetch(`${API_URL}/products/?keyword=${value}`);
-  } else {
-    res = await fetch(`${API_URL}/products/`);
-  }
-  return res.json();
+export const getProducts = async (keyword,page, limit, category) => {
+  const res = await fetch(`${API_URL}/products/?keyword=${keyword}&page=${page}&limit=${limit}&category=${category}`);
+  return await res.json();
 };
 
 export const getProductsById = async (id) => {
@@ -80,15 +75,15 @@ export const uploadProductImage = async (formData) => {
 };
 
 export const getPromotionProduct = async () => {
-  const res = await getProducts();
+  const res = await getProducts("", 1, 10,"");
   const allProducts = res.data;
   const promotionProducts = allProducts.filter(item => item.promotion.active === true)
-  if (promotionProducts.lengh == 0) return null;
+  if (promotionProducts.length == 0) return null;
   return promotionProducts;
 };
 
 export const updatePromotionStatus = async () => {
-  const res = await fetch(`${API_URL}/products/update-promotions`, {
+  await fetch(`${API_URL}/products/update-promotions`, {
     method: "POST",
     "Content-Type": "application/json",
   });

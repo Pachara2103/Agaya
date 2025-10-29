@@ -34,8 +34,8 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
     alert("ลบสินค้าไม่สำเร็จ กรุณาลองใหม่");
   };
   const getThaiDate = (date) => {
-    const Date = new Date(date);
-    const thaiDate = new Date(Date.getTime() + 7 * 60 * 60 * 1000);
+    const utcDate = new Date(date);
+    const thaiDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
     return (thaiDate.toISOString()).split("T")[0]
   }
   const productDataForm = (value, imageUrl) => {
@@ -49,6 +49,10 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       ...(value && {
         promotion:
           { active: haspromotion, promoDiscount: parseInt(promotion, 10), startDate: startDate, endDate: endDate }
+      }),
+       ...(!value && {
+        promotion:
+          { active: false, promoDiscount: 0, startDate: null, endDate: null }
       })
     };
   }
@@ -148,7 +152,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
 
                 {confirmdelete && (
                   <div className="absolute top-full right-0 mt-2 w-64 rounded-lg bg-white p-4 shadow-lg border z-10">
-                    <p className="text-sm text-gray-700 mb-4">                    คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?                   </p>
+                    <p className="text-sm text-gray-700 mb-4">   คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?      </p>
                     <div className="flex justify-end space-x-2" onClick={() => setConfirmDelete(false)}  >
                       <button className="button-white flex-1">ยกเลิก</button>
                       <button className="button-border-red flex-1" onClick={DeleteProduct} > ยืนยัน </button>

@@ -15,7 +15,7 @@ function Home() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await getProducts();
+      const res = await getProducts("",1,10,"");
       setShowProducts(res.data);
     };
     const recommendation = async () => {

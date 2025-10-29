@@ -1,22 +1,14 @@
 import { CiSearch } from "react-icons/ci";
-import { products, bestSelling } from "../ProductPage/exampleProduct.jsx";
 import { useNavigate } from "react-router-dom";
 import { getProducts } from "../../libs/productService.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function SearchBar() {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
-  const search = async (k) => {
-    let res;
-    if (k) {
-      res = await getProducts(k);
-    } else {
-      res = await getProducts();
-    }
-    const products = await res.data;
 
-    navigate("/result-search", { state: { products } });
+  const handleSearch = async () => {
+    navigate(`/result-search`, {state:{ keyword } } );
   };
 
   return (
@@ -24,16 +16,10 @@ function SearchBar() {
       <input
         type="text"
         placeholder="ค้นหาสินค้าและร้านค้า"
-        onChange={(e)=>{
-          setKeyword(e.target.value)
-        }}
-        onKeyDown={(e) => {
-          if (e.key == "Enter") {
-            search(keyword);
-          }
-        }}
+        onChange={(e) => { setKeyword(e.target.value) }}
+        onKeyDown={(e) => { if (e.key == "Enter") handleSearch() }}
       />
-      <CiSearch size={30} onClick={() => search(keyword)} />
+      <CiSearch size={30} onClick={handleSearch} />
     </div>
   );
 }

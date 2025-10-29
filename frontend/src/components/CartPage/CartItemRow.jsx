@@ -38,7 +38,7 @@ export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick, isS
       </div>
 
       {/* Price */}
-      <span class="col-span-1 md:col-span-2">{finalPrice}</span>
+      <span class="col-span-1 md:col-span-2">{finalPrice}{" ฿"}</span>
 
 
       {/* Quantity */}
@@ -76,8 +76,8 @@ export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick, isS
 
       {/* Subtotal */}
       <div className="col-span-1 md:col-span-1">
-        <span className="md:hidden font-medium">ราคารวม: </span>$
-        {(finalPrice * item.quantity).toFixed(2)}
+        <span className="md:hidden font-medium">ราคารวม: </span>
+        {(finalPrice * item.quantity).toFixed(2)}{" "}฿
       </div>
 
       {/* Remove Button */}

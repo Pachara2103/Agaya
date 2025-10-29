@@ -27,12 +27,12 @@ export const ProductItemRow = ({ item }) => {
                 <span>{item.productName}</span>
             </div>
 
-            <div className="col-span-2">${finalPrice}</div>
+            <div className="col-span-2">{finalPrice}{" ฿"}</div>
 
             <div className="col-span-2">x {item.quantity}</div>
 
             <div className="col-span-1 text-center font-semibold">
-                ${(finalPrice * item.quantity).toFixed(2)}
+                {(finalPrice * item.quantity).toFixed(2)}{" ฿"}
             </div>
         </div>
     );

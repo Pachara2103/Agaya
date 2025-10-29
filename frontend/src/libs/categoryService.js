@@ -36,9 +36,8 @@ export const getCategories = async() =>  {
         });
         if (!res.ok) {
              throw new Error("Failed to fetch Categories");
-        }
-        const categories = await res.json();
-        return categories;
+        } 
+        return await res.json();
     } catch (err) {
         throw new Error("Cannot get Categories");
     }

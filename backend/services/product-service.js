@@ -9,20 +9,17 @@ const { connection } = require('mongoose');
 
 // Get all products
 exports.findAllProduct = async (queryParams) => {
-    const { keyword, category, page = 1, limit = 12 } = queryParams;
+    const { keyword, category, page, limit } = queryParams;
+    const limitNumber = limit ? parseInt(limit, 10): 10;
+    const pageNumber = page ? parseInt(page, 10) : 1;
 
     let query = {};
 
-    if (keyword) {
-        query.productName = { $regex: keyword, $options: 'i' };
-    }
+    if (keyword) query.productName = { $regex: keyword, $options: 'i' };
+    if (category) query.type = category;
 
-    if (category) {
-        query.type = category;
-    }
-
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
+    // const pageNumber = parseInt(page, 10);
+    // const limitNumber = parseInt(limit, 10);
     const skip = (pageNumber - 1) * limitNumber;
 
     const products = await Product.find(query)
@@ -35,8 +32,6 @@ exports.findAllProduct = async (queryParams) => {
         obj.finalPrice = product.getFinalPrice();
         return obj;
     });
-
-    console.log('keyword = ', keyword)
 
     const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / limitNumber);
@@ -123,7 +118,7 @@ exports.createProduct = async (createData, user) => {
 
 exports.updateProduct = async (id, updateData, user) => {
     try {
-       
+
         const product = await Product.findById(id);
         if (!product) {
             throw createError(404, "Product not found");
@@ -174,7 +169,7 @@ exports.updateProduct = async (id, updateData, user) => {
             const messages = Object.values(err.errors).map(val => val.message);
             throw createError(400, messages.join(', '));
         }
-        throw err; 
+        throw err;
     }
 }
 

@@ -95,12 +95,12 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
       {product.promotion.active && (
         <div className="mt-2 mb-6 text-4xl ">
           <span class="text-gray-400 line-through mr-2">{product.price}</span>
-          <span class="font-bold text-red-500 ">{finalPrice} {" Bath"}</span>
+          <span class="font-bold text-red-500 ">{finalPrice} {" ฿"}</span>
         </div>
       )}
       {!product.promotion.active && (
         <div className="mt-2 mb-6">
-          <span class="text-4xl font-bold text-gray-900 ">{product.price} {" Bath"}</span>
+          <span class="text-4xl font-bold text-gray-900 ">{product.price} {" ฿"}</span>
         </div>
       )}
 
