@@ -99,3 +99,13 @@ export const deleteCategory = async(id) => {
         throw new Error("Cannot delete Categories");
     }
 }
+
+export const getCategoryQuantity = async (type) => {
+  const res = await fetch(`${API_URL}/category/count/${type}`, {
+    method: "GET",
+    "Content-Type": "application/json",
+  });
+  const data =await res.json();
+  const categoryQuantity = data.data;
+  return categoryQuantity;
+};

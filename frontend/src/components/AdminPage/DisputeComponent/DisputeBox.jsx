@@ -94,7 +94,7 @@ export function DisputeBox({ data, onDisputeUpdate }) {
           {/* Button container */}
           <div className="flex-3 flex items-center justify-center">
             <div
-              className="flex items-center justify-center h-10 w-24 bg-[#48B3AF] text-white font-[100] "
+              className="flex items-center justify-center h-10 w-24 bg-[#48B3AF] text-white font-[100] cursor-pointer"
               onClick={() => setDetailState(!detailState)}
             >
               {detailState ? "Close Detail" : "Detail"}

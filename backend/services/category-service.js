@@ -1,5 +1,6 @@
 const Category = require('../models/category');
-const createError = require('http-errors'); 
+const Product = require('../models/product');
+const createError = require('http-errors');
 
 // Create Category
 exports.createCategory = async (data) => {
@@ -14,7 +15,7 @@ exports.getAllCategories = async () => {
 
 // Get Category by ID
 exports.getCategoryById = async (id) => {
-    const category = await Category.findById(id); 
+    const category = await Category.findById(id);
     if (!category) {
         throw createError(404, 'Category not found');
     }
@@ -38,4 +39,9 @@ exports.deleteCategory = async (id) => {
     }
     return deletedCategory;
 };
+
+exports.getCategoryQuantity = async (type) => {
+    const count = await Product.countDocuments({ type: type });
+    return count;
+}
 

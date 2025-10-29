@@ -12,13 +12,13 @@ const ApplicationCard = ({ application, onApprove, onReject }) => {
       <div className="flex-1 flex gap-2 items-center justify-end">
         <button 
           onClick={() => onApprove(application._id, application.storeName)}
-          className="flex h-10 w-24 !bg-[#48B3AF] text-white items-center justify-center"
+          className="flex h-10 w-24 !bg-[#48B3AF] text-white items-center justify-center cursor-pointer"
         >
           อนุมัติ
         </button>
         <button 
           onClick={() => onReject(application._id, application.storeName)}
-          className="flex h-10 w-24 !bg-[#B71F3B] text-white items-center justify-center"
+          className="flex h-10 w-24 !bg-[#B71F3B] text-white items-center justify-center cursor-pointer"
         >
           ไม่อนุมัติ
         </button>
