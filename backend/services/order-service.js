@@ -135,7 +135,7 @@ const defaultDescriptions = {
   CANCELLED: 'คำสั่งซื้อถูกยกเลิก'
 };
 
-const checkAuth = (Status, user, order) => {
+const checkAuth = async (Status, user, order) => {
   const allowRoles = statusFlow[Status].roles;
 
   if (hasRole(user, allowRoles)) {
@@ -143,8 +143,14 @@ const checkAuth = (Status, user, order) => {
     if (allowRoles.includes("customer")) {
       if (user._id.toString() == order.customerId.toString()) return true
     }
-    if (allowRoles.includes("vendor")) {
-      if (user._id.toString() == order.vendorId.toString()) return true
+    // vendorId
+    try {
+      const vendor = await Vendor.findById({userId: user._id})
+      if (allowRoles.includes("vendor")) {
+        if (vendor._id.toString() == order.vendorId.toString()) return true
+      }
+    } catch (err) {
+      return false
     }
   }
   return false;
