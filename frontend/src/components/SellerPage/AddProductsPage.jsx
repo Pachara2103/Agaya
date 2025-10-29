@@ -66,11 +66,11 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       setCategory(product.type);
       setPrice(price);
       setStock(q);
-      if (product.promotion.active) {
+      if (product.promotion && product.promotion.active) {
         setHasPromotion(product.promotion.active)
-        setPromotion(product.promotion.promoDiscount.toString())
-        setStartDate(getThaiDate(product.promotion.startDate))
-        setEndDate(getThaiDate(product.promotion.endDate))
+        setPromotion(product.promotion.promoDiscount ? product.promotion.promoDiscount.toString() : "");
+        setStartDate(product.promotion.startDate ? getThaiDate(product.promotion.startDate) : "");
+        setEndDate(product.promotion.endDate ? getThaiDate(product.promotion.endDate) : "");
       }
 
     }
