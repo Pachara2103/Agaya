@@ -1,12 +1,9 @@
 import ImageUploader from "./ImageUploader";
-import {
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  uploadProductImage,
-} from "../../libs/productService";
+import { createProduct, updateProduct, deleteProduct, uploadProductImage, } from "../../libs/productService";
 import { useEffect, useState } from "react";
 import AddProductSidebar from "./AddProductSidebar";
+import { getCategories } from "../../libs/categoryService";
+import LoadingOverlay from '../LoadingOverlay';
 
 const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   const [name, setName] = useState("");
@@ -20,14 +17,11 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   const [endDate, setEndDate] = useState("");
   const [confirmdelete, setConfirmDelete] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [allcategory, setAllCategory] = useState([]);
+  const [isloading, setIsLoading] = useState(false);
 
-  const clickDelete = () => {
-    setConfirmDelete(true);
-  };
-
-  const handlePromotion = (value) => {
-    setHasPromotion(value)
-  }
+  const clickDelete = () => { setConfirmDelete(true); };
+  const handlePromotion = (value) => { setHasPromotion(value) }
 
   const DeleteProduct = async () => {
     const res = await deleteProduct(product._id);
@@ -39,6 +33,25 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
     }
     alert("ลบสินค้าไม่สำเร็จ กรุณาลองใหม่");
   };
+  const getThaiDate = (date) => {
+    const Date = new Date(date);
+    const thaiDate = new Date(Date.getTime() + 7 * 60 * 60 * 1000);
+    return (thaiDate.toISOString()).split("T")[0]
+  }
+  const productDataForm = (value, imageUrl) => {
+    return {
+      productName: name,
+      type: category,
+      productDescription: description,
+      price: parseFloat(price) || 0,
+      stockQuantity: parseInt(stock, 10) || 0,
+      image: imageUrl ? [imageUrl] : [],
+      ...(value && {
+        promotion:
+          { active: haspromotion, promoDiscount: parseInt(promotion, 10), startDate: startDate, endDate: endDate }
+      })
+    };
+  }
 
   useEffect(() => {
     if (product) {
@@ -50,18 +63,20 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       setPrice(price);
       setStock(q);
       if (product.promotion.active) {
-        const startdate = new Date(product.promotion.startDate);
-        const enddate = new Date(product.promotion.endDate);
-        const thStartDate = new Date(startdate.getTime() + 7 * 60 * 60 * 1000);
-        const thEndDate = new Date(enddate.getTime() + 7 * 60 * 60 * 1000);
-
         setHasPromotion(product.promotion.active)
         setPromotion(product.promotion.promoDiscount.toString())
-        setStartDate((thStartDate.toISOString()).split("T")[0])
-        setEndDate((thEndDate.toISOString()).split("T")[0])
+        setStartDate(getThaiDate(product.promotion.startDate))
+        setEndDate(getThaiDate(product.promotion.endDate))
       }
 
     }
+    const getCategoryData = async () => {
+      const categorydata = await getCategories();
+      const allCategory = categorydata.data;
+      console.log(allCategory);
+      setAllCategory(allCategory);
+    }
+    getCategoryData();
   }, []);
 
   //callback
@@ -70,55 +85,22 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   };
 
   const submit = async () => {
-    if (!name || !category || !description || !price || !stock) {
-      alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-      return;
-    }
-
-    if (!isEdit && !selectedFile) {
-      alert("กรุณาเพิ่มรูปภาพสินค้า");
-      return;
-    }
-
+    if (!name || !category || !description || !price || !stock) { alert("กรุณากรอกข้อมูลให้ครบทุกช่อง"); return; }
+    if (!isEdit && !selectedFile) { alert("กรุณาเพิ่มรูปภาพสินค้า"); return; }
+    setIsLoading(true)
     try {
       let imageUrl = isEdit && product.image ? product.image[0] : null;
 
       if (selectedFile) {
         const formData = new FormData();
         formData.append("image", selectedFile);
-
         const uploadRes = await uploadProductImage(formData);
+        console.log('uploadRes= ', uploadRes)
 
-        if (uploadRes.success) {
-          imageUrl = uploadRes.imageUrl; // ได้ URL จาก Cloudinary แล้ว
-        } else {
-          throw new Error("Image upload failed");
-        }
+        if (uploadRes.success) { imageUrl = uploadRes.imageUrl; } // ได้ URL จาก Cloudinary แล้ว
+        else throw new Error("Image upload failed");
       }
-      let productData;
-
-      if (haspromotion) {
-        productData = {
-          productName: name,
-          type: category,
-          productDescription: description,
-          price: parseFloat(price) || 0,
-          stockQuantity: parseInt(stock, 10) || 0,
-          image: imageUrl ? [imageUrl] : [],
-          promotion: { active: haspromotion, promoDiscount: parseInt(promotion, 10), startDate: startDate, endDate: endDate }
-        };
-
-      } else {
-        productData = {
-          productName: name,
-          type: category,
-          productDescription: description,
-          price: parseFloat(price) || 0,
-          stockQuantity: parseInt(stock, 10) || 0,
-          image: imageUrl ? [imageUrl] : [],
-        };
-
-      }
+      const productData = productDataForm(haspromotion, imageUrl);
       let res;
       if (!isEdit) {
         res = await createProduct(productData);
@@ -132,11 +114,14 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       } else {
         alert(res.message || "เกิดข้อผิดพลาด กรุณาลองใหม่");
       }
+      setIsLoading(false);
     } catch (e) {
       console.error(e);
       alert("เกิดข้อผิดพลาด: " + e.message);
+      setIsLoading(false);
     }
   };
+
   return (
     <div className="bg-gray-100 min-h-screen ">
       <div className="flex space-x-8">
@@ -149,38 +134,24 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
           stock={stock}
         />
 
-        <div className="w-3/4">
+        <div className="w-3/4 relative">
+          {isloading && (<LoadingOverlay isloading={isloading} />)}
+
           <div className="bg-white p-6 rounded-lg shadow mb-8 px-15">
             <div class="flex flex-row justify-between">
               <h3 className="text-lg font-semibold text-gray-800 mb-6">
                 ข้อมูลทั่วไป
               </h3>
               <div className="relative">
-                {isEdit && (
-                  <button
-                    className="button-border-red w-20"
-                    onClick={() => clickDelete()}
-                  >
-                    ลบสินค้า
-                  </button>
-                )}
+                {isEdit &&
+                  (<button className="button-border-red w-20" onClick={clickDelete} >ลบสินค้า</button>)}
 
                 {confirmdelete && (
                   <div className="absolute top-full right-0 mt-2 w-64 rounded-lg bg-white p-4 shadow-lg border z-10">
-                    <p className="text-sm text-gray-700 mb-4">
-                      คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?
-                    </p>
-                    <div
-                      className="flex justify-end space-x-2"
-                      onClick={() => setConfirmDelete(false)}
-                    >
+                    <p className="text-sm text-gray-700 mb-4">                    คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?                   </p>
+                    <div className="flex justify-end space-x-2" onClick={() => setConfirmDelete(false)}  >
                       <button className="button-white flex-1">ยกเลิก</button>
-                      <button
-                        className="button-border-red flex-1"
-                        onClick={() => DeleteProduct()}
-                      >
-                        ยืนยัน
-                      </button>
+                      <button className="button-border-red flex-1" onClick={DeleteProduct} > ยืนยัน </button>
                     </div>
                   </div>
                 )}
@@ -194,11 +165,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                 <div className="w-32 h-32 border-2 border-dashed rounded-md flex flex-col items-center justify-center text-red-500 cursor-pointer hover:bg-red-50">
                   <ImageUploader
                     onFileSelect={handleFileSelect}
-                    initialImage={
-                      isEdit && product && product.image
-                        ? product.image[0]
-                        : null
-                    }
+                    initialImage={isEdit && product && product.image ? product.image[0] : null}
                   />
                 </div>
               </div>
@@ -232,10 +199,10 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     <option value="">กรุณาเลือกหมวดหมู่ของสินค้า</option>
-                    <option value="electronics">อิเล็กทรอนิกส์</option>
-                    <option value="clothes">เสื้อผ้า</option>
-                    <option value="food">อาหาร</option>
-                    <option value="furniture">เฟอร์นิเจอร์</option>
+                    {allcategory.map((category, index) => (
+                      <option value={category.categoryName}>{category.categoryName}</option>
+                    ))}
+
                   </select>
                 </div>
               </div>

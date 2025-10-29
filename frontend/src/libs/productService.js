@@ -83,6 +83,7 @@ export const getPromotionProduct = async () => {
   const res = await getProducts();
   const allProducts = res.data;
   const promotionProducts = allProducts.filter(item => item.promotion.active === true)
+  if (promotionProducts.lengh == 0) return null;
   return promotionProducts;
 };
 

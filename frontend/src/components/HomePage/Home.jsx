@@ -9,8 +9,8 @@ import { getRecommendations } from "../../libs/cookieService.js";
 
 function Home() {
   const [showproducts, setShowProducts] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
-  const [promotionproducts, setPromotionProducts] = useState([]);
+  const [recommendations, setRecommendations] = useState(null);
+  const [promotionproducts, setPromotionProducts] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,13 +45,13 @@ function Home() {
         <div class="flex flex-col gap-10 px-30">
           <Advertisement />
 
-          {recommendations != [] && (<RowProductAndTitle
+          {recommendations && (<RowProductAndTitle
             title=" Recommendation"
             products={recommendations}
             details="เเนะนำสำหรับคุณ"
           />)}
 
-          {promotionproducts != [] && (<RowProductAndTitle
+          {promotionproducts  && (<RowProductAndTitle
             title=" Exclusive Products"
             products={promotionproducts}
             details="โปรโมชั่นพิเศษ"

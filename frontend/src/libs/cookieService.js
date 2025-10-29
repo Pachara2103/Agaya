@@ -8,18 +8,18 @@ export const getRecommendations = async () => {
         const viewedItemsCookie = Cookies.get("viewedItems");
 
         if (!viewedItemsCookie) {
-            return [];
+            return null;
         }
         let viewedItems = [];
         viewedItems = viewedItemsCookie.split(" ").filter(Boolean);
 
         if (viewedItems.length === 0) {
-            return [];
+            return null;
         }
         const latestProduct = await getProductsById(viewedItems[0]);
         const targetCategory = latestProduct.data.type;
         const recommendations = allProducts.filter(item => item.type == targetCategory);
-        console.log(recommendations);
+        if (recommendations.length == 0) { return null; }
         return recommendations;
     } catch (err) {
         throw err;
@@ -43,7 +43,7 @@ export const trackView = async (productId) => {
             const limitedHistory = viewedItems.slice(0, 5); //5 items
 
             Cookies.set('viewedItems', limitedHistory.join(" "), {
-                expires: 30, 
+                expires: 30,
                 path: '/'
             });
 

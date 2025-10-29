@@ -12,13 +12,13 @@ const ProductCard = ({ product, onDetail, onDelete }) => {
       <div className="flex-1 flex gap-2 items-center justify-end">
         <button 
           onClick={() => onDetail(product._id)}
-          className="flex h-10 w-24 bg-[#3b82f6] text-white items-center justify-center"
+          className="flex h-10 w-24 bg-[#3b82f6] text-white items-center justify-center cursor-pointer"
         >
           รายละเอียด
         </button>
         <button 
           onClick={() => onDelete(product._id, product.name)}
-          className="flex h-10 w-24 !bg-[#B71F3B] text-white items-center justify-center"
+          className="flex h-10 w-24 !bg-[#B71F3B] text-white items-center justify-center cursor-pointer"
         >
           ลบ
         </button>

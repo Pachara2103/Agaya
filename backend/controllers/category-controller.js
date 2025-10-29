@@ -49,3 +49,12 @@ exports.deleteCategory = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getCategoryQuantity = async (req, res, next) => {
+    try {
+        const count = await categoryService.getCategoryQuantity(req.params.type);
+        res.status(200).json({ success: true, message: 'get category quantity successfully', data: count });
+    } catch (error) {
+        next(error);
+    }
+};
