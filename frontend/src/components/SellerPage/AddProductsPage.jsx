@@ -34,8 +34,8 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
     alert("ลบสินค้าไม่สำเร็จ กรุณาลองใหม่");
   };
   const getThaiDate = (date) => {
-    const Date = new Date(date);
-    const thaiDate = new Date(Date.getTime() + 7 * 60 * 60 * 1000);
+    const dateObj = new Date(date);
+    const thaiDate = new Date(dateObj.getTime() + 7 * 60 * 60 * 1000);
     return (thaiDate.toISOString()).split("T")[0]
   }
   const productDataForm = (value, imageUrl) => {
@@ -62,11 +62,11 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
       setCategory(product.type);
       setPrice(price);
       setStock(q);
-      if (product.promotion.active) {
+      if (product.promotion && product.promotion.active) {
         setHasPromotion(product.promotion.active)
-        setPromotion(product.promotion.promoDiscount.toString())
-        setStartDate(getThaiDate(product.promotion.startDate))
-        setEndDate(getThaiDate(product.promotion.endDate))
+        setPromotion(product.promotion.promoDiscount ? product.promotion.promoDiscount.toString() : "");
+        setStartDate(product.promotion.startDate ? getThaiDate(product.promotion.startDate) : "");
+        setEndDate(product.promotion.endDate ? getThaiDate(product.promotion.endDate) : "");
       }
 
     }
