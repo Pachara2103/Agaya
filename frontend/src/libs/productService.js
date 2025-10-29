@@ -78,3 +78,43 @@ export const uploadProductImage = async (formData) => {
   });
   return res.json();
 };
+
+export const getPromotionProduct = async () => {
+  const res = await getProducts();
+  const allProducts = res.data;
+  const promotionProducts = allProducts.filter(item => item.promotion.active === true)
+  return promotionProducts;
+};
+
+export const updatePromotionStatus = async () => {
+  const res = await fetch(`${API_URL}/products/update-promotions`, {
+    method: "POST",
+    "Content-Type": "application/json",
+  });
+  return;
+};
+
+export const getFinalPrice = async (id) => {
+  const res = await getProductsById(id)
+  const product = res.data;
+
+  if (!product.promotion.active) {
+    return `${product.price}`;
+  } else {
+    const price = Math.ceil(((100 - product.promotion.promoDiscount) / 100) * product.price)
+    return `${price}`;
+  }
+}
+
+export const getTotalPrice = async (selectedItems) => {
+  const pricePromises = selectedItems.map(item => getFinalPrice(item.productId._id));
+  const prices = await Promise.all(pricePromises);
+
+  const total = selectedItems.reduce((acc, item, index) => {
+    const price = prices[index];
+    return acc + (price * item.quantity);
+  }, 0);
+  return total;
+
+}
+

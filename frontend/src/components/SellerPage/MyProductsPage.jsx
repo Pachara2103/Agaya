@@ -1,24 +1,31 @@
 import { useEffect, useState } from "react";
-import {
-  getProducts,
-  createProduct,
-  getProductsById,
-  updateProduct,
-  deleteProduct,
-  getProductsByVendorId,
-} from "../../libs/productService";
+import { getProductsByVendorId, getFinalPrice } from "../../libs/productService";
 const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
   const [products, setProducts] = useState([]);
+  const [finalpriceProducts, setFinalPriceProducts] = useState([])
   useEffect(() => {
     fetchMyproduct();
   }, []);
 
+  useEffect(() => {
+    const calculateFinalPrice = async () => {
+      const pricePromises = products.map(item => getFinalPrice(item._id));
+      const prices = await Promise.all(pricePromises);
+      setFinalPriceProducts(prices)
+    };
+    calculateFinalPrice();
+
+  }, [products]);
+
   const fetchMyproduct = async () => {
     const res = await getProductsByVendorId();
-    console.log(res);
     setProducts(res.data);
-    console.log(res.data);
   };
+  const formatDate = (date) => {
+    const startdate = new Date(date);
+    const thStartDate = new Date(startdate.getTime() + 7 * 60 * 60 * 1000);
+    return (thStartDate.toISOString()).split('T')[0];
+  }
   return (
     <div className="mt-6 bg-white p-6 rounded-lg shadow">
       <div className="flex justify-between items-center mb-6">
@@ -72,7 +79,7 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
           <div className="col-span-1 text-center">ยอดขาย</div>
           <div className="col-span-2 text-center">ราคา</div>
           <div className="col-span-1 text-center">คลังสินค้า</div>
-          <div className="col-span-3 text-center">รายละเอียดสินค้า</div>
+          <div className="col-span-3 text-center">โปรโมชั่น</div>
           <div className="col-span-2"></div>
         </div>
       </div>
@@ -100,17 +107,22 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
 
             <div className="col-span-1 text-center text-gray-700">N/A</div>
             <div className="col-span-2 text-center text-gray-700">
-              {product.price.toLocaleString()}
+              {finalpriceProducts[index]}
             </div>
             <div className="col-span-1 text-center text-gray-700">
               {product.stockQuantity}
             </div>
-            <div
-              className="col-span-3 text-gray-500 truncate text-center"
-              title={product.productDescription}
-            >
-              {product.productDescription}
+
+            {/* promotion */}
+            <div className="col-span-3 text-gray-500 text-center w-full"  >
+              {product.promotion.active ? (
+                <>
+                  <p className="mb-2">ลด <span className="text-red-500 font-bold">{product.promotion.promoDiscount}%</span></p>
+                  {formatDate(product.promotion.startDate)}{" "} ถึง {formatDate(product.promotion.endDate)}
+                </>
+              ) : 'ไม่มีโปรโมชัน'}
             </div>
+
             <div className="col-span-2 text-right">
               <button
                 className="button-white w-20"

@@ -4,6 +4,8 @@ import { ReturnStatusDisplay } from "./ReturnStatusDisplay";
 import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
 import CompleteTracking from "../SellerPage/CompleteTracking";
 import ToShip from '../SellerPage/ToShip';
+import { getFinalPrice } from '../../libs/productService';
+
 
 const OrderCard = ({
   isSellerPage,
@@ -28,40 +30,34 @@ const OrderCard = ({
   const [sellerpage, setSellerPage] = useState(false);
   const [completeFilter, setCompleteFilter] = useState(false);
   const [toshipFilter, setToshipFilter] = useState(false);
+  const [finalpriceProducts, setFinalPriceProducts] = useState([])
 
   useEffect(() => {
-    if (isSellerPage) {
-      setSellerPage(true);
-    } else {
-      setSellerPage(false);
+    if (products) {
+      const calculateFinalPrice = async () => {
+        const pricePromises = products.map(item => getFinalPrice(item.productId));
+        const prices = await Promise.all(pricePromises);
+        setFinalPriceProducts(prices)
+      };
+      calculateFinalPrice();
     }
 
+  }, [products]);
+
+  useEffect(() => {
+    setSellerPage(!!isSellerPage);
+
     if (selectFilter) {
-      if (selectFilter == "Completed") {
-        setCompleteFilter(true);
-      } else {
-        setCompleteFilter(false);
-      }
-      if (selectFilter == "ToShip") {
-        setToshipFilter(true);
-      } else {
-        setToshipFilter(false);
-      }
+      setCompleteFilter(selectFilter === "Completed");
+      setToshipFilter(selectFilter === "ToShip");
     }
   }, [selectFilter]);
 
-  const showStatus = () => {
-    setShowStatus(true);
-  };
-  const hideStatus = () => {
-    setShowStatus(false);
-  };
+  const showStatus = () => { setShowStatus(true); };
+  const hideStatus = () => { setShowStatus(false); };
+
   // tmp module will use confirmation modal later
-  const handleCancel = () => {
-    if (window.confirm("really?")) {
-      onCancel(orderId);
-    }
-  };
+  const handleCancel = () => { if (window.confirm("really?")) onCancel(orderId); };
 
   const renderHeaderStatus = () => {
     if (page === 4) {
@@ -85,7 +81,7 @@ const OrderCard = ({
       {/* สินค้า */}
       <div className="p-4 px-10">
         <div className="space-y-6">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div key={product._id} className="flex items-center space-x-4">
               {product && product.image && product.image.length > 0 && (
                 <img
@@ -100,7 +96,7 @@ const OrderCard = ({
               </div>
               <div className="w-24 text-right">
                 <p className="text-gray-800 font-semibold">
-                  ${product.totalPrice.toLocaleString()}
+                  ${finalpriceProducts[index]}
                 </p>
               </div>
               <div className="w-32 text-right">

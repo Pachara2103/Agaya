@@ -36,11 +36,11 @@ const useVendorOrderData = (page) => {
       if (!uid) {
         throw new Error("User not authenticated.");
       }
-      console.log("hehe uid", uid)
+      console.log("user Id = ", uid)
 
       const vendorIdResponse = await getVendorId(uid);
       vid = vendorIdResponse; 
-      console.log("heheheheh", vid)
+      console.log("vendor Id = ", vid)
       
       if (!vid) {
         throw new Error("User is not a vendor or Vendor ID not found.");

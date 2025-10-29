@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  addProductToCart,
-  getOrCreateCartByUserId,
-} from "../../libs/cartService";
+import { addProductToCart, getOrCreateCartByUserId, } from "../../libs/cartService";
 import { getMe } from "../../libs/authService";
 import Cookies from "js-cookie";
-import { useCart } from "../../context/CartContext"; 
-
-import {
-  ProductImageGallery,
-  ProductDetailsPanel,
-} from "./ProductSubComponents";
+import { useCart } from "../../context/CartContext";
+import { trackView } from "../../libs/cookieService";
+import { ProductImageGallery, ProductDetailsPanel, } from "./ProductSubComponents";
 
 const ProductDetailPage = () => {
   const location = useLocation();
@@ -59,6 +53,13 @@ const ProductDetailPage = () => {
   };
 
   useEffect(() => {
+    if (localStorage.getItem("cookieConsent") == "given") {
+      trackView(id);
+      console.log("track view ", id);
+    }
+  }, []);
+
+  useEffect(() => {
     if (!product && id) {
       fetchProductData(id);
     } else if (!id) {
@@ -82,7 +83,8 @@ const ProductDetailPage = () => {
   const increaseQuantity = () => {
     setQuantity((prev) => Math.min(prev + 1, product.stockQuantity));
   };
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const decreaseQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleAddToCart = async () => {
     console.log(`Added ${quantity} of ${product.productName} to cart!`);
@@ -115,7 +117,7 @@ const ProductDetailPage = () => {
 
       console.log("Added to cart successfully:", result);
       alert(`${quantity} of ${product.productName} added to cart!`);
-      refreshCart(); 
+      refreshCart();
     } catch (error) {
       console.error("Error adding to cart:", error.message);
       alert(`Failed to add to cart: ${error.message}. Please log in again.`);
@@ -166,11 +168,7 @@ const ProductDetailPage = () => {
           </span>
 
           <span className="text-black">/</span>
-          <span
-            className="text-black transition"
-          >
-            {prevPageName}
-          </span>
+          <span className="text-black transition">{prevPageName}</span>
 
           <span className="text-gray-900 font-medium truncate max-w-[200px] md:max-w-none">
             {product.productName}
