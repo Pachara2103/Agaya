@@ -21,7 +21,7 @@ const reviewReportSchema = new mongoose.Schema(
       enum: ["PENDING", "REJECTED", "APPROVED"],
       default: "PENDING",
     },
-    adminResponseAt: {
+    adminResponseDate: {
       type: Date,
     },
   },
