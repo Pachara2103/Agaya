@@ -5,7 +5,9 @@ const createError = require("http-errors")
 
 exports.createReviewReport = async (data) => {
   try {
-    const report = await ReviewReport.create(data);
+    const {reviewId, vendorId, reason} = data;
+    vendorId = user._id;
+    const report = await ReviewReport.create({reviewId, vendorId, reason});
     return report;
   } catch (err) {
     throw(err);

@@ -3,7 +3,7 @@ const router = express.Router();
 const {getAllReviewReports, getReviewReportById, updateReviewReportStatus, createReviewReport, deleteReviewReport} = require('../controllers/review-report-controller');
 const {protect, authorize} = require('../middleware/auth');
 
-router.post("/", protect, createReviewReport);
+router.post("/", protect, authorize("vendor"), createReviewReport);
 
 router.get("/", protect, getAllReviewReports);
 

@@ -8,7 +8,7 @@ const createError = require("http-errors");
  */
 exports.createReviewReport = async (req, res, next) => {
   try {
-    const report = await reviewReportService.createReviewReport(req.body);
+    const report = await reviewReportService.createReviewReport(req.body); // req.body = {reviewId, vendorId, reason} 
     res.status(201).json({ success: true, data: report });
   } catch (err) {
     next(err);
