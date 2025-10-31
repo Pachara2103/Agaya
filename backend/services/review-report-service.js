@@ -48,10 +48,10 @@ exports.deleteReviewReport = async (id) => {
   }
 };
 
-exports.updateReviewReportStatus = async(id, status, user) => {
+exports.updateReviewReportStatus = async(id, status, response, user) => {
     try{
         const validStatus = ["REJECTED", "APPROVED"];
-        if (!validStatuses.includes(status)) {
+        if (!validStatus.includes(status)) {
             throw new createError(
                 400, `Invalid status. Valid values: ${validStatus.join(", ")}`
             );
@@ -67,9 +67,17 @@ exports.updateReviewReportStatus = async(id, status, user) => {
             await deleteReview(reviewReport.reviewId, user);
         }
         reviewReport.status = status;
+        if(response) reviewReport.adminResponse = response;
         reviewReport.adminResponseDate = new Date();
+        
+        await auditService.logAction({
+            user: user._id, 
+            action: "update", 
+            resource: "ReviewReport", 
+            resourceId: reviewReport._id, 
+            changes: reviewReport
+        });
         await reviewReport.save();
-        await auditService.logAction(user._id, "update", "ReviewReport", reviewReport._id, reviewReport);
         return reviewReport;
     } catch (err) {
         throw(err);

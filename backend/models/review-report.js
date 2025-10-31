@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+const defaultResponse = {
+    PENDING: "Your report is waiting for admin approval",
+    REJECTED: "Admin reject your report",
+    APPROVED: "Admin approved your report",
+};
+
 const reviewReportSchema = new mongoose.Schema(
   {
     reviewId: {
@@ -21,6 +27,12 @@ const reviewReportSchema = new mongoose.Schema(
       enum: ["PENDING", "REJECTED", "APPROVED"],
       default: "PENDING",
     },
+    adminResponse: {
+      type: String,
+      default: function () {
+         return defaultResponse[this.status];
+      }
+    },
     adminResponseDate: {
       type: Date,
     },
@@ -29,3 +41,5 @@ const reviewReportSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+module.exports = mongoose.model("ReviewReport", reviewReportSchema);
