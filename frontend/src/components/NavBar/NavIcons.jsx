@@ -15,10 +15,11 @@ function NavIcons({
     navigate("/cart");
   };
   return (
-    <div className="nav-icons">
-      <CiHeart size={28} className="nav-icon" />
+    <div class="flex flex-row gap-5 items-center text-black justify-center w-30 md:w-40  h-full">
+      <CiHeart size={28} className="cursor-pointer" />
+
       <div className="relative">
-        <CiShoppingCart size={28} className="nav-icon" onClick={()=> goToCart()}/>
+        <CiShoppingCart size={28} className="cursor-pointer" onClick={() => goToCart()} />
         {numberOfStoresInCart > 0 && (
           <div className="absolute -top-2 -right-2 bg-[#B71F3B] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
             {numberOfStoresInCart}
@@ -28,7 +29,7 @@ function NavIcons({
 
       {user && (
         <div className="profile-container">
-          <CiUser size={28} className="nav-icon" onClick={toggleDropdown} />
+          <CiUser size={28} className="cursor-pointer" onClick={toggleDropdown} />
           {isDropdownOpen && (
             <ProfileDropdown
               user={user}

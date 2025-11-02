@@ -91,7 +91,7 @@ function SellerPage() {
   };
 
   return (
-    <div className="flex flex-col bg-gray-100 min-h-screen font-sans">
+    <div className="flex flex-col bg-[#D9D9D9] min-h-screen font-sans ">
       <header className="flex justify-between items-center px-10 py-3 border-b bg-white shadow-sm w-full">
         <h1
           className="text-xl font-bold text-gray-800 cursor-pointer"
@@ -142,7 +142,7 @@ function SellerPage() {
           display={displaySidebar}
         />
 
-        <main className="flex-1 p-8 overflow-y-auto">{userClick()}</main>
+        <main className="flex-1 p-3 md:p-5 overflow-y-auto">{userClick()}</main>
       </div>
     </div>
   );

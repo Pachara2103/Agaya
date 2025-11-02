@@ -91,14 +91,14 @@ const ResultSearch = () => {
     <div class="min-h-screen h-auto overflow-x-hidden hide-scrollbar relative flex flex-col items-center">
       {isloading && (<LoadingOverlay isloading={isloading} />)}
 
-      <button className="button-white absolute top-0 left-0 m-10 w-20" onClick={() => nav("/")} >   ย้อนกลับ </button>
+      <button className="button-white absolute top-0 left-0 mt-15 text-[12px] w-12 ml-1 md:mt-20 lg:mt-5 md:ml-5 sm:w-15 sm:text-[14px] lg:w-20 " onClick={() => nav("/")} >   ย้อนกลับ </button>
 
       {!keyword && (
-        <div className="flex flex-row justify-center items-center" >
+        <div className="flex flex-row justify-center items-center text-[12px] sm:text-[14px] lg:text-[16px]" >
           {allCategories.map((type, index) => (
             <div
               key={index}
-              className={`w-35 h-10 flex items-center justify-center cursor-pointer text-gray-400 ${type.categoryName === currentCategory ? 'bg-[#B71F3B] text-white' : 'hover:bg-gray-300'}`}
+              className={`w-auto px-5 md:px-10 lg:px-13 h-10 flex items-center justify-center cursor-pointer text-gray-400 ${type.categoryName === currentCategory ? 'bg-[#B71F3B] text-white' : 'hover:bg-gray-300'}`}
               onClick={() => setCurrentCategory(type.categoryName)}>
               {!type.categoryName ? "All" : type.categoryName}
             </div>
