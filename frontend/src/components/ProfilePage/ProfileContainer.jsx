@@ -27,7 +27,7 @@ function ProfileContainer() {
 
     if (location.state && location.state.panel) {
       console.log("มาเเล้ววววว")
-      const receivedPanel = location.state.patnel;
+      const receivedPanel = location.state.panel;
       setCurrrentPanel("order");
     }
   }, [location.state]);

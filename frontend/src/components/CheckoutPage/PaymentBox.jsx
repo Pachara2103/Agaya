@@ -37,7 +37,7 @@ export const PaymentBox = ({
                     onChange={onPaymentChange}
                     className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                 />
-                <label htmlFor="payment_bank" className="ml-3 flex-grow">Bank</label>
+                <label htmlFor="payment_bank" className="ml-3 flex-grow">Credit Card</label>
                 <div className="flex items-center gap-2 text-2xl">
                     <FaCcVisa />
                     <FaCcMastercard />
