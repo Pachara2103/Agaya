@@ -76,7 +76,7 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
   }, [])
   return (
     <div className="flex flex-col">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+      <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-2">
         {product.productName}
       </h1>
 
@@ -93,14 +93,14 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
       </div>
 
       {product.promotion.active && (
-        <div className="mt-2 mb-6 text-4xl ">
+        <div className="mt-2 mb-6 text-2xl sm:text-4xl ">
           <span class="text-gray-400 line-through mr-2">{product.price}</span>
           <span class="font-bold text-red-500 ">{finalPrice} {" ฿"}</span>
         </div>
       )}
       {!product.promotion.active && (
-        <div className="mt-2 mb-6">
-          <span class="text-4xl font-bold text-gray-900 ">{product.price} {" ฿"}</span>
+        <div className="mt-2 mb-6 text-2xl sm:text-4xl">
+          <span class="font-bold text-gray-900 ">{product.price} {" ฿"}</span>
         </div>
       )}
 
