@@ -21,6 +21,7 @@ import ResultSearch from "./components/ProductPage/ResultSearch.jsx";
 import Cart from "./components/CartPage/Cart.jsx";
 import CheckoutPage from "./components/CheckoutPage/Checkout.jsx";
 import OrderConfirmation from "./components/CheckoutPage/OrderConfirmation.jsx";
+import PaymentSuccess from "./components/CheckoutPage/PaymentSuccess.jsx";
 
 //test
 import CategoryManagement from "./components/AdminPage/CategoryManagement.jsx";
@@ -120,6 +121,10 @@ let router = createBrowserRouter([
       {
         path: "/confirm-order",
         Component: OrderConfirmation,
+      },
+      {
+        path: "/payment-success",
+        Component: PaymentSuccess,
       },
     ],
   },

@@ -121,6 +121,26 @@ export const submitReturnTrackingId = async (orderId, trackingId) => {
     }
 }
 
+export const checkoutOrder = async (orderData) => {
+  try {
+    const res = await fetch(`${API_URL}/orders/checkout`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(orderData),
+    });
+
+    if (!res.ok) {
+      const errorBody = await res.json();
+      throw new Error(errorBody.message || `HTTP error! Status: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("Error during checkout: ", err);
+    throw new Error(err.message || "Server Error: Could not complete checkout.");
+  }
+};
+
 // @desc    Fetch Orders By VendorId and token
 // @route   GET /api/v1/agaya/orders/vendor/:vid
 // @access  Private
