@@ -23,7 +23,7 @@ export const ProductGrid = ({ products }) => {
   return (
     <div class="w-full">
       <div class="p-5 md:p-10">
-        <div class="grid grid-cols-5 max-[1380px]:grid-cols-4 max-[1200px]:grid-cols-3 min-w-[600px] md:gap-x-8 gap-y-12 hide-scrollbar">
+        <div class="grid grid-cols-2 min-[620px]:grid-cols-3  min-[1240px]:grid-cols-4 min-[1400px]:grid-cols-5 gap-x-5 gap-y-5 hide-scrollbar">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

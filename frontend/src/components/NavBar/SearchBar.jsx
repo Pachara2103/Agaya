@@ -1,18 +1,19 @@
 import { CiSearch } from "react-icons/ci";
-import { useNavigate } from "react-router-dom";
-import { getProducts } from "../../libs/productService.js";
-import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import "./nav.css"
 
 function SearchBar() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [keyword, setKeyword] = useState("");
 
   const handleSearch = async () => {
     navigate(`/result-search`, { state: { keyword } });
+    console.log('click')
   };
 
   return (
-    <div class="flex items-center h-full text-black justify-center text-[14px]">
+    <div class={`flex items-center h-full text-black justify-center text-[14px]`}>
       <input
         type="text"
         placeholder="ค้นหาสินค้าและร้านค้า"
@@ -20,7 +21,7 @@ function SearchBar() {
         onChange={(e) => { setKeyword(e.target.value) }}
         onKeyDown={(e) => { if (e.key == "Enter") handleSearch() }}
       />
-      <CiSearch size={30} onClick={handleSearch} />
+      <CiSearch size={30} onClick={handleSearch}  className="cursor-pointer"/>
     </div>
   );
 }

@@ -48,8 +48,8 @@ const ResultSearch = () => {
   }, [currentCategory])
 
   useEffect(() => {
-    if (location.state.key) setKeyword(location.state.key);
-  }, [location.state.keyword])
+    if (location.state?.keyword) setKeyword(location.state.keyword);
+  }, [location.state?.keyword])
 
 
   useEffect(() => {

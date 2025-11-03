@@ -1,21 +1,16 @@
 import { CiHeart, CiShoppingCart, CiUser } from "react-icons/ci";
 import ProfileDropdown from "./ProfileDropdown";
 import { useNavigate } from "react-router-dom";
+import "./nav.css"
 
-function NavIcons({
-  user,
-  handleLogout,
-  isDropdownOpen,
-  toggleDropdown,
-  onClose,
-  numberOfStoresInCart,
-}) {
+
+function NavIcons({ user, handleLogout, isDropdownOpen, toggleDropdown, onClose, numberOfStoresInCart }) {
   const navigate = useNavigate();
-  const goToCart = () => {
-    navigate("/cart");
-  };
+  const goToCart = () => navigate("/cart");
+
+
   return (
-    <div class="flex flex-row gap-5 items-center text-black justify-center w-30 md:w-40  h-full">
+    <div class="flex flex-row gap-5 items-center text-black justify-center w-30 md:w-40  h-full sm-hidden">
       <CiHeart size={28} className="cursor-pointer" />
 
       <div className="relative">
