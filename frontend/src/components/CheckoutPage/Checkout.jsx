@@ -6,7 +6,8 @@ import AddressDropdown from "./AddressDropdown";
 import {PaymentBox} from "./PaymentBox";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useCart } from "../../context/CartContext"; 
+import { useCart } from "../../context/CartContext";
+import * as paymentService from "../../libs/paymentService"; 
 
 function CheckoutPage() {
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -61,39 +62,46 @@ function CheckoutPage() {
             return;
         }
 
-        try {
-            const token = Cookies.get('token');
-            if (!token) throw new Error("กรุณาเข้าสู่ระบบ");
+        const orderPayload = {
+            cartId: cartId,
+            selectedItem: selectedItemIds,
+            paymentMethod: paymentMethod,
+            selectedAddress: selectedAddress
+        };
 
-            const orderPayload = {
-                cartId: cartId,
-                selectedItem: selectedItemIds,
-                paymentMethod: paymentMethod,
-                selectedAddress: selectedAddress
-            };
-
-            const response = await axios.post('http://localhost:5000/api/v1/Agaya/orders/checkout', orderPayload, {
-                headers: {Authorization: `Bearer ${token}`}
-            });
-            console.log("Backend Response Data:", response.data);
-
-            if (response.data) {
-                alert("สั่งซื้อสินค้าสำเร็จ!");
-
-                if (Array.isArray(response.data.data) && response.data.data.length > 0) {
-                    const newOrderId = response.data.data[0].order._id;
-                    navigate('/confirm-order');
-                    //navigate(`/order-status/${newOrderId}`); // พาไปหน้าติดตามสถานะ
-                } else {
-                    console.error("ไม่พบข้อมูล order ID ใน response.data.data");
-                    //navigate('order-history');
-                }
+        if (paymentMethod === 'bank') { 
+            try {
+                const session = await paymentService.createCheckoutSession(orderPayload);
+                window.location.href = session.url;
+            } catch (err) {
+                setSubmitError(err.message || "เกิดข้อผิดพลาดในการสร้างรายการชำระเงิน");
+                setIsSubmitting(false);
             }
-            refreshCart()
-        } catch(err) {
-            setSubmitError(err.response?.data?.message || err.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
-        } finally {
-            setIsSubmitting(false);
+        } else { // Existing logic for COD
+            try {
+                const token = Cookies.get('token');
+                if (!token) throw new Error("กรุณาเข้าสู่ระบบ");
+
+                const response = await axios.post('http://localhost:5000/api/v1/Agaya/orders/checkout', orderPayload, {
+                    headers: {Authorization: `Bearer ${token}`}
+                });
+                console.log("Backend Response Data:", response.data);
+
+                if (response.data) {
+                    alert("สั่งซื้อสินค้าสำเร็จ!");
+
+                    if (Array.isArray(response.data.data) && response.data.data.length > 0) {
+                        navigate('/confirm-order');
+                    } else {
+                        console.error("ไม่พบข้อมูล order ID ใน response.data.data");
+                    }
+                }
+                refreshCart()
+            } catch(err) {
+                setSubmitError(err.response?.data?.message || err.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

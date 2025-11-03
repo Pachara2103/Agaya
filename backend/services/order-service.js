@@ -229,7 +229,7 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
     ];
 
     const orders = await Order.aggregate(pipeline);
-    console.log("orders = ", orders)
+    // console.log("orders = ", orders)
 
     return {
       orders,
