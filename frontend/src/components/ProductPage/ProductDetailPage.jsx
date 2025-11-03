@@ -26,6 +26,7 @@ const ProductDetailPage = () => {
       const res = await getProductsById(productId);
 
       const apiProduct = res.product;
+      console.log(apiProduct);
 
       if (apiProduct && apiProduct._id) {
         setProduct({
