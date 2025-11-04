@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const createError = require('http-errors');
 const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js");
 const User = require("../models/user.js");
+const Vendor = require("../models/vendor.js");
 
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
@@ -190,15 +191,56 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
     if (!checkAuth(currentState, user, order)) {
       throw new createError(403, "You are not authorized to update this order status");
     }
-
-    order.orderTracking.push({
-      statusKey: newStatus,
-      description: description || defaultDescriptions[newStatus],
-      timestamp: new Date()
-    });
+    // dummy for show assume pick_up then all transit working fine until delivered
+    if (newStatus === 'PICKED_UP') {
+      // add PICKED_UP
+      order.orderTracking.push({
+        statusKey: newStatus,
+        description: description || defaultDescriptions[newStatus],
+        timestamp: new Date()
+      });
+      // add IN_TRANSIT
+      order.orderTracking.push({
+        statusKey: 'IN_TRANSIT',
+        description: defaultDescriptions['IN_TRANSIT'],
+        timestamp: new Date()
+      });      
+      // add DELIVERED
+      order.orderTracking.push({
+        statusKey: 'DELIVERED',
+        description: defaultDescriptions['DELIVERED'],
+        timestamp: new Date()
+      });
+    } else {
+      order.orderTracking.push({
+        statusKey: newStatus,
+        description: description || defaultDescriptions[newStatus],
+        timestamp: new Date()
+      });
+    }
 
     //order.orderTracking.push(trackingEvent);
     await order.save();
+    // if it pass through here so it fine
+    if (newStatus === 'COMPLETED') {
+      const transaction = await Transaction.findOne({ orderId: order._id });
+      if (!transaction) {
+        throw new createError(404, "Transaction not found for this order");
+      }
+
+      const vendor = await Vendor.findById(order.vendorId);
+      if (!vendor) {
+        throw new createError(404, "Vendor not found for this order");
+      }
+
+      const vendorUser = await User.findById(vendor.userId);
+      if (!vendorUser) {
+        throw new createError(404, "Vendor user not found");
+      }
+
+      vendorUser.balance += transaction.amount;
+      await vendorUser.save();
+    }
 
     return order;
 
