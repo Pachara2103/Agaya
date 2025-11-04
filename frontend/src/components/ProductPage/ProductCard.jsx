@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
     // for use group-hover 
     <div class="group relative" onClick={() => onShow(product)}>
 
-      <div class="relative flex-shrink-0 aspect-square w-50 overflow-hidden rounded bg-gray-100 flex items-center justify-center">
+      <div class="relative aspect-square w-35 md:w-40 lg:w-50 overflow-hidden rounded bg-gray-100 flex items-center justify-center">
         <img
           src={product.image}
           alt={product.productName}
@@ -74,7 +74,7 @@ const ProductCard = ({ product }) => {
       </div>
 
       <div class="mt-4">
-        <h3 class="font-bold text-base text-[#000] max-w-55">{product.productName}</h3>
+        <h3 class="font-bold text-[14px] md:text-base text-[#000]  max-w-40 md:max-w-45 lg:max-w-55 ">{product.productName}</h3>
         <PriceDisplay product={product} price={finalPrice}/>
         <StarRating rating={product.rating} />
         {product.colors && (

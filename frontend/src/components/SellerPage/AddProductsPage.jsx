@@ -127,8 +127,9 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen ">
-      <div className="flex space-x-8">
+    <div className="min-h-screen">
+
+      <div className="flex sm:flex-row flex-col space-x-8">
         <AddProductSidebar
           name={name}
           img={selectedFile}
@@ -138,17 +139,17 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
           stock={stock}
         />
 
-        <div className="w-3/4 relative">
+        <div className="sm:w-3/4 w-full relative">
+
           {isloading && (<LoadingOverlay isloading={isloading} />)}
 
-          <div className="bg-white p-6 rounded-lg shadow mb-8 px-15">
-            <div class="flex flex-row justify-between">
+          <div className="bg-white p-6 mx-auto rounded-lg shadow mb-8 px-10 sm:px-15 overflow-auto w-100 sm:w-270">
+
+            <div class="flex sm:flex-row flex-col justify-between">
               <h3 className="text-lg font-semibold text-gray-800 mb-6">
                 ข้อมูลทั่วไป
               </h3>
-              <div className="relative">
-                {isEdit &&
-                  (<button className="button-border-red w-20" onClick={clickDelete} >ลบสินค้า</button>)}
+              <div className="relative"> {isEdit &&  (<button className="button-border-red w-20" onClick={clickDelete} >ลบสินค้า</button>)}
 
                 {confirmdelete && (
                   <div className="absolute top-full right-0 mt-2 w-64 rounded-lg bg-white p-4 shadow-lg border z-10">
@@ -163,9 +164,9 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start ">
-              <div className="flex flex-row gap-10 p-2">
+              {/* image */}
+              <div className="flex flex-col sm:flex-row sm:gap-10 p-2 mt-2 sm:mt-0">
                 <label className="text-sm text-gray-600 mb-2">ภาพสินค้า</label>
-
                 <div className="w-32 h-32 border-2 border-dashed rounded-md flex flex-col items-center justify-center text-red-500 cursor-pointer hover:bg-red-50">
                   <ImageUploader
                     onFileSelect={handleFileSelect}
@@ -211,9 +212,10 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                 </div>
               </div>
             </div>
+
             {/* Description */}
-            <div className="mt-6 flex flex-row gap-5">
-              <label className="text-sm text-gray-600 w-1/10">รายละเอียด</label>
+            <div className="mt-6 flex flex-col sm:flex-row gap-5">
+              <label className="text-sm text-gray-600 sm:w-1/10 ">รายละเอียด</label>
               <textarea
                 id="description"
                 rows="8"
@@ -227,14 +229,14 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-white p-6 rounded-lg shadow w-100 sm:w-270 mx-auto">
             <h3 className="text-lg font-semibold text-gray-800 mb-6">
               ข้อมูลการขาย
             </h3>
 
+            <div className="flex flex-col sm:grid sm:grid-cols-4 gap-6">
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div>
+              <div className="sm:col-span-1">
                 <label className="text-sm text-gray-600">
                   <span className="text-red-500">*</span> ราคาสินค้า
                 </label>
@@ -248,6 +250,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
                   }}
                 />
               </div>
+
               <div>
                 <label className="text-sm text-gray-600">
                   <span className="text-red-500">*</span> คลังสินค้า
@@ -333,7 +336,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-4 mt-8 ">
+          <div className="flex w-full sm:w-270  justify-center sm:justify-end space-x-4 mt-8">
             <button
               className="button-white w-20"
               onClick={() => setPageSelected("สินค้าของฉัน")}
@@ -349,6 +352,7 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };
