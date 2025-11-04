@@ -5,11 +5,12 @@ import "./nav.css"
 
 function SearchBar() {
   const navigate = useNavigate()
-  const [keyword, setKeyword] = useState("");
+  const [key, setKey] = useState("");
 
   const handleSearch = async () => {
+    let keyword = !key?"All" : key;
+    
     navigate(`/result-search`, { state: { keyword } });
-    console.log('click')
   };
 
   return (
@@ -18,7 +19,7 @@ function SearchBar() {
         type="text"
         placeholder="ค้นหาสินค้าและร้านค้า"
         class="text-[#7d8184] px-[10px] py-[8px] w-full md:w-3/4 h-10 border-none outline-none bg-[#f5f5f5] rounded-sm"
-        onChange={(e) => { setKeyword(e.target.value) }}
+        onChange={(e) => { setKey(e.target.value) }}
         onKeyDown={(e) => { if (e.key == "Enter") handleSearch() }}
       />
       <CiSearch size={30} onClick={handleSearch}  className="cursor-pointer"/>

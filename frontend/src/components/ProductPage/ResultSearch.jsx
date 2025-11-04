@@ -37,6 +37,8 @@ const ResultSearch = () => {
 
   useEffect(() => {
     setIsLoading(true);
+        console.log('keyword2= ', keyword)
+
     const handlePage = async () => {
       const res = await getProducts("", 1, 10, currentCategory);
       setTotalPages(res.pagination.totalPages);
@@ -54,9 +56,11 @@ const ResultSearch = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    console.log('keyword1= ', keyword);
     const handleSearch = async () => {
       try {
-        const res = await getProducts(keyword, currentpage, 10, "");
+        let key = (keyword=="All")? "":keyword;
+        const res = await getProducts(key, currentpage, 10, "");
         setProducts(res.data);
         setTotalPages(res.pagination.totalPages);
       } catch (error) {
@@ -93,7 +97,7 @@ const ResultSearch = () => {
 
       <button className="button-white absolute top-0 left-0 mt-15 text-[12px] w-12 ml-1 md:mt-20 lg:mt-5 md:ml-5 sm:w-15 sm:text-[14px] lg:w-20 " onClick={() => nav("/")} >   ย้อนกลับ </button>
 
-      {!keyword && (
+      {keyword=="All" && (
         <div className="flex flex-row justify-center items-center text-[12px] sm:text-[14px] lg:text-[16px]" >
           {allCategories.map((type, index) => (
             <div
