@@ -125,7 +125,8 @@ const statusFlow = {
   FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   DELIVERED: { next: ["COMPLETED"], roles: ["customer", "admin"] },
   COMPLETED: { next: [], roles: [] },
-  RETURN_SHIPPED: { next: ["COMPLETED", "REFUNDED"], roles: ["vendor", "admin"] }
+  RETURN_SHIPPED: { next: ["COMPLETED", "REFUNDED"], roles: ["vendor", "admin"] },
+  DISPUTED: { next: ["COMPLETED"], roles: ["admin"]}
 };
 const defaultDescriptions = {
   ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
