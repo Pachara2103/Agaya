@@ -20,7 +20,7 @@ const formatTime = (isoString) => {
 };
 
 export function DisputeBox({ data, onDisputeUpdate }) {
-  console.log("hehe3", data);
+  // console.log("hehe3", data);
   const [username, setUsername] = useState("");
   const { _id, customerId, orderId, products, status, requestDate, reason } =
     data;

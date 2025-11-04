@@ -124,7 +124,8 @@ const statusFlow = {
   IN_TRANSIT: { next: ["DELIVERED", "FAILED_ATTEMPT"], roles: ["vendor", "admin"] },
   FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   DELIVERED: { next: ["COMPLETED"], roles: ["customer", "admin"] },
-  COMPLETED: { next: [], roles: [] }
+  COMPLETED: { next: [], roles: [] },
+  RETURN_SHIPPED: { next: ["COMPLETED", "REFUNDED"], roles: ["vendor", "admin"] }
 };
 const defaultDescriptions = {
   ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
@@ -171,7 +172,9 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
       'DELIVERED',
       'FAILED_ATTEMPT',
       'COMPLETED',
-      'CANCELLED'
+      'CANCELLED',
+      'RETURN_SHIPPED',
+      'REFUNDED'
     ];
     if (!validStatuses.includes(newStatus)) {
       throw new createError(
@@ -191,6 +194,11 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
     if (!checkAuth(currentState, user, order)) {
       throw new createError(403, "You are not authorized to update this order status");
     }
+
+    if (currentState === 'RETURN_SHIPPED' && newStatus === 'COMPLETED') {
+      newStatus = 'REFUNDED';
+    }
+
     // dummy for show assume pick_up then all transit working fine until delivered
     if (newStatus === 'PICKED_UP') {
       // add PICKED_UP
@@ -222,24 +230,45 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
     //order.orderTracking.push(trackingEvent);
     await order.save();
     // if it pass through here so it fine
-    if (newStatus === 'COMPLETED') {
+    if (newStatus === 'COMPLETED' || newStatus === 'REFUNDED') {
       const transaction = await Transaction.findOne({ orderId: order._id });
       if (!transaction) {
         throw new createError(404, "Transaction not found for this order");
       }
 
-      const vendor = await Vendor.findById(order.vendorId);
-      if (!vendor) {
-        throw new createError(404, "Vendor not found for this order");
-      }
+      if (newStatus === 'REFUNDED') {
+        // This is a return completion, so refund the customer.
+        transaction.status = 'REFUNDED';
+        transaction.refunded = true;
+        transaction.refundDate = new Date();
+        transaction.refundAmount = transaction.amount;
+        await transaction.save();
 
-      const vendorUser = await User.findById(vendor.userId);
-      if (!vendorUser) {
-        throw new createError(404, "Vendor user not found");
-      }
+        const customer = await User.findById(order.customerId);
+        if (!customer) {
+          throw new createError(404, "Customer not found for this order");
+        }
 
-      vendorUser.balance += transaction.amount;
-      await vendorUser.save();
+        customer.balance += transaction.amount;
+        await customer.save();
+      } else {
+        // This is a regular order completion, so pay the vendor.
+        const vendor = await Vendor.findById(order.vendorId);
+        if (!vendor) {
+          throw new createError(404, "Vendor not found for this order");
+        }
+
+        const vendorUser = await User.findById(vendor.userId);
+        if (!vendorUser) {
+          throw new createError(404, "Vendor user not found");
+        }
+
+        vendorUser.balance += transaction.amount;
+        await vendorUser.save();
+
+        transaction.status = 'COMPLETED';
+        await transaction.save();
+      }
     }
 
     return order;

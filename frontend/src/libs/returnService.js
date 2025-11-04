@@ -21,7 +21,7 @@ export const requestReturnService = async (orderId, products, reason) => {
 // @desc      Get return requests (Customer: own requests | Admin: all requests)
 // @route     GET /api/v1/Agaya/return/?status=...&page=...&limit=...
 // @access    Private
-export const getReturnRequests = async (status = '', page = 1, limit = 10) => {
+export const getReturnRequests = async (status = '', page = 1, limit = 100) => {
     try {
         const params = new URLSearchParams();
         if (status) params.append('status', status);
