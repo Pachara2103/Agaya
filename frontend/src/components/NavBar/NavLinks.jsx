@@ -56,22 +56,29 @@ function NavLinks({ user, handleLogout, onClose, }) {
             <MdOutlineMenu size={25} className="relative col-span-1 cursor-pointer" onClick={onToggleMenu} />
             {ismenuOpen && (
               <ul className="w-35 right-0 top-8 absolute text-[#333] bg-white flex flex-col rounded-sm z-5 shadow-md">
-                <li className="dropdown-item" onClick={() => handleNavigate("/profile")}>    บัญชีของฉัน    </li>
 
+                {user && (
+                  <div>
+                    <li className="dropdown-item" onClick={() => handleNavigate("/profile")}>    บัญชีของฉัน    </li>
+                    <li className="dropdown-item" onClick={() => handleOrderPage("/profile")}>การซื้อของฉัน</li>
+                    <li className="dropdown-item" onClick={handleLogoutClick}>      ออกจากระบบ    </li>
+                  </div>
+                )}
                 {user && user.userType.includes("admin") && (
                   <li className="dropdown-item" onClick={() => handleNavigate("/dashboard")} >  Dashboard   </li>
                 )}
-
-                <li className="dropdown-item" onClick={() => handleOrderPage("/profile")}>การซื้อของฉัน</li>
-                <li className={`cursor-pointer ${hoverClass}`} onClick={()=> handleNavigate('/result-search')}> ค้าหาสินค้า</li>
+                
+                <li className={`cursor-pointer ${hoverClass}`} onClick={() => handleNavigate('/result-search')}> ค้าหาสินค้า</li>
                 <li className={`cursor-pointer ${hoverClass}`} onClick={handleApplyClick}> รายการโปรด</li>
                 <li className={`cursor-pointer ${hoverClass}`} onClick={handleApplyClick}> ตะกร้าของฉัน </li>
                 <li className={`cursor-pointer ${hoverClass}`} onClick={handleApplyClick}> {user?.userType?.includes("vendor") ? "ร้านค้าของฉัน" : "เปิดร้านค้าใหม่"}</li>
                 <li className={`cursor-pointer ${hoverClass}`} >ช่วยเหลือ</li>
                 <li className={`${isLoggedIn ? "cursor-not-allowed" : "cursor-pointer"} ${hoverClass}`} onClick={isLoggedIn ? null : () => { handleNavigate("/signup") }}  >  สมัครใหม่  </li>
+
                 {user && (
                   <li className="dropdown-item" onClick={handleLogoutClick}>      ออกจากระบบ    </li>
                 )}
+
                 {!user && (
                   <li className={`${isLoggedIn ? "cursor-not-allowed" : "cursor-pointer"} ${hoverClass}`} onClick={isLoggedIn ? null : () => { handleNavigate("/signin") }}  > เข้าสู่ระบบ  </li>
                 )}
