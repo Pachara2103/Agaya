@@ -69,7 +69,7 @@ function CheckoutPage() {
             selectedAddress: selectedAddress
         };
 
-        if (paymentMethod === 'bank') { 
+        if (paymentMethod === 'CREDIT_CARD') { 
             try {
                 const session = await paymentService.createCheckoutSession(orderPayload);
                 window.location.href = session.url;

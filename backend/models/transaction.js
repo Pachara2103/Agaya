@@ -27,6 +27,24 @@ const transactionSchema = new mongoose.Schema({
     type: Number,
     min : 0,
     max : 9999999
+  },
+  status: {
+    type: String,
+    enum: ['PENDING', 'COMPLETED', 'REFUNDED'],
+    default: 'PENDING'
+  },
+  refunded: {
+    type: Boolean,
+    default: false
+  },
+  refundDate: {
+    type: Date
+  },
+  refundAmount: {
+    type: Number
+  },
+  refundNote: {
+    type: String
   }
 }, {
   timestamps: true

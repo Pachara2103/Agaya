@@ -5,6 +5,7 @@ import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
 import CompleteTracking from "../SellerPage/CompleteTracking";
 import ToShip from '../SellerPage/ToShip';
 import { getFinalPrice } from '../../libs/productService';
+import ConfirmReturn from "../SellerPage/ConfirmReturn";
 
 const OrderCard = ({
   isSellerPage,
@@ -132,6 +133,10 @@ const OrderCard = ({
           orderId={orderId}
           onSubmitTrackingId={onSubmitTrackingId}
         />
+      )}
+
+      {isSellerPage && latestStatusKey === 'RETURN_SHIPPED' && (
+        <ConfirmReturn orderId={orderId} onCompleteReturn={onUpdateStatus} />
       )}
 
       {!isOrderReceivePage && !isOtherPage && (
