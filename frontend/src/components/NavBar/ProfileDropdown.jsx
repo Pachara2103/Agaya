@@ -8,37 +8,19 @@ function ProfileDropdown({ user, handleLogout, onClose }) {
     onClose();
   };
 
-  const handleLogoutClick = () => {
-    handleLogout();
-  };
-  const handleOrderPage = (path) => {
-    console.log("im here");
-    nav(path, {
-      state: {
-        panel: "order",
-      },
-    });
-  };
+  const handleLogoutClick = () => handleLogout();
+  const handleOrderPage = (path) =>  nav(path, { state: { panel: "order", }, });
 
   return (
     <div className="dropdown-menu">
-      <div className="dropdown-item" onClick={() => handleNavigate("/profile")}>
-        บัญชีของฉัน
-      </div>
+      <div className="dropdown-item" onClick={() => handleNavigate("/profile")}>    บัญชีของฉัน    </div>
 
       {user && user.userType.includes("admin") && (
-        <div
-          className="dropdown-item"
-          onClick={() => handleNavigate("/dashboard")}
-        >
-          Dashboard
-        </div>
+        <div className="dropdown-item" onClick={() => handleNavigate("/dashboard")} >  Dashboard   </div>
       )}
 
-      <div className="dropdown-item" onClick={()=>handleOrderPage("/profile")}>การซื้อของฉัน</div>
-      <div className="dropdown-item" onClick={handleLogoutClick}>
-        ออกจากระบบ
-      </div>
+      <div className="dropdown-item" onClick={() => handleOrderPage("/profile")}>การซื้อของฉัน</div>
+      <div className="dropdown-item" onClick={handleLogoutClick}>      ออกจากระบบ    </div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ const AddProductSidebar = ({
   }, [img, name, category, description, price, stock]);
 
   return (
-    <aside className="w-1/4">
+    <aside className="w-100 sm:w-[340px] flex-shrink-0 mx-auto mb-2 sm:mr-5">
       <div className="bg-red-200 text-red-800 font-bold p-4 rounded-t-lg">
         การปรับปรุงที่แนะนำ
       </div>
