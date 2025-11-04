@@ -7,7 +7,7 @@ const Cart = require("../models/cart");
 const mongoose = require("mongoose");
 const createError = require('http-errors');
 const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js");
-const user = require("../models/user.js");
+const User = require("../models/user.js");
 
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
@@ -317,12 +317,19 @@ exports.cancelOrder = async (orderId, user, cancelBody) => {
     }
 
     const transaction = await Transaction.findOne({ orderId: order._id }).session(session);
-
+    const user2 = await User.findOne({_id: user._id}).session(session);
     if (transaction) {
+      // ????
+      // model does not have it 
       transaction.refunded = true;
       transaction.refundDate = new Date();
       transaction.refundAmount = transaction.amount;
       transaction.refundNote = cancelBody.refundNote || "Cancelled by customer before shipping";
+      // model does not have it 
+      if (transaction.paymentMethod === "CREDIT_CARD") {
+        user2.balance += transaction.amount;
+        await user2.save({ session });
+      }
       await transaction.save({ session });
     }
 
