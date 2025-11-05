@@ -63,6 +63,7 @@ const ImageUploader = ( { onFileSelect, initialImage } ) => {
           <div className="w-full h-full border-2 border-dashed rounded-md flex flex-col items-center justify-center text-red-500">
             <span className="text-3xl">+</span>
             <span className="text-sm font-semibold">เพิ่มภาพสินค้า</span>
+            <span className="text-xs text-gray-500">.jpeg, .png, .jpg</span>
           </div>
         )}
       </div>
