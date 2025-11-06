@@ -3,7 +3,9 @@ import LoadingOverlay from '../LoadingOverlay';
 import { useProductForm } from '../../hooks/useProductForm';
 import ProductGeneralInfo from './ProductGeneralInfo';
 import ProductSalesInfo from './ProductSalesInfo';
-import DeleteProductModal from './DeleteProductModal';
+import SellerConfirmationModal from './SellerConfirmationModal';
+import AlertSnackbar from '../AlertSnackbar';
+import { useState } from 'react';
 
 const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
   const {
@@ -14,10 +16,30 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
 
   const { name, category, description, price, stock, selectedFile, isloading, confirmdelete } = states;
   const { setConfirmDelete } = setters;
-  const { submit, handleDeleteProduct } = handlers;
+  const { submit, handleDeleteProduct: deleteProductFromHook } = handlers;
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  const handleDelete = async () => {
+    const { status, data } = await deleteProductFromHook();
+    if (status === 200) {
+      setSnackbar({ open: true, message: data.message || 'Product deleted successfully!', severity: 'success' });
+      setPageSelected('สินค้าของฉัน');
+    } else {
+      setSnackbar({ open: true, message: data.message || 'Failed to delete product.', severity: 'error' });
+    }
+    setConfirmDelete(false);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   return (
     <div className="min-h-screen">
+      <AlertSnackbar open={snackbar.open} onClose={handleSnackbarClose} message={snackbar.message} severity={snackbar.severity} />
       <div className="flex sm:flex-row flex-col space-x-8">
         <AddProductSidebar
           name={name}
@@ -35,10 +57,12 @@ const AddProductsPage = ({ setPageSelected, product, isEdit }) => {
             {isEdit && (
               <button className="button-border-red w-20 absolute top-6 right-10" onClick={() => setConfirmDelete(true)} >ลบสินค้า</button>
             )}
-            <DeleteProductModal
-              confirmdelete={confirmdelete}
-              setConfirmDelete={setConfirmDelete}
-              handleDeleteProduct={handleDeleteProduct}
+            <SellerConfirmationModal
+              open={confirmdelete}
+              onCancel={() => setConfirmDelete(false)}
+              onConfirm={handleDelete}
+              title="ยืนยันการลบสินค้า"
+              message="คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?"
             />
           </div>
 

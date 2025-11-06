@@ -105,13 +105,7 @@ export const useProductForm = ({ product, isEdit, setPageSelected }) => {
   };
 
   const handleDeleteProduct = async () => {
-    const res = await deleteProduct(product._id);
-    if (res.success) {
-      alert('ลบสินค้าสำเร็จ');
-      setPageSelected('สินค้าของฉัน');
-    } else {
-      alert('ลบสินค้าไม่สำเร็จ กรุณาลองใหม่');
-    }
+    return await deleteProduct(product._id);
   };
 
   const submit = async () => {

@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
-import { getProductsByVendorId, getFinalPrice } from "../../libs/productService";
+import { getProductsByVendorId, getFinalPrice, deleteProduct } from "../../libs/productService";
 import "./.css";
 import { FaPlus } from "react-icons/fa6";
 import ProductRowItem from './ProductRowItem';
-
+import SellerConfirmationModal from './SellerConfirmationModal';
+import AlertSnackbar from '../AlertSnackbar';
 
 const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
   const [products, setProducts] = useState([]);
-  const [finalpriceProducts, setFinalPriceProducts] = useState([])
+  const [finalpriceProducts, setFinalPriceProducts] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [productIdToDelete, setProductIdToDelete] = useState(null);
+
   useEffect(() => {
     fetchMyproduct();
   }, []);
@@ -27,8 +32,46 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
     setProducts(res.data);
   };
 
+  const handleDelete = (productId) => {
+    setProductIdToDelete(productId);
+    setConfirmDelete(true);
+  };
+
+  const handleDeleteProduct = async () => {
+    if (productIdToDelete) {
+      try {
+        const { status, data } = await deleteProduct(productIdToDelete);
+        if (status === 200) {
+          setSnackbar({ open: true, message: data.message || 'Product deleted successfully!', severity: 'success' });
+          fetchMyproduct(); // Refetch products
+        } else {
+          setSnackbar({ open: true, message: data.message || 'Failed to delete product.', severity: 'error' });
+        }
+      } catch (error) {
+        setSnackbar({ open: true, message: 'An error occurred while deleting the product.', severity: 'error' });
+      }
+      setConfirmDelete(false);
+      setProductIdToDelete(null);
+    }
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow sm:overflow-auto w-100 sm:w-280">
+      <AlertSnackbar open={snackbar.open} onClose={handleSnackbarClose} message={snackbar.message} severity={snackbar.severity} />
+      <SellerConfirmationModal 
+        open={confirmDelete} 
+        onCancel={() => setConfirmDelete(false)} 
+        onConfirm={handleDeleteProduct} 
+        title="ยืนยันการลบสินค้า" 
+        message="คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?" 
+      />
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">สินค้าของฉัน</h2>
         <button className="p-5 flex flex-row gap-2 items-center button-red " onClick={() => setPageSelected("เพิ่มสินค้าใหม่")}     >
@@ -69,7 +112,7 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
         </div>
       </div>
 
-      <ProductRowItem products={products} finalpriceProducts={finalpriceProducts} setEditProduct={setEditProduct} setPageSelected={setPageSelected} />
+      <ProductRowItem products={products} finalpriceProducts={finalpriceProducts} setEditProduct={setEditProduct} setPageSelected={setPageSelected} handleDelete={handleDelete} />
 
 
     </div>

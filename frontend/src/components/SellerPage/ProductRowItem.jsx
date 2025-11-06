@@ -1,5 +1,7 @@
 
-const ProductRowItem = ({ products, finalpriceProducts, setEditProduct, setPageSelected }) => {
+import { FaTrash } from "react-icons/fa";
+
+const ProductRowItem = ({ products, finalpriceProducts, setEditProduct, setPageSelected, handleDelete }) => {
     const formatDate = (date) => {
         const startdate = new Date(date);
         const thStartDate = new Date(startdate.getTime() + 7 * 60 * 60 * 1000);
@@ -35,13 +37,19 @@ const ProductRowItem = ({ products, finalpriceProducts, setEditProduct, setPageS
                         ) : 'ไม่มีโปรโมชัน'}
                     </div>
 
-                    <div className="sm:col-span-2 text-center sm:text-right">
+                    <div className="sm:col-span-2 text-center sm:text-right flex items-center justify-center sm:justify-end">
                         <button className="button-white w-20"
                             onClick={() => {
                                 setEditProduct(products[index]);
                                 setPageSelected("edit");
                             }}                  >
                             แก้ไข
+                        </button>
+                        <button
+                            onClick={() => handleDelete(product._id)}
+                            className="button-white w-20 ml-2 !text-red-500"
+                        >
+                            ลบ
                         </button>
                     </div>
 

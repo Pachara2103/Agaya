@@ -43,7 +43,8 @@ export const deleteProduct = async (id) => {
     method: "DELETE",
     headers: getAuthHeaders(),
   });
-  return res.status;
+  const data = await res.json();
+  return { status: res.status, data };
 };
 
 export const getProductsByVendorId = async () => {

@@ -5,6 +5,8 @@ const auditService = require('./audit-service');
 const Vendor = require('../models/vendor');
 const { getVendorId } = require('../services/user-service')
 const { connection } = require('mongoose');
+const Contain = require('../models/contain');
+const Order = require('../models/order');
 
 
 // Get all products
@@ -178,12 +180,44 @@ exports.deleteProduct = async (id, user) => {
     if (!product) {
         throw createError(404, "Product not found");
     }
-    // Check permmission here
+
     const isAdmin = user.userType.includes('admin');
-    const isOwner = product.vendorId.toString() === user._id.toString();
+    let isOwner = false;
+    if (user.userType.includes('vendor')) {
+        const vendorId = await getVendorId(user._id);
+        isOwner = product.vendorId.toString() === vendorId.toString();
+    }
 
     if (!isAdmin && !isOwner) {
         throw createError(403, "You do not have permission to delete this product.");
+    }
+
+    const contains = await Contain.find({ productId: id });
+    const orderIds = contains.map(c => c.orderId);
+    const orders = await Order.find({ '_id': { $in: orderIds } });
+
+    const nonDeletableStates = ['PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'DISPUTED', 'APPROVED', 'RETURN_SHIPPED'];
+
+    const hasActiveOrder = orders.some(order => {
+        const latestStatus = order.orderTracking[order.orderTracking.length - 1].statusKey;
+        return nonDeletableStates.includes(latestStatus);
+    });
+
+    if (hasActiveOrder) {
+        product.stockQuantity = 0;
+        await product.save();
+        
+        if (user) {
+            await auditService.logAction({
+                user: user._id,
+                action: "update",
+                resource: "Product",
+                resourceId: product._id,
+                changes: { stockQuantity: 0, reason: "Product is in an active order, stock set to 0 instead of deletion." }
+            });
+        }
+        
+        throw createError(400, 'Product is in an active order. Stock has been set to 0.');
     }
 
     await product.deleteOne();
