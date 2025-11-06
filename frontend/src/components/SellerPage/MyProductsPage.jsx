@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getProductsByVendorId, getFinalPrice, deleteProduct } from "../../libs/productService";
+import { getProductsByVendorId, getFinalPrice, deleteProduct, getProductSalesByVendor } from "../../libs/productService";
 import "./.css";
 import { FaPlus } from "react-icons/fa6";
 import ProductRowItem from './ProductRowItem';
@@ -12,24 +12,47 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [productIdToDelete, setProductIdToDelete] = useState(null);
+  const [keyword, setKeyword] = useState('');
+  const [category, setCategory] = useState('');
+  const [sales, setSales] = useState({});
 
   useEffect(() => {
     fetchMyproduct();
+    fetchSales();
   }, []);
+
+  const fetchSales = async () => {
+    const res = await getProductSalesByVendor();
+    if (res.success) {
+      setSales(res.data);
+    }
+  };
 
   useEffect(() => {
     const calculateFinalPrice = async () => {
-      const pricePromises = products.map(item => getFinalPrice(item._id));
-      const prices = await Promise.all(pricePromises);
-      setFinalPriceProducts(prices)
+      if (products) {
+        const pricePromises = products.map(item => getFinalPrice(item._id));
+        const prices = await Promise.all(pricePromises);
+        setFinalPriceProducts(prices)
+      }
     };
     calculateFinalPrice();
 
   }, [products]);
 
-  const fetchMyproduct = async () => {
-    const res = await getProductsByVendorId();
+  const fetchMyproduct = async (searchKeyword = '', searchCategory = '') => {
+    const res = await getProductsByVendorId(searchKeyword, searchCategory);
     setProducts(res.data);
+  };
+
+  const handleSearch = () => {
+    fetchMyproduct(keyword, category);
+  };
+
+  const handleReset = () => {
+    setKeyword('');
+    setCategory('');
+    fetchMyproduct();
   };
 
   const handleDelete = (productId) => {
@@ -85,20 +108,24 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
           type="text"
           placeholder="ค้นหาด้วย ชื่อสินค้า IDของสินค้า"
           className="border border-[#878787] text-[#878787] flex-1 p-4 outline-none"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
         />
         <input
           type="text"
           placeholder="ค้นหาด้วยหมวดหมู่สินค้า"
           className="border border-[#878787] text-[#878787] p-4 flex-1 outline-none "
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         />
 
-        <div class="flex-1 flex justify-center sm:justify-end gap-10 items-center">
-          <button className="w-20 button-border-red py-4 ">ยืนยัน</button>
-          <button className="button-white w-20 py-4">รีเซ็ต</button>
+        <div className="flex-1 flex justify-center sm:justify-end gap-10 items-center">
+          <button className="w-20 button-border-red py-4 " onClick={handleSearch}>ยืนยัน</button>
+          <button className="button-white w-20 py-4" onClick={handleReset}>รีเซ็ต</button>
         </div>
       </div>
       <p className="text-gray-600 mb-4">
-        รายการสินค้า {products.length} รายการ
+        รายการสินค้า {products ? products.length : 0} รายการ
       </p>
 
       <div className="bg-[#EFEFEF] p-5 sm-hidden">
@@ -112,7 +139,7 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
         </div>
       </div>
 
-      <ProductRowItem products={products} finalpriceProducts={finalpriceProducts} setEditProduct={setEditProduct} setPageSelected={setPageSelected} handleDelete={handleDelete} />
+      <ProductRowItem products={products} finalpriceProducts={finalpriceProducts} sales={sales} setEditProduct={setEditProduct} setPageSelected={setPageSelected} handleDelete={handleDelete} />
 
 
     </div>

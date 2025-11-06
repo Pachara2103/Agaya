@@ -1,7 +1,7 @@
 
 import { FaTrash } from "react-icons/fa";
 
-const ProductRowItem = ({ products, finalpriceProducts, setEditProduct, setPageSelected, handleDelete }) => {
+const ProductRowItem = ({ products, finalpriceProducts, sales, setEditProduct, setPageSelected, handleDelete }) => {
     const formatDate = (date) => {
         const startdate = new Date(date);
         const thStartDate = new Date(startdate.getTime() + 7 * 60 * 60 * 1000);
@@ -24,7 +24,7 @@ const ProductRowItem = ({ products, finalpriceProducts, setEditProduct, setPageS
                         <span className="font-semibold text-gray-800"> {product.productName}   </span>
                     </div>
 
-                    <div className="col-span-1 sm:flex sm:items-center sm:justify-center text-gray-700"> <span className="sm-display"> ยอดขาย: </span>N/A</div>
+                    <div className="col-span-1 sm:flex sm:items-center sm:justify-center text-gray-700"> <span className="sm-display"> ยอดขาย: </span>{sales[product._id] || 'N/A'}</div>
                     <div className="col-span-1 sm:col-span-2 sm:flex sm:items-center sm:justify-center text-gray-700"> <span className="sm-display"> ราคา: </span>  {finalpriceProducts[index]}  </div>
                     <div className="col-span-1 sm:flex sm:items-center sm:justify-center text-gray-700"> <span className="sm-display"> คลัง: </span>{product.stockQuantity}  </div>
 

@@ -64,12 +64,18 @@ exports.findProductById = async (id) => {
     throw createError(404, 'Product not found');
 }
 
-exports.findProductsByVendorId = async (userId) => {
+exports.findProductsByVendorId = async (userId, queryParams) => {
+    const { keyword, category } = queryParams;
     const vendor = await Vendor.findOne({ userId: userId })
     if (!vendor) {
         throw createError(404, `You are not vendor brother`);
     }
-    const products = await Product.find({ vendorId: vendor._id });
+
+    let query = { vendorId: vendor._id };
+    if (keyword) query.productName = { $regex: keyword, $options: 'i' };
+    if (category) query.type = category;
+
+    const products = await Product.find(query);
     return products
 }
 
@@ -255,4 +261,33 @@ exports.updatePromotionStatus = async () => {
 
     return;
 
+}
+
+exports.getProductSalesByVendor = async (userId) => {
+    const vendor = await Vendor.findOne({ userId: userId });
+    if (!vendor) {
+        throw createError(404, `You are not a vendor`);
+    }
+
+    const orders = await Order.find({ vendorId: vendor._id });
+
+    const completedOrders = orders.filter(order => {
+        const latestStatus = order.orderTracking[order.orderTracking.length - 1].statusKey;
+        return latestStatus === 'COMPLETED';
+    });
+
+    const completedOrderIds = completedOrders.map(order => order._id);
+
+    const contains = await Contain.find({ orderId: { $in: completedOrderIds } });
+
+    const sales = contains.reduce((acc, contain) => {
+        const productId = contain.productId.toString();
+        if (!acc[productId]) {
+            acc[productId] = 0;
+        }
+        acc[productId] += contain.quantity;
+        return acc;
+    }, {});
+
+    return sales;
 }
