@@ -72,9 +72,11 @@ const MyProductsPage = ({ setPageSelected, setEditProduct }) => {
         }
       } catch (error) {
         setSnackbar({ open: true, message: 'An error occurred while deleting the product.', severity: 'error' });
+      } finally {
+        setConfirmDelete(false);
+        setProductIdToDelete(null);
+        fetchMyproduct(); // Always refresh the list
       }
-      setConfirmDelete(false);
-      setProductIdToDelete(null);
     }
   };
 
