@@ -139,6 +139,7 @@ const OrderCard = ({
           latestStatusKey === "RETURN_SHIPPED"
         ) && showReviewForm && (
           <ReviewForm
+            key={products[0].productId}
             productId={products[0].productId}
             vendorId={products.vendorId}
             transactionId={products.transactionId}
@@ -146,6 +147,12 @@ const OrderCard = ({
             userName={currentUser ? currentUser.data.username : "Loading . . ."} 
             userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
           />
+          // products.map(product => (
+          //   <ReviewForm
+          //     key={product.productId}
+          //     productId={products[0].productId}
+          //   />
+          // ))
         )}
       </div>
 

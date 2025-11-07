@@ -4,13 +4,14 @@ import Cookies from "js-cookie";
 import {StarRating} from "./StarRating";
 import {FaImage} from "react-icons/fa";
 
-function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, userName, userImageUrl}) {
-    const [rating, setRating] = useState(0);
-    const [reviewContent, setReviewContent] = useState("");
+function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, userName, userImageUrl, existingReview}) {
+    const [rating, setRating] = useState(existingReview ? existingReview.rating : 0);
+    const [reviewContent, setReviewContent] = useState(existingReview ? existingReview.reviewContent : "");
     const [imageFiles, setImageFiles] = useState([]);
+    const [existingImages, setExistingImages] = useState(existingReview ? existingReview.image : []);
+    
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
-
     const fileInputRef = useRef(null);
 
     const handleFileChange = (event) => {
@@ -21,18 +22,18 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (rating === 0) {
             setError("กรุณาให้คะแนนสินค้า (อย่างน้อย 1 ดาว)");
             return;
         }
-
         setIsSubmitting(true);
         setError("");
 
         try {
-            let imageUrls = [];
-            if (imageFiles.length > 0) {
+            const token = Cookies.get("token");
+            let newlyUploadedUrls = [];
+
+            if (imageFiles.length > 0) { //อัปโหลดเฉพาะรูปใหม่
                 const formData = new FormData();
                 for (let file of imageFiles) {
                     formData.append('images', file);
@@ -42,24 +43,33 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
                 const uploadRes = await axios.post("", formData, {
                     headers: {"Content-Type": "multipart/form-data"}
                 });
-
-                imageUrls = uploadRes.data.imageUrls; //have to connect with backend
+                newlyUploadedUrls = uploadRes.data.imageUrls; //have to connect with backend
             }
 
-            const token = Cookies.get("token");
+            const finalImageUrls = [...existingImages, ...newlyUploadedUrls];
+
             const reviewPayload = {
                 transactionId: transactionId,
                 productId: productId,
                 vendorId: vendorId,
                 rating: rating,
                 reviewContent: reviewContent,
-                image: imageUrls
+                image: finalImageUrls
             };
-            ////////////////////
-            await axios.post("", reviewPayload, {
-                headers: {Authorization: `Bearer ${token}`}
-            });
-            alert("ขอบคุณสำหรับการรีวิว!");
+
+            if (existingReview) {
+                ////////////////
+                await axios.put(`http://localhost:5000/api/v1/reviews/${existingReview._id}`, reviewPayload, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert('อัปเดตรีวิวสำเร็จ!');
+            } else {
+                /////////////
+                await axios.post('http://localhost:5000/api/v1/reviews', reviewPayload, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert('ขอบคุณสำหรับการรีวิว!');
+            }
             onReviewSubmitted();
         } catch(err) {
             console.error("Failed to submit review:", err);
@@ -82,7 +92,10 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
             
             <div className="flex items-center gap-4">
                 <span className="font-semibold text-gray-700">ให้คะแนนสินค้า:</span>
-                <StarRating onRatingChange={setRating}/>
+                <StarRating 
+                    initialRating={rating}
+                    onRatingChange={setRating}
+                />
             </div>
 
             <textarea
@@ -92,6 +105,22 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
                 rows="4"
             />
+
+            {existingImages.length > 0 && (
+                <div className="mb-2">
+                    <span className="text-sm font-semibold text-gray-600">รูปภาพเดิมของคุณ:</span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {existingImages.map((imgUrl, index) => (
+                            <img
+                                key={index}
+                                src={imgUrl}
+                                alt={`Existing review ${index + 1}`}
+                                className="w-20 h-20 object-cover rounded-md border"
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="flex items-center gap-4">
                 <input
@@ -123,7 +152,7 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
                     disabled={isSubmitting}
                     className="cursor-pointer px-8 py-3 bg-teal-500 text-white font-semibold rounded-md hover:bg-teal-600 disabled:bg-gray-400"
                 >
-                    {isSubmitting ? "Sending . . ." : "Send Review"}
+                    {isSubmitting ? "Sending . . ." : (existingReview ? "Update Review" : "Send Review")}
                 </button>
             </div>
         </form>

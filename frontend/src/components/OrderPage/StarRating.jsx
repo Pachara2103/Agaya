@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {FaStar} from "react-icons/fa";
 
-export const StarRating = ({onRatingChange}) => {
-    const [rating, setRating] = useState(0);
+export const StarRating = ({initialRating = 0, onRatingChange}) => {
+    const [rating, setRating] = useState(initialRating);
     const [hover, setHover] = useState(null);
+
+    useEffect(() => {
+        setRating(initialRating);
+    }, [initialRating]);
+
     return (
         <div className="flex space-x-1">
             {[...Array(5)].map((star, index) => {
