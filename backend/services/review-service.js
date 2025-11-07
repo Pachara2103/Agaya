@@ -80,15 +80,48 @@ exports.getReview = async (id) => {
 };
 
 exports.updateReview = async (id, updateData) => {
-  const updatedReview = await Review.findByIdAndUpdate(id, updateData, {
-    new: true,
-    runValidators: true,
-  });
-  if (!updatedReview) {
-    throw createError(404, "Review not found.");
-  }
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  return updatedReview;
+  try {
+    const oldReview = await Review.findById(id).session(session);
+    if (!oldReview) {
+      throw createError(404, "Review not found.");
+    }
+    const isRatingChanged = (updateData.rating !== undefined) && (updateData.rating !== oldReview.rating);
+    const updatedReview = await Review.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+      session
+    });
+    if (!updatedReview) {
+      throw createError(404, "Review not found.");
+    }
+    if (isRatingChanged) {
+      const product = await Product.findById(oldReview.productId).session(session);
+      if (!product) {
+        throw createError(404, "Product not found.");
+      }
+      const newSumOfRating = product.sumOfRating - oldReview.sumOfRating + updatedReview.sumOfRating;
+      const newAvgRating = newSumOfRating / product.numberOfReviews;
+
+      await Product.findByIdAndUpdate(
+        product._id,
+        {
+          sumOfRating: newSumOfRating,
+          rating: newAvgRating
+        },
+        { session }
+      );
+    }
+    await session.commitTransaction();
+    return updatedReview;
+  } catch(error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 exports.deleteReview = async (id, user) => {
