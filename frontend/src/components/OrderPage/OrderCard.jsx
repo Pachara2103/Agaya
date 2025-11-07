@@ -5,7 +5,7 @@ import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
 import CompleteTracking from "../SellerPage/CompleteTracking";
 import ToShip from '../SellerPage/ToShip';
 import { getFinalPrice } from '../../libs/productService';
-
+import ConfirmReturn from "../SellerPage/ConfirmReturn";
 
 const OrderCard = ({
   isSellerPage,
@@ -71,7 +71,7 @@ const OrderCard = ({
   };
 
   return (
-    <div className="bg-[#F8F8F8] shadow-sm border border-gray-200">
+    <div className="bg-[#F8F8F8] shadow-sm border border-gray-200 min-w-70 ">
       {/* head*/}
       <div className="flex justify-between items-center p-4 px-10 border-b border-gray-200 bg-[#EFEFEF]">
         <h2 className="font-bold text-gray-700">{shopName}</h2>
@@ -79,10 +79,12 @@ const OrderCard = ({
       </div>
 
       {/* สินค้า */}
-      <div className="p-4 px-10">
+      <div className="p-4 px-10 relative">
         <div className="space-y-6">
+
           {products.map((product, index) => (
-            <div key={product._id} className="flex items-center space-x-4">
+            <div key={product._id} className="flex md:flex-row flex-col gap-2 md:gap-0 items-center space-x-4 justify-between">
+
               {product && product.image && product.image.length > 0 && (
                 <img
                   src={product.image[0]}
@@ -90,23 +92,20 @@ const OrderCard = ({
                   className="w-20 h-20 object-contain rounded-md"
                 />
               )}
-              <div className="flex-grow flex flex-row gap-5">
-                <p className="text-gray-800 font-medium">{product.name}</p>
+
+              <div className="flex-grow flex flex-row gap-5 w-full max-w-110 justify-center items-center">
+                <p className="text-gray-800 font-medium md:text-[14px] lg:text-[16px]">{product.name}</p>
                 <p className="text-black  font-medium">x{product.quantity}</p>
               </div>
-              <div className="w-24 text-right">
-                <p className="text-gray-800 font-semibold">
-                  ${finalpriceProducts[index]}
-                </p>
+
+              <div className="w-full md:w-24 sm:text-center">
+                <p className="text-gray-800 font-semibol d"> <p className="md-hidden">ราคารวม:</p> ${finalpriceProducts[index]}  </p>
               </div>
-              <div className="w-32 text-right">
-                <a
-                  href="#"
-                  className="text-sm text-gray-500 hover:text-blue-600"
-                >
-                  รายละเอียดสินค้า
-                </a>
+
+              <div className="w-80 text-right md-display">
+                <a href="#" className="text-sm text-gray-500 hover:text-blue-600" > รายละเอียดสินค้า </a>
               </div>
+
             </div>
           ))}
         </div>
@@ -134,6 +133,10 @@ const OrderCard = ({
           orderId={orderId}
           onSubmitTrackingId={onSubmitTrackingId}
         />
+      )}
+
+      {isSellerPage && latestStatusKey === 'RETURN_SHIPPED' && (
+        <ConfirmReturn orderId={orderId} onCompleteReturn={onUpdateStatus} />
       )}
 
       {!isOrderReceivePage && !isOtherPage && (
@@ -173,7 +176,7 @@ const OrderCard = ({
         />
       )}
 
-      {sellerpage&& toshipFilter&&!completeFilter && (
+      {sellerpage && toshipFilter && !completeFilter && (
         <ToShip
           showstatus={showstatus}
           showStatus={showStatus}

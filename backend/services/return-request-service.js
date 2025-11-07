@@ -1,3 +1,4 @@
+const { addOrderTrackingEvent } = require("./order-service");
 const ReturnRequest = require("../models/return-request");
 const Order = require("../models/order");
 const Contain = require("../models/contain");
@@ -125,8 +126,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
                     if (!response) throw new createError(400, "Plese provide reason for rejection");
                     returnReq.response = response;
                     returnReq.resolvedDate = now;
-                    order.orderTracking.push({statusKey: "COMPLETED"})
-                    await order.save();
+                    await addOrderTrackingEvent(order._id, { newStatus: 'COMPLETED' }, user);
                 }
                 else throw new createError(400, "This request can only change status to APPROVED or REJECTED");
                 await returnReq.save();
@@ -170,7 +170,7 @@ exports.processReturn = async (returnId, requestBody, user) => {
         throw error
     }
 }
-exports.getReturnReqs = async (user, query = {}) => {
+exports.getReturnReqsService = async (user, query = {}) => {
     try {
         const filter = hasRole(user, ["admin"]) ? {} : { customerId: user._id };
         if (query.status) filter.status = query.status;
@@ -202,7 +202,7 @@ exports.getReturnReqs = async (user, query = {}) => {
     }
 }
 
-exports.getReturnReqsByVendor = async (user, query = {}) => {
+exports.getReturnReqsByVendorService = async (user, query = {}) => {
     try {
         const filter = {};
         const vendorOrders = await Order.find({ vendorId: user._id }).select("_id");

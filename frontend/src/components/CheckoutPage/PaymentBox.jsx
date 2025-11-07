@@ -32,8 +32,8 @@ export const PaymentBox = ({
                     type="radio"
                     id="payment_bank"
                     name="paymentMethod"
-                    value="bank"
-                    checked={paymentMethod === 'bank'}
+                    value="CREDIT_CARD"
+                    checked={paymentMethod === 'CREDIT_CARD'}
                     onChange={onPaymentChange}
                     className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                 />

@@ -9,7 +9,7 @@ function DisputePage() {
   const [disputes, setDisputes] = useState(null);
   const fetchDispute = async () => {
     const res = await getReturnRequests();
-    // console.log(res.data.returnReqs);
+    console.log(res.data);
     setDisputes(res.data.returnReqs);
     return res;
   };

@@ -1,15 +1,17 @@
 const Item = ({ imgsrc, title, description }) => {
   return (
-    <div className="flex flex-col items-center text-center max-w-xs">
-      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#c9c9c9]">
-        <div class="flex items-center justify-center bg-[#000]  h-14 w-14 rounded-full ">
-          <img src={imgsrc} class="w-[80%] h-[80%] " />
+    <div className="text-center grid grid-cols-1 place-items-center">
+      <div className="col-span-1">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#c9c9c9]">
+          <div class="flex items-center justify-center bg-[#000]  h-14 w-14 rounded-full ">
+            <img src={imgsrc} class="w-[80%] h-[80%] " />
+          </div>
         </div>
+
       </div>
-      <h3 className="mb-2 text-sm font-bold text-[#000] tracking-wider uppercase">
-        {title}
-      </h3>
-      <p className="text-[12px] text-[#000]">{description}</p>
+
+      <h3 className="mb-2 text-[12px] md:text-sm  font-bold text-[#000] tracking-wider uppercase">    {title}  </h3>
+      <p className="text-[10px] md:text-[12px] text-[#000]">{description}</p>
     </div>
   );
 };
@@ -34,8 +36,8 @@ const Service = () => {
   ];
 
   return (
-    <div class="py-5 w-full mb-10"> 
-      <div className="flex flex-row justify-center gap-35">
+    <div class="py-5 w-full mb-10">
+      <div className="grid grid-cols-3 gap-x-10">
         {features.map((feature, index) => (
           <Item
             key={index}

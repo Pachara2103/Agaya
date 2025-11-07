@@ -2,7 +2,7 @@ import OrderCard from "../OrderPage/OrderCard";
 import "../OrderPage/scrollbar.css";
 import useVendorOrderData from "../../hooks/useVendorOrderData";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const MyOrder = ({ isOtherPage }) => {
   const [myorder, setMyOrder] = useState([]);
@@ -11,19 +11,9 @@ const MyOrder = ({ isOtherPage }) => {
   const [page, setPage] = useState(6);
   const [isOrderReceivePage, setIsOrderReceivePage] = useState(true);
 
-  const filterSelected = {
-    All: 6,
-    ToShip: 1,
-    Completed: 3,
-    Shipping: 2
-  };
-
+  const filterSelected = { All: 6, ToShip: 1, Completed: 3, Shipping: 2 };
   const currentFilterValue = filterSelected[select];
-
-  const {
-    filteredOrders,
-    updateOrderStatus
-  } = useVendorOrderData(currentFilterValue);
+  const { filteredOrders, updateOrderStatus } = useVendorOrderData(currentFilterValue);
 
   useEffect(() => {
     if (filteredOrders) {
@@ -34,49 +24,41 @@ const MyOrder = ({ isOtherPage }) => {
   }, [filteredOrders]);
 
 
-  const changeSelect = (x) => {
-    setSelect(x);
-  };
-
-  const isFocus = (x) => {
-    return x == select;
-  };
+  const changeSelect = (x) => setSelect(x);
+  const isFocus = (x) => { return x == select; };
 
 
   return (
-    <div className="bg-white font-sans overflow-auto h-full scrollbar ">
+    <div className="bg-white overflow-auto h-full scrollbar w-full min-w-105">
+      
       <div className="w-full px-13 pt-10 mb-8">
         <h2 className="text-2xl font-semibold mb-4 text-black">My Orders</h2>
         <div className="border-b-1 border-black">
           <div className="flex space-x-8">
             <button
-              className={`${
-                isFocus("All") ? "text-pink-600" : "text-gray-600"
-              }  pb-2 text-base font-medium cursor-pointer`}
+              className={`${isFocus("All") ? "text-pink-600" : "text-gray-600"
+                }  pb-2 text-base font-medium cursor-pointer`}
               onClick={() => changeSelect("All")}
             >
               All
             </button>
             <button
-              className={`${
-                isFocus("ToShip") ? "text-pink-600" : "text-gray-600"
-              }  pb-2 text-base font-medium cursor-pointer`}
+              className={`${isFocus("ToShip") ? "text-pink-600" : "text-gray-600"
+                }  pb-2 text-base font-medium cursor-pointer`}
               onClick={() => changeSelect("ToShip")}
             >
               To ship
             </button>
             <button
-              className={`${
-                isFocus("Shipping") ? "text-pink-600" : "text-gray-600"
-              }  pb-2 text-base font-medium cursor-pointer`}
+              className={`${isFocus("Shipping") ? "text-pink-600" : "text-gray-600"
+                }  pb-2 text-base font-medium cursor-pointer`}
               onClick={() => changeSelect("Shipping")}
             >
               Shipping
             </button>
             <button
-              className={`${
-                isFocus("Completed") ? "text-pink-600" : "text-gray-600"
-              }  pb-2 text-base font-medium cursor-pointer`}
+              className={`${isFocus("Completed") ? "text-pink-600" : "text-gray-600"
+                }  pb-2 text-base font-medium cursor-pointer`}
               onClick={() => changeSelect("Completed")}
             >
               Completed
@@ -118,7 +100,7 @@ const MyOrder = ({ isOtherPage }) => {
                   storeAddress={item.vendorAddress}
                   onUpdateStatus={updateOrderStatus}
                   isSellerPage={true}
-                  selectFilter = {select}
+                  selectFilter={select}
                   shippingAddress={item.shippingAddress}
                 />
 
