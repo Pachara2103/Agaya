@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import axios from 'axios';
 import StatusTracking from "./StatusTracking";
 import { ReturnStatusDisplay } from "./ReturnStatusDisplay";
 import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
@@ -6,6 +8,7 @@ import CompleteTracking from "../SellerPage/CompleteTracking";
 import ToShip from '../SellerPage/ToShip';
 import { getFinalPrice } from '../../libs/productService';
 import ConfirmReturn from "../SellerPage/ConfirmReturn";
+import ReviewForm from "./ReviewForm";
 
 const OrderCard = ({
   isSellerPage,
@@ -26,11 +29,13 @@ const OrderCard = ({
   shippingAddress,
   onUpdateStatus,
 }) => {
+  const [currentUser, setCurrentUser] = useState(null);
   const [showstatus, setShowStatus] = useState(false);
   const [sellerpage, setSellerPage] = useState(false);
   const [completeFilter, setCompleteFilter] = useState(false);
   const [toshipFilter, setToshipFilter] = useState(false);
-  const [finalpriceProducts, setFinalPriceProducts] = useState([])
+  const [finalpriceProducts, setFinalPriceProducts] = useState([]);
+  const [showReviewForm, setShowReviewForm] = useState(true);
 
   useEffect(() => {
     if (products) {
@@ -41,8 +46,28 @@ const OrderCard = ({
       };
       calculateFinalPrice();
     }
-
   }, [products]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = Cookies.get("token");
+      if (!token) {
+        console.error("ไม่พบ Token");
+        return;
+      }
+
+      try {
+        const userResponse = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        console.log(userResponse.data);
+        setCurrentUser(userResponse.data);
+      } catch(err) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     setSellerPage(!!isSellerPage);
@@ -109,6 +134,19 @@ const OrderCard = ({
             </div>
           ))}
         </div>
+        {(latestStatusKey === "COMPLETED" ||
+          latestStatusKey === "DISPUTED" ||
+          latestStatusKey === "RETURN_SHIPPED"
+        ) && showReviewForm && (
+          <ReviewForm
+            productId={products[0].productId}
+            vendorId={products.vendorId}
+            transactionId={products.transactionId}
+            onReviewSubmitted={() => setShowReviewForm(false)}
+            userName={currentUser ? currentUser.data.username : "Loading . . ."} 
+            userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
+          />
+        )}
       </div>
 
       {page === 4 && storeAddress && (
