@@ -6,7 +6,7 @@ const createError = require("http-errors");
 const mongoose = require("mongoose");
 
 exports.createReview = async (data, user) => {
-  const { transactionId, productId, customerId, vendorId, rating, reviewContent } = data;
+  const { transactionId, productId, customerId, vendorId, rating, image, reviewContent } = data;
   
   if(customerId !== user._id.toString()) throw createError(400, "User doesn't match - unauthorize.");
   
@@ -32,6 +32,7 @@ exports.createReview = async (data, user) => {
         customerId,
         vendorId,
         rating,
+        image,
         reviewContent,
       }], { session });
 
