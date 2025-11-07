@@ -51,3 +51,15 @@ exports.deleteReview = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.replyReview = async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+    const vendorId = req.user._id;
+    const { responseContent } = req.body;
+    const replyReview = await reviewService.replyReview(reviewId, vendorId, responseContent);
+    res.status(200).json(replyReview);
+  } catch(error) {
+    next(error);
+  }
+};

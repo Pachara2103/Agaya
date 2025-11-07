@@ -6,12 +6,16 @@ const createError = require("http-errors");
 const mongoose = require("mongoose");
 
 exports.createReview = async (data, user) => {
-  const { transactionId, productId, customerId, vendorId, vendorResponse, reviewDate, rating, reviewContent } = data;
-if(customerId !== user._id.toString()) throw createError(400, "User doesn't match - unauthorize.");
+  const { transactionId, productId, customerId, vendorId, rating, reviewContent } = data;
+  
+  if(customerId !== user._id.toString()) throw createError(400, "User doesn't match - unauthorize.");
+  
   const transaction = await Transaction.findById(transactionId);
   if (!transaction) throw createError(404, "Transaction not found.");
+  
   const contain = await Contain.find({ orderId: transaction.orderId, productId: productId });
   if (contain.length === 0) throw createError(404, "User does not purchase this product.");
+  
   const review = await Review.find({ productId: productId, customerId: customerId });
   // console.log(review);
   if (review.length > 0) throw createError(400, "User has reviewed this product.");
@@ -27,15 +31,10 @@ if(customerId !== user._id.toString()) throw createError(400, "User doesn't matc
         productId,
         customerId,
         vendorId,
-        vendorResponse,
-        reviewDate,
         rating,
         reviewContent,
-      }],
-      { session }
+      }], { session });
 
-    
-    );
     const product = await Product.findById(productId, null, {session});
     const newProductSumOfRating = product.rating + rating;
     const newProductNumberOfReviews = product.numberOfReviews + 1;
@@ -124,5 +123,21 @@ exports.deleteReview = async (id, user) => {
   } finally {
     session.endSession();
   }
+};
 
+exports.replyReview = async (reviewId, vendorId, responseContent) => {
+  const review = await Review.findById(reviewId);
+  if (!review) throw createError(404, "Review not found.");
+
+  if (review.vendorId.toString() !== vendorId.toString()) {
+    throw createError(403, "You are not authorized to reply this review.");
+  }
+
+  review.vendorResponse = {
+    content: responseContent,
+    date: Date.now()
+  };
+
+  await review.save();
+  return review;
 };
