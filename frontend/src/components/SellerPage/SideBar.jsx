@@ -1,19 +1,10 @@
-import {
-  FaBoxOpen,
-  FaShoppingCart,
-  FaPlusSquare,
-  FaStore,
-  FaChartLine,
-  FaCog,
-  FaHeadset,
-} from "react-icons/fa";
 
 const MenuItem = ({ text, isSelected, onClick }) => (
   <li>
     <a
       href="#"
       onClick={onClick}
-      className={`block px-3 py-2 rounded-md text-lg ${
+      className={`block px-3 py-2 rounded-md md:text-lg ${
         isSelected
           ? "bg-red-50 text-red-700 font-semibold"
           : "hover:bg-gray-100 text-gray-600"
@@ -30,7 +21,7 @@ function SideBar({ setPageSelected, pageSelected, display }) {
   }
 
   return (
-    <aside className="w-[325px] bg-[#F7F7F7] p-5 border-r border-gray-200 flex-shrink-0">
+    <aside className="w-[200px] lg:w-[325px] bg-[#F7F7F7] p-5 border-r border-gray-200 ">
       <nav>
         <div>
           <h3 className="px-3 text-base font-bold text-gray-800">คำสั่งซื้อ</h3>

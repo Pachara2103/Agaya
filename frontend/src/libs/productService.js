@@ -43,12 +43,13 @@ export const deleteProduct = async (id) => {
     method: "DELETE",
     headers: getAuthHeaders(),
   });
-  return res.status;
+  const data = await res.json();
+  return { status: res.status, data };
 };
 
-export const getProductsByVendorId = async () => {
+export const getProductsByVendorId = async (keyword = '', category = '') => {
   try {
-    const data = await fetch(`${API_URL}/products/vendor/my-products`, {
+    const data = await fetch(`${API_URL}/products/vendor/my-products?keyword=${keyword}&category=${category}`, {
       method: "GET",
       headers: getAuthHeaders(),
     });
@@ -72,6 +73,20 @@ export const uploadProductImage = async (formData) => {
     body: formData,
   });
   return res.json();
+};
+
+export const getProductSalesByVendor = async () => {
+  try {
+    const data = await fetch(`${API_URL}/products/vendor/sales`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    const res = await data.json();
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Can not get product sales");
+  }
 };
 
 export const getPromotionProduct = async () => {

@@ -8,7 +8,8 @@ const {
   updateProduct,
   deleteProduct,
   findProductsByVendor,
-  updatePromotionStatus
+  updatePromotionStatus,
+  getProductSalesByVendor
 } = require("../controllers/product-controller");
 
 const { protect, authorize } = require("../middleware/auth");
@@ -17,6 +18,7 @@ const { protect, authorize } = require("../middleware/auth");
 const Product = require("../models/product");
 
 router.get("/vendor/my-products", protect, authorize("vendor", "admin"), findProductsByVendor);
+router.get("/vendor/sales", protect, authorize("vendor", "admin"), getProductSalesByVendor);
 
 router.get("/", findAllProduct);
 router.get("/:id", findProductById);

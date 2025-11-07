@@ -23,7 +23,7 @@
   border: none;
   color: #fff;
   cursor: pointer;
-  padding: 18px;
+  padding: 18px 35px;
   font-size: 18px;
 }
 .button-red:hover {
@@ -81,4 +81,35 @@
 }
 .button-border-green:hover {
   background-color: #8fd58fd3;
+}
+
+.sm-hidden {
+  display: none;
+}
+.sm-display {
+  display: inline;
+}
+.md-hidden {
+  display: inline;
+}
+.md-display {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .sm-hidden {
+    display: flex;
+  }
+  .sm-display {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .md-hidden {
+    display: none;
+  }
+  .md-display {
+    display: inline;
+  }
 }

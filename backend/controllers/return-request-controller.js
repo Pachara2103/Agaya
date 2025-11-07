@@ -1,4 +1,4 @@
-const {requestReturn, processReturn, getReturnReqs, getReturnReqsByVendor, submitReturnTrackingIdService} = require("../services/return-request-service");
+const {requestReturn, processReturn, getReturnReqsService, getReturnReqsByVendorService, submitReturnTrackingIdService} = require("../services/return-request-service");
 
 // PATH : POST /api/v1/agaya/return/request
 /*
@@ -32,7 +32,7 @@ exports.processReturn = async (req, res, next) => {
 
 exports.getReturnReqs = async (req, res, next) => {
   try {
-    const returnReqs = await getReturnReqs(req.user, req.query);
+    const returnReqs = await getReturnReqsService(req.user, req.query);
     res.status(200).json({success: true, data : returnReqs});
   } catch (error) {
     next(error);
@@ -40,7 +40,7 @@ exports.getReturnReqs = async (req, res, next) => {
 }
 exports.getReturnReqsByVendor = async (req, res, next) => {
   try {
-    const returnReqs = await getReturnReqsByVendor(req.user, req.query);
+    const returnReqs = await getReturnReqsByVendorService(req.user, req.query);
     res.status(200).json({success: true, data : returnReqs});
   } catch (error) {
     next(error);
