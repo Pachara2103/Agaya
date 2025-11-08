@@ -41,10 +41,23 @@ exports.createReview = async (data, user) => {
       }], { session });
 
     const product = await Product.findById(productId, null, {session});
-    const newProductSumOfRating = product.rating + rating;
-    const newProductNumberOfReviews = product.numberOfReviews + 1;
-    const newProductRating = newProductSumOfRating/newProductNumberOfReviews;
-    const updatedProductData = {sumOfRating: newProductSumOfRating, numberOfReviews: newProductNumberOfReviews, rating: newProductRating};
+    
+    // derive current sum safely (fallback to avg * count if sum missing)
+    const currentSum = (typeof product.sumOfRating === 'number')
+      ? product.sumOfRating
+      : ((typeof product.rating === 'number' && typeof product.numberOfReviews === 'number')
+         ? product.rating * product.numberOfReviews
+         : 0);
+
+    const newProductSumOfRating = Number(currentSum) + Number(rating || 0);
+    const newProductNumberOfReviews = (Number(product.numberOfReviews) || 0) + 1;
+    const newProductRating = newProductNumberOfReviews === 0 ? 0 : (newProductSumOfRating / newProductNumberOfReviews);
+
+    const updatedProductData = {
+      sumOfRating: newProductSumOfRating,
+      numberOfReviews: newProductNumberOfReviews,
+      rating: newProductRating
+    };
     const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, {session});
     // console.log(newProductNumberOfReviews, newProductSumOfRating, newProductRating);
 
@@ -137,8 +150,20 @@ exports.updateReview = async (id, updateData, user) => {
       if (!product) {
         throw createError(404, "Product not found.");
       }
-      const newSumOfRating = product.sumOfRating - oldReview.sumOfRating + updatedReview.sumOfRating;
-      const newAvgRating = newSumOfRating / product.numberOfReviews;
+
+      // derive current sum safely
+      const currentSum = (typeof product.sumOfRating === 'number')
+        ? product.sumOfRating
+        : ((typeof product.rating === 'number' && typeof product.numberOfReviews === 'number')
+           ? product.rating * product.numberOfReviews
+           : 0);
+
+      const oldRating = Number(oldReview.rating || 0);
+      const newRating = Number(updatedReview.rating || 0);
+      const newSumOfRating = Number(currentSum) - oldRating + newRating;
+      const newAvgRating = (product.numberOfReviews && product.numberOfReviews > 0)
+        ? (newSumOfRating / product.numberOfReviews)
+        : 0;
 
       await Product.findByIdAndUpdate(
         product._id,
@@ -172,13 +197,24 @@ exports.deleteReview = async (id, user) => {
   try {
     const product = await Product.findById(review.productId, null, {session});
 
-    const newProductSumOfRating = product.rating - review.rating;
-    const newProductNumberOfReviews = product.numberOfReviews - 1;
-    let newProductRating;
-    if(newProductNumberOfReviews === 0) newProductRating = 0;
-    else newProductRating = newProductSumOfRating/newProductNumberOfReviews;
+    // derive current sum safely
+    const currentSum = (typeof product.sumOfRating === 'number')
+      ? product.sumOfRating
+      : ((typeof product.rating === 'number' && typeof product.numberOfReviews === 'number')
+         ? product.rating * product.numberOfReviews
+         : 0);
 
-    const updatedProductData = {sumOfRating: newProductSumOfRating, numberOfReviews: newProductNumberOfReviews, rating: newProductRating};
+    const newProductSumOfRating = Number(currentSum) - Number(review.rating || 0);
+    const newProductNumberOfReviews = (Number(product.numberOfReviews) || 0) - 1;
+    let newProductRating;
+    if (newProductNumberOfReviews <= 0) newProductRating = 0;
+    else newProductRating = newProductSumOfRating / newProductNumberOfReviews;
+
+    const updatedProductData = {
+      sumOfRating: newProductSumOfRating,
+      numberOfReviews: newProductNumberOfReviews,
+      rating: newProductRating
+    };
     const updatedProduct = await Product.findByIdAndUpdate(review.productId, updatedProductData, {session});
 
     const deletedReview = await Review.findByIdAndDelete(id, null, {session});

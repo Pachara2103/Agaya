@@ -234,7 +234,7 @@ const OrderCard = ({
               existingReview={existingReview}
               userName={currentUser ? currentUser.data.username : "Loading . . ."}
               userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
-              onReviewSubmitted={() => setShowReviewForm(false)}
+              onReviewSubmitted={() => setShowReviewForm(true)}
             />
           ))
         )}
