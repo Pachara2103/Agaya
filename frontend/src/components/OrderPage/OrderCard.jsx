@@ -212,8 +212,9 @@ const OrderCard = ({
         {(latestStatusKey === "COMPLETED" ||
           latestStatusKey === "DISPUTED" ||
           latestStatusKey === "RETURN_SHIPPED"
-        ) && showReviewForm && (
-          products.map(product => (
+        ) && showReviewForm && !isSellerPage && (
+          <>
+          {products.map(product => (
             <ReviewForm
               key={product.productId}
               productId={product.productId}
@@ -225,7 +226,8 @@ const OrderCard = ({
               userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
               onReviewSubmitted={() => setShowReviewForm(true)}
             />
-          ))
+          ))}
+          </>
         )}
       </div>
 
