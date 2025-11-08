@@ -12,7 +12,7 @@ export const CategoryManagement = () => {
 
         try {
             const categorydata = await getCategories();
-            console.log(categorydata);
+            // console.log(categorydata);
             const category = categorydata.data;
             setcategory(category);
         } catch (err) {
@@ -25,7 +25,7 @@ export const CategoryManagement = () => {
         getData();
     }, []);
     if (!category) return <p>Loading...</p>;
-    console.log("category: ",category);
+    // console.log("category: ",category);
 
   return (
       <div className="w-[800px] h-[600px]">

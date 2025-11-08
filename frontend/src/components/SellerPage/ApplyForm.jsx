@@ -107,7 +107,7 @@ const Pending = ({ application }) => {
         <p className="text-gray-500 mt-2 break-words w-140">{application.address}</p>
       </div>
 
-      <div class="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         <span className="bg-yellow-200 text-black font-semibold px-4 py-4 rounded-lg">
           รอการดำเนินการ
         </span>
@@ -166,8 +166,6 @@ const ApplyForm = () => {
     }
   };
 
-  
-
   // const sendConfirm = () => {
   //   if (!shopname || !product || !address) return;
   //   setConfirm(true);
@@ -190,7 +188,7 @@ const ApplyForm = () => {
   }
 
   return (
-    <div class="flex justify-center py-5 w-screen h-[85vh]">
+    <div className="flex justify-center py-5 w-screen h-[85vh]">
       <div className="bg-white p-8 md:p-12 rounded-lg shadow-lg w-full max-w-4xl">
         <h1 className="text-2xl font-semibold text-gray-700 mb-4">
           กรอกใบสมัครขอเป็นผู้ขาย

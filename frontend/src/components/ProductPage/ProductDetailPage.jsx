@@ -56,7 +56,7 @@ const ProductDetailPage = () => {
   useEffect(() => {
     if (localStorage.getItem("cookieConsent") == "given") {
       trackView(id);
-      console.log("track view ", id);
+      // console.log("track view ", id);
     }
   }, []);
 

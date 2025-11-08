@@ -32,7 +32,7 @@ const Cart = () => {
 
   const navigate = useNavigate();
   const goToHome = () => navigate("/");
-  console.log(groupedCartItems)
+  // console.log(groupedCartItems)
 
   const handleProcessToCheckout = () => {
     if (selectedItems.length === 0) {
