@@ -66,7 +66,6 @@ const OrderCard = ({
         const userResponse = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log(userResponse.data);
         setCurrentUser(userResponse.data);
       } catch(err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
@@ -136,7 +135,6 @@ const OrderCard = ({
         if (!transactionId) return;
         const oldReview = await getReviewByTransaction(transactionId);
         if (mounted) {
-          // console.log(oldReview);
           setExistingReview(oldReview);
         }
       } catch (err) {
@@ -201,7 +199,7 @@ const OrderCard = ({
               </div>
 
               <div className="w-full md:w-24 sm:text-center">
-                <p className="text-gray-800 font-semibol d"> <p className="md-hidden">ราคารวม:</p> ${finalpriceProducts[index]}  </p>
+                <p className="text-gray-800 font-semibol d"> <span className="md-hidden">ราคารวม:</span> ${finalpriceProducts[index]}  </p>
               </div>
 
               <div className="w-80 text-right md-display">
@@ -215,15 +213,6 @@ const OrderCard = ({
           latestStatusKey === "DISPUTED" ||
           latestStatusKey === "RETURN_SHIPPED"
         ) && showReviewForm && (
-          // <ReviewForm
-          //   key={products[0].productId}
-          //   productId={products[0].productId}
-          //   vendorId={products.vendorId}
-          //   transactionId={products.transactionId}
-          //   onReviewSubmitted={() => setShowReviewForm(false)}
-          //   userName={currentUser ? currentUser.data.username : "Loading . . ."} 
-          //   userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
-          // />
           products.map(product => (
             <ReviewForm
               key={product.productId}

@@ -7,10 +7,6 @@ const mongoose = require("mongoose");
 
 exports.createReview = async (data, user) => {
   const { transactionId, productId, customerId, vendorId, rating, image, reviewContent } = data;
-
-  console.log(555);
-  console.log("customerId, user._id :", customerId, ", ", user._id);
-  console.log(data);
   
   if(customerId !== user._id.toString()) throw createError(400, "User doesn't match - unauthorize.");
   
@@ -21,8 +17,7 @@ exports.createReview = async (data, user) => {
   if (contain.length === 0) throw createError(404, "User does not purchase this product.");
   
   const review = await Review.find({ productId: productId, customerId: customerId });
-  // console.log(review);
-  if (review.length > 0) throw createError(400, "User has reviewed this product.");
+  if (review.length > 0) throw createError(400, "คุณได้รีวิวสินค้านี้ไปแล้ว ไม่สามารถรีวิวซ้ำได้");
 
   // Try session + transaction
   const session = await mongoose.startSession();
@@ -111,8 +106,8 @@ exports.getReviewByTransaction = async (transactionId) => {
   // Constructing an ObjectId via `mongoose.Types.ObjectId(transactionId)` can throw in
   // some runtime setups (needs `new`), so avoid calling the constructor directly.
   const review = await Review.findOne({ transactionId }).lean(); // may populate, but not necessary
-    console.log('[getReviewByTransaction] transactionId=', transactionId);
-    console.log('[getReviewByTransaction] review=', review);
+    // console.log('[getReviewByTransaction] transactionId=', transactionId);
+    // console.log('[getReviewByTransaction] review=', review);
   return review || null;
 };
 

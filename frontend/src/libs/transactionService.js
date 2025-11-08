@@ -18,8 +18,6 @@ export const getTransactionByOrderId = async (orderId) => {
       method: "GET",
       headers: getAuthHeaders(),
     });
-    console.log("getTransactionByOrderId");
-    // console.log(res.json());
     return await res.json();
   } catch (err) {
     console.error("Error: ", err);

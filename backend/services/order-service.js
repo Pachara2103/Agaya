@@ -47,7 +47,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
     const itemsByVendor = {};
     for (let item of cartItems) {
-      console.log(item);
+      // console.log(item);
       const product = await Product.findOne({ _id: item.productId }).session(session);
       if (!product) throw new createError(404, `Product ${item.productId} not found`);
       if (product.stockQuantity < item.quantity) {
@@ -271,9 +271,7 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
         await transaction.save();
       }
     }
-
     return order;
-
   } catch (err) {
     throw err;
   }

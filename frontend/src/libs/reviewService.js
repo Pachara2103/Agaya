@@ -21,13 +21,14 @@ export const createReview = async (reviewData) => {
         });
         
         if (!response.ok) {
-            throw new Error('Failed to create review');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create review');
         }
         
         return await response.json();
     } catch(err) {
         console.error("Error: ", err);
-        throw new Error("Server Error");
+        throw err; // ส่ง error message จริงไปให้ component จัดการ
     }
 };
 
@@ -74,8 +75,6 @@ export const getReview = async (reviewId) => {
 
 export const getReviewByTransaction = async (transactionId) => {
     try {
-        console.log(55);
-        console.log("transaction ID: ", transactionId);
         const response = await fetch(`${API_URL}/reviews/transaction/${transactionId}`, {
             headers: getAuthHeaders(),
         });

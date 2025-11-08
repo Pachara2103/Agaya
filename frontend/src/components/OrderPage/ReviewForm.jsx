@@ -16,11 +16,6 @@ function ReviewForm({productId, vendorId, transactionId, customerId, onReviewSub
     const [error, setError] = useState("");
     const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        // debug when prop changes
-        console.log('[ReviewForm] existingReview prop changed:', existingReview);
-    }, [existingReview]);
-
     // keep internal state in sync when an existingReview is passed/updated
     useEffect(() => {
         if (!existingReview) return;
@@ -98,7 +93,8 @@ function ReviewForm({productId, vendorId, transactionId, customerId, onReviewSub
             onReviewSubmitted();
         } catch(err) {
             console.error("Failed to submit review:", err);
-            setError(err.response?.data?.message || "เกิดข้อผิดพลาด ไม่สามารถส่งรีวิวได้");
+            // ใช้ error message ที่ส่งมาจาก backend หรือใช้ default message ถ้าไม่มี
+            setError(err.message || "เกิดข้อผิดพลาด ไม่สามารถส่งรีวิวได้");
         } finally {
             setIsSubmitting(false);
         }
