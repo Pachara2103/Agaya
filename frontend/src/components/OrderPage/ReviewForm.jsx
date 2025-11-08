@@ -1,10 +1,12 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {StarRating} from "./StarRating";
 import {FaImage} from "react-icons/fa";
+import { createReview, getReviews, getReview, updateReview, deleteReview } from "../../libs/reviewService";
+import { API_URL } from "../../libs/api";
 
-function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, userName, userImageUrl, existingReview}) {
+function ReviewForm({productId, vendorId, transactionId, customerId, onReviewSubmitted, userName, userImageUrl, existingReview}) {
     const [rating, setRating] = useState(existingReview ? existingReview.rating : 0);
     const [reviewContent, setReviewContent] = useState(existingReview ? existingReview.reviewContent : "");
     const [imageFiles, setImageFiles] = useState([]);
@@ -13,6 +15,27 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
     const fileInputRef = useRef(null);
+
+    useEffect(() => {
+        // debug when prop changes
+        console.log('[ReviewForm] existingReview prop changed:', existingReview);
+    }, [existingReview]);
+
+    // keep internal state in sync when an existingReview is passed/updated
+    useEffect(() => {
+        if (!existingReview) return;
+        try {
+            // only populate if the review matches this product
+            const reviewProductId = existingReview.productId ? String(existingReview.productId) : null;
+            if (reviewProductId && String(productId) === reviewProductId) {
+                setRating(existingReview.rating || 0);
+                setReviewContent(existingReview.reviewContent || "");
+                setExistingImages(existingReview.image || []);
+            }
+        } catch (e) {
+            console.warn('Failed to sync existingReview into form state', e);
+        }
+    }, [existingReview, productId]);
 
     const handleFileChange = (event) => {
         if (event.target.files) {
@@ -34,21 +57,23 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
             let newlyUploadedUrls = [];
 
             if (imageFiles.length > 0) { //อัปโหลดเฉพาะรูปใหม่
-                const formData = new FormData();
+                // The backend upload route accepts a single file field named 'image'
+                // so upload files one-by-one and collect returned imageUrl
                 for (let file of imageFiles) {
-                    formData.append('images', file);
+                    const fd = new FormData();
+                    fd.append('image', file);
+                    const uploadRes = await axios.post(`${API_URL}/upload`, fd, {
+                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+                    });
+                    // upload route returns { imageUrl }
+                    if (uploadRes?.data?.imageUrl) newlyUploadedUrls.push(uploadRes.data.imageUrl);
                 }
-
-                ///////
-                const uploadRes = await axios.post("", formData, {
-                    headers: {"Content-Type": "multipart/form-data"}
-                });
-                newlyUploadedUrls = uploadRes.data.imageUrls; //have to connect with backend
             }
 
             const finalImageUrls = [...existingImages, ...newlyUploadedUrls];
 
             const reviewPayload = {
+                customerId: customerId,
                 transactionId: transactionId,
                 productId: productId,
                 vendorId: vendorId,
@@ -58,17 +83,17 @@ function ReviewForm({productId, vendorId, transactionId, onReviewSubmitted, user
             };
 
             if (existingReview) {
-                ////////////////
-                await axios.put(`http://localhost:5000/api/v1/reviews/${existingReview._id}`, reviewPayload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                // await axios.put(`${API_URL}/reviews/${existingReview._id}`, reviewPayload, {
+                //     headers: { Authorization: `Bearer ${token}` }
+                // });
+                await updateReview(existingReview._id, reviewPayload);
                 alert('อัปเดตรีวิวสำเร็จ!');
             } else {
-                /////////////
-                await axios.post('http://localhost:5000/api/v1/reviews', reviewPayload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('ขอบคุณสำหรับการรีวิว!');
+                // await axios.post(`${API_URL}/reviews`, reviewPayload, {
+                //     headers: { Authorization: `Bearer ${token}` }
+                // });
+                await createReview(reviewPayload);
+                alert('สร้างรีวิวสำเร็จ ขอบคุณสำหรับการรีวิว!');
             }
             onReviewSubmitted();
         } catch(err) {

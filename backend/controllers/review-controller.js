@@ -31,11 +31,22 @@ exports.getReview = async (req, res, next) => {
   }
 };
 
+exports.getReviewByTransaction = async (req, res, next) => {
+  try {
+    const review = await reviewService.getReviewByTransaction(req.params.transactionId);
+    res.status(200).json(review);
+  } catch(err) {
+    next(err);
+  }
+};
+
 exports.updateReview = async (req, res, next) => {
   try {
+    // pass req.user so service can check ownership/admin rights
     const updatedReview = await reviewService.updateReview(
       req.params.id,
-      req.body
+      req.body,
+      req.user
     );
     res.status(200).json(updatedReview);
   } catch (error) {

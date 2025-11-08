@@ -317,6 +317,19 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
   }
 };
 
+exports.getOrder = async (orderId) => {
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new Error("Order not found");
+    }
+    return order;
+  } catch(err) {
+    console.error("Error in getOrders:", err);
+    throw err;
+  }
+};
+
 // Exported helper functions
 exports.getOrdersByCustomer = async (customerId, user, queryParams) => {
   return await getOrders({ field: "customerId", id: customerId, user, queryParams });

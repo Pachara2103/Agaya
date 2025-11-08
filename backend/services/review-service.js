@@ -7,6 +7,10 @@ const mongoose = require("mongoose");
 
 exports.createReview = async (data, user) => {
   const { transactionId, productId, customerId, vendorId, rating, image, reviewContent } = data;
+
+  console.log(555);
+  console.log("customerId, user._id :", customerId, ", ", user._id);
+  console.log(data);
   
   if(customerId !== user._id.toString()) throw createError(400, "User doesn't match - unauthorize.");
   
@@ -80,7 +84,26 @@ exports.getReview = async (id) => {
   return review;
 };
 
-exports.updateReview = async (id, updateData) => {
+exports.getReviewByTransaction = async (transactionId) => {
+  if (!transactionId) {
+    throw createError(400, "transactionId is required.");
+  }
+
+  // Validate ObjectId to avoid casting errors
+  if (!mongoose.Types.ObjectId.isValid(transactionId)) {
+    return null; // treat invalid id as "no review"
+  }
+
+  // Use the raw transactionId value in the query and let Mongoose cast it to ObjectId.
+  // Constructing an ObjectId via `mongoose.Types.ObjectId(transactionId)` can throw in
+  // some runtime setups (needs `new`), so avoid calling the constructor directly.
+  const review = await Review.findOne({ transactionId }).lean(); // may populate, but not necessary
+    console.log('[getReviewByTransaction] transactionId=', transactionId);
+    console.log('[getReviewByTransaction] review=', review);
+  return review || null;
+};
+
+exports.updateReview = async (id, updateData, user) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -88,6 +111,17 @@ exports.updateReview = async (id, updateData) => {
     const oldReview = await Review.findById(id).session(session);
     if (!oldReview) {
       throw createError(404, "Review not found.");
+    }
+    // Ownership check: allow only the review owner or admins to update
+    if (user) {
+      const isOwner = oldReview.customerId && oldReview.customerId.toString() === user._id.toString();
+      const isAdmin = Array.isArray(user.userType) ? user.userType.includes("admin") : typeof user.userType === 'string' && user.userType.includes("admin");
+      if (!isOwner && !isAdmin) {
+        throw createError(403, "You are not authorized to update this review.");
+      }
+    } else {
+      // no user provided - deny
+      throw createError(403, "You are not authorized to update this review.");
     }
     const isRatingChanged = (updateData.rating !== undefined) && (updateData.rating !== oldReview.rating);
     const updatedReview = await Review.findByIdAndUpdate(id, updateData, {

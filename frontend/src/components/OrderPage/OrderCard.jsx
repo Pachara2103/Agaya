@@ -7,6 +7,9 @@ import { ReturnTrackingIdForm } from "./ReturnTrackingIdForm";
 import CompleteTracking from "../SellerPage/CompleteTracking";
 import ToShip from '../SellerPage/ToShip';
 import { getFinalPrice } from '../../libs/productService';
+import { getTransactionByOrderId } from "../../libs/transactionService";
+import { getOrder } from "../../libs/orderService";
+import { getReviewByTransaction } from "../../libs/reviewService";
 import ConfirmReturn from "../SellerPage/ConfirmReturn";
 import ReviewForm from "./ReviewForm";
 
@@ -36,6 +39,9 @@ const OrderCard = ({
   const [toshipFilter, setToshipFilter] = useState(false);
   const [finalpriceProducts, setFinalPriceProducts] = useState([]);
   const [showReviewForm, setShowReviewForm] = useState(true);
+  const [transactionId, setTransactionId] = useState(null);
+  const [vendorId, setVendorId] = useState(null);
+  const [existingReview, setExistingReview] = useState(null);
 
   useEffect(() => {
     if (products) {
@@ -78,6 +84,75 @@ const OrderCard = ({
     }
   }, [selectFilter]);
 
+  useEffect(() => {
+    const fetchTransactionId = async (orderId) => {
+      try {
+        if (!orderId) return;
+
+        const transaction = await getTransactionByOrderId(orderId);
+        if (!transaction) {
+          console.error("ไม่พบ Transaction สำหรับ orderId:", orderId);
+          return;
+        }
+
+        // Normalize the transaction response shape. Backend returns { success:true, data: transaction }
+        const tx = transaction?.data ?? transaction;
+        const txId = tx?._id ?? tx;
+        // ensure we store a primitive id (string) so downstream callers are consistent
+        setTransactionId(txId ? String(txId) : null);
+      } catch(err) {
+        console.error("เกิดข้อผิดพลาดในการดึง transaction:", err);
+      }
+    };
+    fetchTransactionId(orderId);
+  }, [orderId]);
+
+  useEffect(() => {
+    const fetchOrder = async (orderId) => {
+      try {
+        if (!orderId) return;
+
+        const order = await getOrder(orderId);
+        if (!order) {
+          console.error("ไม่พบ Order สำหรับ orderId:", orderId);
+          return;
+        }
+
+        setVendorId(order.data.vendorId || vendorId);
+      } catch(err) {
+        console.error("เกิดข้อผิดพลาดในการดึง order:", err);
+      }
+    };
+    fetchOrder(orderId);
+  }, [vendorId]);
+
+  // check old review by transaction id
+  // run when transactionId becomes available (not when existingReview changes)
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchOldReview = async () => {
+      try {
+        if (!transactionId) return;
+        const oldReview = await getReviewByTransaction(transactionId);
+        if (mounted) {
+          // console.log(oldReview);
+          setExistingReview(oldReview);
+        }
+      } catch (err) {
+        // If there's no review, backend may return 404 or throw — treat as "no existing review"
+        console.debug("ไม่พบรีวิวเก่าหรือเกิดข้อผิดพลาดในการดึงรีวิว:", err);
+        if (mounted) setExistingReview(null);
+      }
+    };
+
+    fetchOldReview();
+
+    return () => {
+      mounted = false;
+    };
+  }, [transactionId]);
+
   const showStatus = () => { setShowStatus(true); };
   const hideStatus = () => { setShowStatus(false); };
 
@@ -94,6 +169,8 @@ const OrderCard = ({
       </span>
     );
   };
+
+  if (!currentUser) return <p>Loading user info . . .</p>
 
   return (
     <div className="bg-[#F8F8F8] shadow-sm border border-gray-200 min-w-70 ">
@@ -138,21 +215,28 @@ const OrderCard = ({
           latestStatusKey === "DISPUTED" ||
           latestStatusKey === "RETURN_SHIPPED"
         ) && showReviewForm && (
-          <ReviewForm
-            key={products[0].productId}
-            productId={products[0].productId}
-            vendorId={products.vendorId}
-            transactionId={products.transactionId}
-            onReviewSubmitted={() => setShowReviewForm(false)}
-            userName={currentUser ? currentUser.data.username : "Loading . . ."} 
-            userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
-          />
-          // products.map(product => (
-          //   <ReviewForm
-          //     key={product.productId}
-          //     productId={products[0].productId}
-          //   />
-          // ))
+          // <ReviewForm
+          //   key={products[0].productId}
+          //   productId={products[0].productId}
+          //   vendorId={products.vendorId}
+          //   transactionId={products.transactionId}
+          //   onReviewSubmitted={() => setShowReviewForm(false)}
+          //   userName={currentUser ? currentUser.data.username : "Loading . . ."} 
+          //   userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
+          // />
+          products.map(product => (
+            <ReviewForm
+              key={product.productId}
+              productId={product.productId}
+              vendorId={vendorId} //
+              customerId={currentUser?.data?._id}
+              transactionId={transactionId}
+              existingReview={existingReview}
+              userName={currentUser ? currentUser.data.username : "Loading . . ."}
+              userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
+              onReviewSubmitted={() => setShowReviewForm(false)}
+            />
+          ))
         )}
       </div>
 

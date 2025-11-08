@@ -1,4 +1,4 @@
-const {checkoutOrder, addOrderTrackingEvent, getOrdersByCustomer, getOrdersByVendor, cancelOrder} = require("../services/order-service");
+const {checkoutOrder, addOrderTrackingEvent, getOrder, getOrdersByCustomer, getOrdersByVendor, cancelOrder} = require("../services/order-service");
 
 // @desc    Checkout order
 // @route   POST /api/v1/agaya/orders/checkout
@@ -20,7 +20,20 @@ exports.addOrderTrackingEvent = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-}
+};
+
+exports.getOrder = async (req, res, next) => {
+  try {
+    const {orderId} = req.params;
+    const order = await getOrder(orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    res.status(200).json({success: true, data: order});
+  } catch(err) {
+    next(err);
+  }
+};
 
 exports.getOrdersByCustomer = async (req, res, next) => {
   try {
