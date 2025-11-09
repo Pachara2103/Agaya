@@ -107,8 +107,8 @@ module.exports = router;
  *         description: Payment verified successfully
  *         content:
  *           application/json:
- *             schema:
- *               type: object
+*             schema:
+*               type: object
  *               properties:
  *                 success:
  *                   type: boolean
@@ -147,10 +147,11 @@ module.exports = router;
  */
 
 /**
+ * @swagger
  * components: 
- *   securitySchemas:
+ *   securitySchemes:
  *     bearerAuth:
  *       type: http
- *       schema: bearer
+ *       scheme: bearer
  *       bearerFormat: JWT
  */

@@ -32,15 +32,15 @@ module.exports = router;
  *       properties:
  *         transactionId:
  *           type: string
- *           description: ObjectId of the related Transaction
+ *           description: The ID of the related Transaction
  *           example: "68ef6ea7f9e853a33bedb1af"
  *         productId:
  *           type: string
- *           description: ObjectId of the Product
+ *           description: The ID of the Product
  *           example: "68ef6e4ff9e853a33bedb193"
  *         customerId:
  *           type: string
- *           description: ObjectId of the Customer
+ *           description: The ID of the Customer
  *           example: "6904389e789319c4c21dcf44"
  *         vendorId:
  *           type: string
@@ -74,6 +74,11 @@ module.exports = router;
  *         reviewDate: "2025-10-31T08:00:00.000Z"
  *         rating: 2
  *         reviewContent: "Great product!"
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */
 
 /**
@@ -143,13 +148,8 @@ module.exports = router;
  *   post:
  *     summary: Create new review
  *     tags: [Reviews]
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: Bearer token for authentication
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -214,6 +214,8 @@ module.exports = router;
  *   put:
  *     summary: Update the review by its id
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -221,12 +223,6 @@ module.exports = router;
  *           type: string
  *         required: true
  *         description: The review id
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: Bearer token for authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -268,6 +264,8 @@ module.exports = router;
  *   delete:
  *     summary: Delete the review by its id
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -275,12 +273,6 @@ module.exports = router;
  *           type: string
  *         required: true
  *         description: The review id
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: Bearer token for authentication
  *     responses:
  *       200:
  *         description: The review was deleted
@@ -306,6 +298,8 @@ module.exports = router;
  *   post:
  *     summary: Create new review reply
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -313,12 +307,6 @@ module.exports = router;
  *           type: string
  *         required: true
  *         description: The review id
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: Bearer token for authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -344,6 +332,8 @@ module.exports = router;
  *   get:
  *     summary: Get a review associated with a transaction
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: transactionId
@@ -351,12 +341,6 @@ module.exports = router;
  *           type: string
  *         required: true
  *         description: The transaction id
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: Bearer token for authentication
  *     responses:
  *       200:
  *         description: Successfully retrieved review

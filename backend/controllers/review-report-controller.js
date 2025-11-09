@@ -4,7 +4,7 @@ const createError = require("http-errors");
 /**
  * @desc    Create a new review report
  * @route   POST /api/v1/Agaya/review-reports
- * @access  Public
+ * @access  Private
  */
 exports.createReviewReport = async (req, res, next) => {
   try {
