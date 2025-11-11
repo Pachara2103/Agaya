@@ -14,11 +14,11 @@ function SearchBar() {
   };
 
   return (
-    <div class={`flex items-center h-full text-black justify-center text-[14px]`}>
+    <div className={`flex items-center h-full text-black justify-center text-[14px]`}>
       <input
         type="text"
         placeholder="ค้นหาสินค้าและร้านค้า"
-        class="text-[#7d8184] px-[10px] py-[8px] w-full md:w-3/4 h-10 border-none outline-none bg-[#f5f5f5] rounded-sm"
+        className="text-[#7d8184] px-[10px] py-[8px] w-full md:w-3/4 h-10 border-none outline-none bg-[#f5f5f5] rounded-sm"
         onChange={(e) => { setKey(e.target.value) }}
         onKeyDown={(e) => { if (e.key == "Enter") handleSearch() }}
       />

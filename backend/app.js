@@ -4,6 +4,8 @@ const session = require('express-session');
 const cookieParser = require("cookie-parser");
 const errorHandler = require('./middleware/errorHandler');
 const cors = require("cors");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
 
 const corsOptions = {
     origin: ['http://localhost:5173'],
@@ -77,5 +79,25 @@ app.use('/api/v1/Agaya/payment', paymentRoutes);
 require('./config/passport');
 
 app.use(errorHandler);
+
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Library API',
+            version: '1.0.0',
+            description: 'Agaya selling platform'
+        },
+        servers: [
+            {
+                url: "http://localhost:5000/api/v1/Agaya"
+            }
+        ],
+    },
+    apis:['./routes/*.js'],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 module.exports = app;

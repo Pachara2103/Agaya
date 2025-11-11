@@ -26,6 +26,7 @@ const ProductDetailPage = () => {
       const res = await getProductsById(productId);
 
       const apiProduct = res.product;
+      console.log(apiProduct);
 
       if (apiProduct && apiProduct._id) {
         setProduct({
@@ -55,7 +56,7 @@ const ProductDetailPage = () => {
   useEffect(() => {
     if (localStorage.getItem("cookieConsent") == "given") {
       trackView(id);
-      console.log("track view ", id);
+      // console.log("track view ", id);
     }
   }, []);
 

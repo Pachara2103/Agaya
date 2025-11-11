@@ -2,7 +2,7 @@ import { StoreGroup } from "./StoreGroup";
 
 export const CartTable = ({ groupedItems, onQuantityChange, onRemoveClick, isSelected, onToggleSelect }) => {
   const storeNames = Object.keys(groupedItems);
-  console.log("hehe", storeNames)
+  // console.log("Store name:", storeNames)
   return (
     <div className="overflow-hidden mb-8 space-y-5">
       <div className="md:grid grid-cols-11 gap-4 p-6 border-1 border-[#D9D9D9] ">

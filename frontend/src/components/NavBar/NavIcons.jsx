@@ -10,7 +10,7 @@ function NavIcons({ user, handleLogout, isDropdownOpen, toggleDropdown, onClose,
 
 
   return (
-    <div class="flex flex-row gap-5 items-center text-black justify-center w-30 md:w-40  h-full sm-hidden">
+    <div className="flex flex-row gap-5 items-center text-black justify-center w-30 md:w-40  h-full sm-hidden">
       <CiHeart size={28} className="cursor-pointer" />
 
       <div className="relative">

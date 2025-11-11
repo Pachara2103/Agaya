@@ -12,6 +12,19 @@ const getAuthHeaders = () => {
   };
 };
 
+export const getOrder = async (orderId) => {
+  try {
+    const res = await fetch(`${API_URL}/orders/${orderId}`, {
+      method: "GET",
+      headers: getAuthHeaders()
+    });
+    return await res.json();
+  } catch(err) {
+    console.error("Error: ", err);
+    throw new Error("Server Error");
+  }
+};
+
 // @desc    Fetch Orders By CustomerId and token
 // @route   GET /api/v1/agaya/orders/customer/:cid
 // @access  Private

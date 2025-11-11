@@ -8,7 +8,7 @@ const Order = ({isOrderReceivePage,isOtherPage, page}) => {
   */
   const { filteredOrders, cancelOrder, confirmReceive, submitReturnRequest, submitTrackingId } = useOrderData(page) 
   // fetchOrderData
-  console.log("before filter", filteredOrders)
+  // console.log("before filter", filteredOrders)
   const totalProducts = filteredOrders.length;
   // console.log("test")
   // orders.map((item, index) => {

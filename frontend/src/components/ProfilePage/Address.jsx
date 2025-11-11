@@ -23,12 +23,10 @@ function Address() {
         }
 
          try {
-            console.log("1. กำลังพยายามดึงข้อมูลผู้ใช้...");
             // 1. ดึงข้อมูล User ปัจจุบัน (เพื่อเอา ID)
             const userResponse = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log("2. ดึงข้อมูลผู้ใช้สำเร็จ:", userResponse.data);
             setCurrentUser(userResponse.data.data);
 
             // 2. ดึงรายการที่อยู่ทั้งหมดโดยใช้ ID ของผู้ใช้ปัจจุบัน
@@ -36,18 +34,11 @@ function Address() {
                 const userId = userResponse.data.data._id;
                 const addressUrl = `http://localhost:5000/api/v1/Agaya/address/${userId}/addresses`;
 
-                console.log("3. กำลังดึงข้อมูลที่อยู่จาก:", addressUrl);
-
                 const addressResponse = await axios.get(addressUrl, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-
-                console.log("4. ดึงข้อมูลที่อยู่สำเร็จ:", addressResponse.data);
-                
-                // หมายเหตุ: ถ้า Backend ส่ง array กลับมาใน key อื่นที่ไม่ใช่ 'data' ให้แก้ตรงนี้
                 setAddresses(addressResponse.data);
             } else {
-                // กรณีที่ไม่พบ User ID
                 setAddresses([]);
             }
 

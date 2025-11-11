@@ -36,7 +36,7 @@ const StatusTracking = ({
     // Call the hook function
     if (latestStatusKey === "DELIVERED") {
       await onReceive(orderId);
-      console.log(orderId);
+      // console.log(orderId);
       setIsReceive(true);
       closeConfirmReceive();
     } else {

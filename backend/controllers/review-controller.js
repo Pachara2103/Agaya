@@ -31,11 +31,22 @@ exports.getReview = async (req, res, next) => {
   }
 };
 
+exports.getReviewByTransaction = async (req, res, next) => {
+  try {
+    const review = await reviewService.getReviewByTransaction(req.params.transactionId);
+    res.status(200).json(review);
+  } catch(err) {
+    next(err);
+  }
+};
+
 exports.updateReview = async (req, res, next) => {
   try {
+    // pass req.user so service can check ownership/admin rights
     const updatedReview = await reviewService.updateReview(
       req.params.id,
-      req.body
+      req.body,
+      req.user
     );
     res.status(200).json(updatedReview);
   } catch (error) {
@@ -48,6 +59,18 @@ exports.deleteReview = async (req, res, next) => {
     await reviewService.deleteReview(req.params.id, req.user);
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.replyReview = async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+    const vendorId = req.user._id;
+    const { responseContent } = req.body;
+    const replyReview = await reviewService.replyReview(reviewId, vendorId, responseContent);
+    res.status(200).json(replyReview);
+  } catch(error) {
     next(error);
   }
 };

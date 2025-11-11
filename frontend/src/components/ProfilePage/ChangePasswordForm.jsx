@@ -56,7 +56,7 @@ function PasswordForm() {
     };
 
     return (
-        <div class="flex flex-col relative">
+        <div className="flex flex-col relative">
 
             <main>
                 <div className="flex justify-center items-center min-h-[80vh] bg-gray-100">

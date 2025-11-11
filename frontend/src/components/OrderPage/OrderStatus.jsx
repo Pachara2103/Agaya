@@ -31,7 +31,7 @@ export default function OrderStatus({ Status }) {
   ];
 
   useEffect(() => {
-    console.log("yolo", Status);
+    // console.log("yolo", Status);
     setNowStatus(Status[Status.length - 1].statusKey);
   }, [Status]);
 
@@ -68,7 +68,7 @@ export default function OrderStatus({ Status }) {
                   <RenderIcon statusType={i.statusKey} completed={actualEvent} />
 
                   <div className="min-w-0 flex-1 pt-2">
-                    <p className="text-md text-gray-700 pt-1 flex flex-row">
+                    <div className="text-md text-gray-700 pt-1 flex flex-row">
                       <span className="font-semibold mr-2 text-black">
                         {actualEvent ? (<div className="text-[16px]">{toDateString(actualEvent.timestamp)[0]} <span className="ml-2">{toDateString(actualEvent.timestamp)[1]}</span></div>) : (<div className="mr-11">DD/MM/YYYY</div>)}
                       </span>
@@ -76,7 +76,7 @@ export default function OrderStatus({ Status }) {
                       <span className={`ml-1 ${isLast(index) ? "text-teal-500" : "text-gray-500"}`}                    >
                         {i.description}
                       </span>
-                    </p>
+                    </div>
                   </div>
                   
                 </div>

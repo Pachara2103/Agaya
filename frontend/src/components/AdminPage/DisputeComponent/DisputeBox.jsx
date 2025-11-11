@@ -22,8 +22,7 @@ const formatTime = (isoString) => {
 export function DisputeBox({ data, onDisputeUpdate }) {
   // console.log("hehe3", data);
   const [username, setUsername] = useState("");
-  const { _id, customerId, orderId, products, status, requestDate, reason } =
-    data;
+  const { _id, customerId, orderId, products, status, requestDate, reason } = data;
   const reqDate = formatDate(requestDate || "2025-10-15T10:49:08.377Z");
   const time = formatTime(requestDate || "2025-10-15T10:49:08.377Z");
   const fetchUsername = async () => {
@@ -47,7 +46,7 @@ export function DisputeBox({ data, onDisputeUpdate }) {
       : "bg-white";
   };
   fetchUsername();
-  console.log(username);
+  // console.log(username);
   const [detailState, setDetailState] = useState(false);
   return (
     <>

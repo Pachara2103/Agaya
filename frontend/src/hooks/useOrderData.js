@@ -24,16 +24,17 @@ const useOrderData = (page) => {
       const customerOrders = await getOrdersByCustomer(cid);
       setOrders(customerOrders?.data?.orders);
     } catch (err) {
-      console.error("Cart fetch error:", error);
+      console.error("Cart fetch error:", err);
       setOrders([]);
     }
   };
+  
   useEffect(() => {
     fetchOrderData();
   }, []);
 
   useEffect(() => {
-    console.log("orders= ", orders);
+    // console.log("orders= ", orders);
   }, [orders]);
 
   const filteredOrders = useMemo(() => {
