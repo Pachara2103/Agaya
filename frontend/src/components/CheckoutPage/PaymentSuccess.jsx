@@ -30,22 +30,13 @@ const PaymentSuccess = () => {
 
       try {
         const paymentResult = await verifyPayment(sessionId);
-
+        
         if (paymentResult.success) {
-          setStatus("Payment verified. Creating your order...");
-
-          const orderData = paymentResult.orderData;
-          const orderResult = await checkoutOrder(orderData);
-
-          if (orderResult) {
-            refreshCart(); // Refresh the cart
-            setStatus("Order created successfully! Redirecting...");
-            setTimeout(() => {
-              navigate("/profile", { state: { panel: "order" } });
-            }, 3000);
-          } else {
-            throw new Error("Failed to create order.");
-          }
+          setStatus("Payment verified successfully!");
+          refreshCart(); 
+          setTimeout(() => {
+          navigate("/profile", { state: { panel: "order" } });
+          }, 3000);
         } else {
           throw new Error("Payment verification failed.");
         }

@@ -19,9 +19,10 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress } = orderData;
-
-    const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
+    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress, transactionId } = orderData;
+    let obj_cartId = new mongoose.Types.ObjectId(cartId)
+    let obj_customerId = new mongoose.Types.ObjectId(customerId)
+    const carts = await Cart.findOne({ customerId: obj_customerId, _id: obj_cartId });
     if (!carts)
       throw new createError(
         404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
@@ -70,6 +71,7 @@ exports.checkoutOrder = async (orderData, user) => {
         customerId,
         vendorId,
         shippingAddress: selectedAddress,
+        transactionId: transactionId,
         orderTracking: [
           {
             statusKey: 'ORDER_RECEIVED',
@@ -80,6 +82,7 @@ exports.checkoutOrder = async (orderData, user) => {
       });
       await order.save({ session });
 
+      const contains = [];
       for (const { item, product } of vendorItem) {
         totalAmount += item.quantity * product.price;
         product.stockQuantity -= item.quantity;
@@ -91,15 +94,23 @@ exports.checkoutOrder = async (orderData, user) => {
           quantity: item.quantity,
         });
         await contain.save({ session });
+        contains.push({
+          name: product.productName,
+          quantity: item.quantity,
+          price: product.price,
+          image: product.image[0], 
+        });
       }
-
+      console.log("dude", contains);
       const transaction = new Transaction({
         orderId: order._id,
         paymentMethod: paymentMethod,
         amount: totalAmount.toFixed(2),
+        transactionId: transactionId
       });
 
       await transaction.save({ session });
+      order.contains = contains;
       createdOrders.push({ order, transaction });
 
     }
