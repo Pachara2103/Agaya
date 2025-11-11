@@ -10,8 +10,6 @@ const { getOrderDetailsPipeline, calculatePagination } = require("../utils/order
 const User = require("../models/user.js");
 const Vendor = require("../models/vendor.js");
 
-const emailService = require('./email-service');
-
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
 
@@ -21,7 +19,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress } = orderData;
+    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress, transactionId } = orderData;
     let obj_cartId = new mongoose.Types.ObjectId(cartId)
     let obj_customerId = new mongoose.Types.ObjectId(customerId)
     const carts = await Cart.findOne({ customerId: obj_customerId, _id: obj_cartId });
@@ -73,6 +71,7 @@ exports.checkoutOrder = async (orderData, user) => {
         customerId,
         vendorId,
         shippingAddress: selectedAddress,
+        transactionId: transactionId,
         orderTracking: [
           {
             statusKey: 'ORDER_RECEIVED',
@@ -107,6 +106,7 @@ exports.checkoutOrder = async (orderData, user) => {
         orderId: order._id,
         paymentMethod: paymentMethod,
         amount: totalAmount.toFixed(2),
+        transactionId: transactionId
       });
 
       await transaction.save({ session });
@@ -119,8 +119,6 @@ exports.checkoutOrder = async (orderData, user) => {
 
     await session.commitTransaction();
     session.endSession();
-
-    await emailService.sendPaymentSuccessEmail(user, createdOrders);
 
     return createdOrders;
 

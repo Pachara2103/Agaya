@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
-  /*transaction_id: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: 100
-  },*/
+  transactionId: { 
+    type: String
+  },
   paymentMethod: {
     type: String,
     required: true,

@@ -51,6 +51,9 @@ const orderSchema = new mongoose.Schema({
     required: true,
     maxlength: 100,
     ref: 'Vendor' // อ้างอิง Vendor
+  },
+  transactionId: { 
+    type: String
   }
 }, {
   timestamps: true

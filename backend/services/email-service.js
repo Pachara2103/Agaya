@@ -19,10 +19,11 @@ exports.sendPaymentSuccessEmail = async (user, orders) => {
   let totalAmount = 0;
   let orderDetails = '';
   const attachments = [];
+  let tmp_name = "";
 
   for (const order of orders) {
     totalAmount += parseFloat(order.transaction.amount);
-
+    tmp_name = order.order.shippingAddress.name;
     const itemsHtml = await Promise.all(order.order.contains.map(async (item) => {
       const cid = uuidv4();
       try {
@@ -88,7 +89,7 @@ exports.sendPaymentSuccessEmail = async (user, orders) => {
           <h1 style="color: #4CAF50;">Thank You for Your Order!</h1>
         </div>
         <div style="padding: 20px 0;">
-          <p>Hi ${user.firstName},</p>
+          <p>Hi ${tmp_name},</p>
           <p>Your payment was successful. We've received your order and will process it shortly. Here are the details:</p>
         </div>
         ${orderDetails}
