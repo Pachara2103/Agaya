@@ -10,6 +10,8 @@ const { getOrderDetailsPipeline, calculatePagination } = require("../utils/order
 const User = require("../models/user.js");
 const Vendor = require("../models/vendor.js");
 
+const emailService = require('./email-service');
+
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
 
@@ -20,8 +22,9 @@ exports.checkoutOrder = async (orderData, user) => {
   try {
     orderData.customerId = user._id;
     const { cartId, customerId, paymentMethod, selectedItem, selectedAddress } = orderData;
-
-    const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
+    let obj_cartId = new mongoose.Types.ObjectId(cartId)
+    let obj_customerId = new mongoose.Types.ObjectId(customerId)
+    const carts = await Cart.findOne({ customerId: obj_customerId, _id: obj_cartId });
     if (!carts)
       throw new createError(
         404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
@@ -80,6 +83,7 @@ exports.checkoutOrder = async (orderData, user) => {
       });
       await order.save({ session });
 
+      const contains = [];
       for (const { item, product } of vendorItem) {
         totalAmount += item.quantity * product.price;
         product.stockQuantity -= item.quantity;
@@ -91,8 +95,14 @@ exports.checkoutOrder = async (orderData, user) => {
           quantity: item.quantity,
         });
         await contain.save({ session });
+        contains.push({
+          name: product.productName,
+          quantity: item.quantity,
+          price: product.price,
+          image: product.image[0], 
+        });
       }
-
+      console.log("dude", contains);
       const transaction = new Transaction({
         orderId: order._id,
         paymentMethod: paymentMethod,
@@ -100,6 +110,7 @@ exports.checkoutOrder = async (orderData, user) => {
       });
 
       await transaction.save({ session });
+      order.contains = contains;
       createdOrders.push({ order, transaction });
 
     }
@@ -108,6 +119,8 @@ exports.checkoutOrder = async (orderData, user) => {
 
     await session.commitTransaction();
     session.endSession();
+
+    await emailService.sendPaymentSuccessEmail(user, createdOrders);
 
     return createdOrders;
 
