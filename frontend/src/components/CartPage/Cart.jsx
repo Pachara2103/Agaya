@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useCart } from "../../context/CartContext"; 
 import useCartDeleteModal from "../../hooks/useCartDeleteModal";
 import { CartTable } from "./CartTable";
@@ -7,6 +8,8 @@ import { ConfirmationModal } from "./ConfirmationModal";
 import { useNavigate } from "react-router-dom"
 
 const Cart = () => {
+  const [outOfStock, setOutOfStock] = useState(false);
+
   const {
     isLoading,
     error,
@@ -37,6 +40,22 @@ const Cart = () => {
   const handleProcessToCheckout = () => {
     if (selectedItems.length === 0) {
       alert("กรุณาเลือกสินค้าอย่างน้อย 1 ชิ้น");
+      return;
+    }
+
+    console.log("selectedItems: ", selectedItems);
+    console.log("selectedItems[0]: ", selectedItems[0]);
+    
+    const outOfStockItem = selectedItems.find(item => 
+      item.quantity <= 0
+    );
+
+    console.log("outOfStockItem: ", outOfStockItem);
+
+    if (outOfStockItem) {
+      alert(
+        `ขออภัย, สินค้า "${outOfStockItem.productName}" มีสินค้าในสต๊อกไม่เพียงพอ (เหลือ ${outOfStockItem.stockQuantity} ชิ้น)`
+      );
       return;
     }
 
