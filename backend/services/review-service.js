@@ -5,6 +5,7 @@ const Order = require('../models/order');
 const Product = require("../models/product");
 const createError = require("http-errors");
 const mongoose = require("mongoose");
+const Vendor = require("../models/vendor");
 
 exports.createReview = async (data, user) => {
   const { transactionId, productId, customerId, vendorId, rating, image, reviewContent } = data;
@@ -249,19 +250,70 @@ exports.deleteReview = async (id, user) => {
   }
 };
 
-exports.replyReview = async (reviewId, vendorId, responseContent) => {
+exports.replyReview = async (reviewId, userId, responseContent) => {
   const review = await Review.findById(reviewId);
   if (!review) throw createError(404, "Review not found.");
-
-  if (review.vendorId.toString() !== vendorId.toString()) {
+  const vendor = await Vendor.findOne({ userId: userId });
+  if (!vendor) {
+    throw createError(404, "Vendor not found for the user.");
+  }
+  if (review.vendorId.toString() !== vendor._id.toString()) {
     throw createError(403, "You are not authorized to reply this review.");
   }
 
-  review.vendorResponse = {
-    content: responseContent,
-    date: Date.now()
-  };
+  review.vendorResponse = responseContent
 
   await review.save();
   return review;
+};
+
+exports.getReviewsByVendor = async (userId, page = 1, limit = 10, rating = null) => {
+  const skip = (page - 1) * limit;
+  const vendor = await Vendor.findOne({ userId: userId });
+  if (!vendor) {
+    throw createError(404, "Vendor not found for the user.");
+  }
+  const filter = { vendorId: vendor._id };
+  console.log('Vendor ID in getReviewsByVendor:', vendor._id);
+  if (rating) {
+    filter.rating = rating;
+  }
+
+  const reviews = await Review.find(filter)
+    .populate({
+      path: 'productId', 
+      model: 'Product',
+      select: 'productName image'
+    })
+    .populate({
+      path: 'customerId', 
+      model: 'User', 
+      select: 'profileImageUrl'
+    })
+    .populate({
+      path: 'transactionId', 
+      model: 'Transaction', 
+      select: 'orderId', 
+      populate: {
+        path: 'orderId',
+        model: 'Order', 
+        select: 'shippingAddress'
+      }
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean(); 
+  
+  const total = await Review.countDocuments(filter);
+  console.log('Reviews by vendor:', reviews);
+  return {
+    reviews: reviews,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total,
+      itemsPerPage: limit,
+    },
+  };
 };

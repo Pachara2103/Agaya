@@ -144,3 +144,27 @@ export const replyToReview = async (reviewId, responseContent) => {
         throw new Error("Server Error");
     }
 };
+
+export const getReviewsByVendor = async (page = 1, limit = 5, rating = null) => {
+  try {
+    let url = `${API_URL}/reviews/vendor?page=${page}&limit=${limit}`;
+    if (rating) {
+      url += `&rating=${rating}`;
+    }
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getAuthHeaders() 
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch vendor reviews');
+    }
+    
+    return await response.json(); 
+  } catch(err) {
+    console.error("Error fetching vendor reviews: ", err);
+    throw err;
+  }
+};

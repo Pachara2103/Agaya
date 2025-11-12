@@ -165,7 +165,7 @@ const router = createBrowserRouter([
       },
 
       // --- Customer-Specific Routes ---
-      // Example: Applying to be a seller (assuming only customers can apply)
+      // Example: Applying to be a seller (only user who is a "customer" can access)
       {
         path: "/apply-for-seller",
         element: (

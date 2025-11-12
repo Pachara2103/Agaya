@@ -66,11 +66,27 @@ exports.deleteReview = async (req, res, next) => {
 exports.replyReview = async (req, res, next) => {
   try {
     const reviewId = req.params.id;
-    const vendorId = req.user._id;
+    const userId = req.user._id;
     const { responseContent } = req.body;
-    const replyReview = await reviewService.replyReview(reviewId, vendorId, responseContent);
+    const replyReview = await reviewService.replyReview(reviewId, userId, responseContent);
     res.status(200).json(replyReview);
   } catch(error) {
+    next(error);
+  }
+};
+
+exports.getReviewsByVendor = async (req, res, next) => {
+  try {
+    const userId = req.user._id; 
+    
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const { rating } = req.query; 
+
+    const result = await reviewService.getReviewsByVendor(userId, page, limit, rating);
+    
+    res.status(200).json(result);
+  } catch (error) {
     next(error);
   }
 };

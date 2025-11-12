@@ -98,7 +98,7 @@ const ProductReviews = ({ productId }) => {
     }
 
     return (
-      <div className="divide-y divide-gray-200">
+      <div className= "space-y-6">
         {reviews.map((review) => (
           <ReviewItem key={review._id} review={review} />
         ))}

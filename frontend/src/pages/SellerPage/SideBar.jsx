@@ -68,8 +68,12 @@ function SideBar({ setPageSelected, pageSelected, display }) {
             การบริการลูกค้า
           </h3>
           <ul className="mt-2 space-y-1">
-            <MenuItem text="จัดการแชท" />
-            <MenuItem text="จัดการรีวิว" />
+            {/* <MenuItem text="จัดการแชท" /> */}
+            <MenuItem
+              text="จัดการรีวิว"
+              isSelected={pageSelected === "จัดการรีวิว"}
+              onClick={() => setPageSelected("จัดการรีวิว")}
+            />
           </ul>
         </div>
 

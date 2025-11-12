@@ -49,7 +49,7 @@ exports.findAllProduct = async (queryParams) => {
 // Get product by ID 
 exports.findProductById = async (id) => {
     const product = await Product.findById(id);
-
+    console.log('product in service:', product);
     if (product) {
         return product;
     }

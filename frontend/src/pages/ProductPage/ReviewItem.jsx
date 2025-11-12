@@ -21,7 +21,7 @@ export const ReviewItem = ({ review }) => {
   const [imgError, setImgError] = useState(false);
 
   return (
-    <div className="py-6 border-b border-gray-200">
+    <div className="py-6 mb-3 bg-gray-100 rounded-lg px-4">
       <div className="flex items-start mb-3">
         {profileImageUrl && !imgError ? (
           <img

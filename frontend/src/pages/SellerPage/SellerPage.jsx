@@ -6,6 +6,7 @@ import Sidebar from "./SideBar";
 import MyProductsPage from "./MyProductsPage";
 import AddProductsPage from "./AddProductsPage";
 import MyOrder from "./MyOrder";
+import ManageReviewsPage from "./ManageReviewsPage";
 
 import { getMe } from "../../services/authService";
 import Return from "./Return";
@@ -19,6 +20,7 @@ const icon = {
   edit: 3,
   คำสั่งซื้อของฉัน: 4,
   ขอคืนสินค้า: 5,
+  จัดการรีวิว: 6,
 };
 
 function SellerPage() {
@@ -85,8 +87,10 @@ function SellerPage() {
         return (
           <Return isOrderReceivePage={false} isOtherPage={true} page={5} />
         );
+      case 6:
+        return <ManageReviewsPage />;
       default:
-        return null;
+        return <DashBoard />;
     }
   };
 

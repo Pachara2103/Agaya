@@ -27,20 +27,21 @@ const ProductDetailPage = () => {
       setIsError(false);
       const res = await getProductsById(productId);
 
-      const apiProduct = res.product;
-      console.log(apiProduct);
+      const apiProduct = res.data;
+      // console.log(productId)
+      // console.log(apiProduct);
 
       if (apiProduct && apiProduct._id) {
         setProduct({
           _id: apiProduct._id,
-          productName: apiProduct.product_name || apiProduct.productName,
-          productDescription:
-            apiProduct.product_description || apiProduct.productDescription,
+          productName: apiProduct.productName,
+          productDescription: apiProduct.productDescription,
           price: apiProduct.price,
           rating: apiProduct.rating || 0,
-          stockQuantity:
-            apiProduct.stock_quantity || apiProduct.stockQuantity || 0,
+          stockQuantity: apiProduct.stockQuantity || 0,
           image: apiProduct.image,
+          promotion: apiProduct.promotion || { active: false, discountPercentage: 0 },
+          numberOfReviews: apiProduct.numberOfReviews || 0,
         });
       } else {
         setProduct(null);
