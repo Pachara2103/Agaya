@@ -29,8 +29,9 @@ export const HeartIcon = () => (
 );
 
 export const renderStars = (rating) => {
+  const numericRating = Math.round(Number(rating)) || 0;
   return Array.from({ length: 5 }, (_, i) => (
-    <StarIcon key={i} filled={i < rating} />
+    <StarIcon key={i} filled={i < numericRating} />
   ));
 };
 
@@ -68,12 +69,20 @@ export const ProductImageGallery = ({ product, selectedImage, setSelectedImage, 
 export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decreaseQuantity, onAddToCart, onBuyNow }) => {
   const [finalPrice, setFinalPrice] = useState("");
   useEffect(() => {
+    // Re-fetch final price if the product ID changes
     const getfinalPrice = async () => {
-      const finalprice = await getFinalPrice(product._id);
-      setFinalPrice(finalprice);
+      if (product?._id) {
+        try {
+          const finalprice = await getFinalPrice(product._id);
+          setFinalPrice(finalprice);
+        } catch (error) {
+          console.error("Failed to get final price:", error);
+          setFinalPrice(product.price); 
+        }
+      }
     }
     getfinalPrice();
-  }, [])
+  }, [product?._id, product?.price]);
   return (
     <div className="flex flex-col">
       <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-2">
@@ -82,7 +91,9 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
 
       <div className="flex items-center my-4">
         <div className="flex">{renderStars(product.rating)}</div>
-        <span className="text-gray-500 ml-3 text-sm">(150 Reviews)</span>
+        <span className="text-gray-500 ml-3 text-sm">
+          ({product.numberOfReviews || 0} Reviews)
+        </span>
         <span className="mx-4 text-gray-300">|</span>
         <span
           className={`font-semibold text-sm ${product.stockQuantity > 0 ? "text-green-600" : "text-red-600"

@@ -1,6 +1,7 @@
 const Review = require("../models/review");
 const Transaction = require("../models/transaction");
 const Contain = require("../models/contain");
+const Order = require('../models/order'); 
 const Product = require("../models/product");
 const createError = require("http-errors");
 const mongoose = require("mongoose");
@@ -68,13 +69,37 @@ exports.createReview = async (data, user) => {
 
 //{{URL}}/api/v1/Agaya/reviews?productId=XXX&page=XX&limit=XX
 
-exports.getReviews = async (productId, page = 1, limit = 10) => {
+exports.getReviews = async (productId, page = 1, limit = 10, rating = null) => {
   const skip = (page - 1) * limit;
 
   const filter = productId ? { productId: productId } : {};
-
-  const reviews = await Review.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 });
-
+  if (rating) {
+    filter.rating = rating;
+  }
+  // console.log(rating)
+  // console.log('Filter in getReviews:', filter);
+  const reviews = await Review.find(filter)
+    .populate({
+      path: 'customerId',
+      model: 'User',
+      select: 'profileImageUrl'
+    })
+    .populate({
+      path: 'transactionId',
+      model: 'Transaction',
+      select: 'orderId',
+      populate: {
+        path: 'orderId',
+        model: 'Order',
+        select: 'shippingAddress'
+      }
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+  // console.log('Fetched reviews:', reviews);
+  // console.log(reviews[0].transactionId.orderId);
   const total = await Review.countDocuments(filter);
   return {
     reviews,

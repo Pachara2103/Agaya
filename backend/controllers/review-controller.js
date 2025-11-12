@@ -11,11 +11,11 @@ exports.createReview = async (req, res, next) => {
 
 exports.getReviews = async (req, res, next) => {
   try {
-    const { productId } = req.query;
+    const { productId, rating } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    const result = await reviewService.getReviews(productId, page, limit);
+    const result = await reviewService.getReviews(productId, page, limit, rating);
     res.status(200).json(result);
   } catch (error) {
     next(error);

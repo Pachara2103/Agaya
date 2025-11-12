@@ -32,11 +32,14 @@ export const createReview = async (reviewData) => {
     }
 };
 
-export const getReviews = async (page = 1, limit = 10, productId = null) => {
+export const getReviews = async (page = 1, limit = 10, productId = null, rating = null) => {
     try {
         let url = `${API_URL}/reviews?page=${page}&limit=${limit}`;
         if (productId) {
             url += `&productId=${productId}`;
+        }
+        if (rating) {
+            url += `&rating=${rating}`;
         }
         
         const response = await fetch(url, {

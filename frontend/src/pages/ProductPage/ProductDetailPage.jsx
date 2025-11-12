@@ -6,6 +6,8 @@ import Cookies from "js-cookie";
 import { useCart } from "../../context/CartContext";
 import { trackView } from "../../services/cookieService";
 import { ProductImageGallery, ProductDetailsPanel, } from "./ProductSubComponents";
+import { getProductsById } from "../../services/productService";
+import  ProductReviews from "./ProductReviews.jsx";
 
 const ProductDetailPage = () => {
   const location = useLocation();
@@ -190,6 +192,11 @@ const ProductDetailPage = () => {
               onAddToCart={handleAddToCart}
               onBuyNow={handleBuyNow}
             />
+          </div>
+          <div className="mt-20">
+            <div className="container mx-auto px-4 md:px-8">
+              <ProductReviews productId={product._id} />
+            </div>
           </div>
         </div>
       </div>
