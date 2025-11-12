@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { createProduct, updateProduct, uploadProductImage, deleteProduct } from '../libs/productService';
-import { getCategories } from '../libs/categoryService';
+import { createProduct, updateProduct, uploadProductImage, deleteProduct } from '../services/productService';
+import { getCategories } from '../services/categoryService';
 
 export const useProductForm = ({ product, isEdit, setPageSelected }) => {
   const [name, setName] = useState('');

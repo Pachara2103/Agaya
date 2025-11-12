@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getOrdersByVendor } from '../libs/orderService';
-import { getVendorId } from '../libs/userService';
-import { getTransactionByOrderId } from '../libs/transactionService';
+import { getOrdersByVendor } from '../services/orderService';
+import { getVendorId } from '../services/userService';
+import { getTransactionByOrderId } from '../services/transactionService';
 
 const useDashboardData = () => {
   const [toShipCount, setToShipCount] = useState(0);
