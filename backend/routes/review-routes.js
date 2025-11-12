@@ -9,11 +9,12 @@ const {
   updateReview,
   deleteReview,
   replyReview,
-  getReviewsByVendor
+  getReviewsByVendor,
+  getReviewsForProductsByCustomer,
 } = require("../controllers/review-controller");
 
 router.route("/vendor").get(protect, authorize("vendor"), getReviewsByVendor);
-
+router.post("/check-batch", getReviewsForProductsByCustomer);
 router.route("/").get(getReviews).post(protect, authorize("customer", "vendor", "admin"), createReview);
 router.route("/transaction/:transactionId").get(protect, getReviewByTransaction);
 router.route("/:id").get(getReview).post(protect, authorize("vendor"), replyReview).put(protect, updateReview).delete(protect, deleteReview);

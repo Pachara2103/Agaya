@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Cookies from "js-cookie";
 import axios from 'axios';
 import StatusTracking from "./StatusTracking";
@@ -9,9 +9,10 @@ import ToShip from '../SellerPage/ToShip';
 import { getFinalPrice } from '../../services/productService';
 import { getTransactionByOrderId } from "../../services/transactionService";
 import { getOrder } from "../../services/orderService";
-import { getReviewByTransaction } from "../../services/reviewService";
+import { checkReviewsForProducts } from "../../services/reviewService";
 import ConfirmReturn from "../SellerPage/ConfirmReturn";
 import ReviewForm from "./ReviewForm";
+import { ChevronDownIcon, ChevronUpIcon } from "./Icons/Icon.jsx";
 
 const OrderCard = ({
   isSellerPage,
@@ -38,10 +39,18 @@ const OrderCard = ({
   const [completeFilter, setCompleteFilter] = useState(false);
   const [toshipFilter, setToshipFilter] = useState(false);
   const [finalpriceProducts, setFinalPriceProducts] = useState([]);
-  const [showReviewForm, setShowReviewForm] = useState(true);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const [transactionId, setTransactionId] = useState(null);
   const [vendorId, setVendorId] = useState(null);
-  const [existingReview, setExistingReview] = useState(null);
+
+
+  const [allReviews, setAllReviews] = useState([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+  const [reviewVersion, setReviewVersion] = useState(0);
+  
+  const toggleReviewDropdown = () => {
+    setShowReviewForm((prev) => !prev);
+  };
 
   useEffect(() => {
     if (products) {
@@ -64,10 +73,10 @@ const OrderCard = ({
 
       try {
         const userResponse = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
-            headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
         setCurrentUser(userResponse.data);
-      } catch(err) {
+      } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
       }
     };
@@ -99,7 +108,7 @@ const OrderCard = ({
         const txId = tx?._id ?? tx;
         // ensure we store a primitive id (string) so downstream callers are consistent
         setTransactionId(txId ? String(txId) : null);
-      } catch(err) {
+      } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึง transaction:", err);
       }
     };
@@ -118,38 +127,72 @@ const OrderCard = ({
         }
 
         setVendorId(order.data.vendorId || vendorId);
-      } catch(err) {
+      } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึง order:", err);
       }
     };
     fetchOrder(orderId);
-  }, [vendorId]);
+  }, [orderId]);
 
   // check old review by transaction id
   // run when transactionId becomes available (not when existingReview changes)
   useEffect(() => {
     let mounted = true;
 
-    const fetchOldReview = async () => {
+    const fetchProductReviews = async () => {
+      if (!products || products.length === 0 || !currentUser?.data?._id) {
+        setIsLoadingReviews(false);
+        return;
+      }
+
+      setIsLoadingReviews(true);
       try {
-        if (!transactionId) return;
-        const oldReview = await getReviewByTransaction(transactionId);
+        const customerId = currentUser.data._id;
+        const productIds = products.map(p => p.productId);
+
+        const reviews = await checkReviewsForProducts(customerId, productIds);
+
         if (mounted) {
-          setExistingReview(oldReview);
+          setAllReviews(reviews || []); 
         }
       } catch (err) {
-        // If there's no review, backend may return 404 or throw — treat as "no existing review"
-        console.debug("ไม่พบรีวิวเก่าหรือเกิดข้อผิดพลาดในการดึงรีวิว:", err);
-        if (mounted) setExistingReview(null);
+        console.error("Error fetching batch reviews in component:", err);
+        if (mounted) setAllReviews([]);
+      } finally {
+        if (mounted) setIsLoadingReviews(false);
       }
     };
 
-    fetchOldReview();
+    fetchProductReviews();
 
     return () => {
       mounted = false;
     };
-  }, [transactionId]);
+  }, [products, currentUser, reviewVersion]);
+
+  // usermemo
+  const { productsToReview, productsAlreadyReviewed } = useMemo(() => {
+    if (isLoadingReviews || !products) {
+      return { productsToReview: [], productsAlreadyReviewed: [] };
+    }
+
+    const reviewedProductIds = new Set(allReviews.map(r => r.productId));
+
+    const toReview = products.filter(p => !reviewedProductIds.has(p.productId));
+
+    const alreadyReviewed = products
+      .filter(p => reviewedProductIds.has(p.productId))
+      .map(product => ({
+        ...product,
+        reviewData: allReviews.find(r => r.productId === product.productId)
+      }));
+
+    return { productsToReview: toReview, productsAlreadyReviewed: alreadyReviewed };
+  }, [products, allReviews, isLoadingReviews]);
+
+  const handleReviewSubmitted = useCallback(() => {
+    setReviewVersion(v => v + 1);
+  }, []);
 
   const showStatus = () => { setShowStatus(true); };
   const hideStatus = () => { setShowStatus(false); };
@@ -209,26 +252,39 @@ const OrderCard = ({
             </div>
           ))}
         </div>
-        {(latestStatusKey === "COMPLETED" ||
+       {(latestStatusKey === "COMPLETED" ||
           latestStatusKey === "DISPUTED" ||
-          latestStatusKey === "RETURN_SHIPPED"
-        ) && showReviewForm && !isSellerPage && (
-          <>
-          {products.map(product => (
-            <ReviewForm
-              key={product.productId}
-              productId={product.productId}
-              vendorId={vendorId} //
-              customerId={currentUser?.data?._id}
-              transactionId={transactionId}
-              existingReview={existingReview}
-              userName={currentUser ? currentUser.data.username : "Loading . . ."}
-              userImageUrl={currentUser ? currentUser.data.profileImageUrl : ""}
-              onReviewSubmitted={() => setShowReviewForm(true)}
-            />
-          ))}
-          </>
-        )}
+          latestStatusKey === "RETURN_SHIPPED") &&
+          !isSellerPage &&
+          !isLoadingReviews &&
+          (productsToReview.length > 0 || productsAlreadyReviewed.length > 0) && (
+            <div className="mt-6 border-t pt-4">
+              <button
+                type="button"
+                onClick={toggleReviewDropdown}
+                className="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition"
+              >
+                <span className="font-semibold text-gray-800">
+                  {showReviewForm ? "ซ่อนแบบฟอร์มรีวิว" : "แสดงความคิดเห็น / รีวิวสินค้า"}
+                </span>
+                {showReviewForm ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              </button>
+              {showReviewForm && (
+                <div className="mt-4 border-t pt-4">
+                  <ReviewForm
+                    productsToReview={productsToReview}
+                    productsAlreadyReviewed={productsAlreadyReviewed}
+                    onReviewSubmitted={handleReviewSubmitted}
+                    vendorId={vendorId}
+                    customerId={currentUser?.data?._id}
+                    transactionId={transactionId}
+                    userName={currentUser?.data?.username}
+                    userImageUrl={currentUser?.data?.profileImageUrl}
+                  />
+                </div>
+              )}
+            </div>
+          )}
       </div>
 
       {page === 4 && storeAddress && (
