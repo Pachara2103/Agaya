@@ -5,8 +5,8 @@ import {
   cancelCustomerOrder,
   requestOrderReturn,
   submitReturnTrackingId,
-} from "../libs/orderService";
-import { getMe } from "../libs/authService";
+} from "../services/orderService";
+import { getMe } from "../services/authService";
 
 const useOrderData = (page) => {
   const [orders, setOrders] = useState([]);
