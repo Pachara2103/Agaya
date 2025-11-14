@@ -65,10 +65,10 @@ function NavLinks({ user, handleLogout, onClose, }) {
                   </div>
                 )}
                 {user && user.userType.includes("admin") && (
-                  <li className="dropdown-item" onClick={() => handleNavigate("/dashboard")} >  Dashboard   </li>
+                  <li className="dropdown-item" onClick={() => handleNavigate("/dashboard")} >  แดชบอร์ด   </li>
                 )}
                 
-                <li className={`cursor-pointer ${hoverClass}`} onClick={() => handleNavigate('/result-search')}> ค้าหาสินค้า</li>
+                <li className={`cursor-pointer ${hoverClass}`} onClick={() => handleNavigate('/result-search')}> ค้นหาสินค้า</li>
                 <li className={`cursor-pointer ${hoverClass}`} onClick={handleApplyClick}> รายการโปรด</li>
                 <li className={`cursor-pointer ${hoverClass}`} onClick={handleApplyClick}> ตะกร้าของฉัน </li>
                 <li className={`cursor-pointer ${hoverClass}`} onClick={handleApplyClick}> {user?.userType?.includes("vendor") ? "ร้านค้าของฉัน" : "เปิดร้านค้าใหม่"}</li>

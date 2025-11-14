@@ -105,13 +105,13 @@ export const ProductDetailsPanel = ({ product, quantity, increaseQuantity, decre
 
       {product.promotion.active && (
         <div className="mt-2 mb-6 text-2xl sm:text-4xl ">
-          <span class="text-gray-400 line-through mr-2">{product.price}</span>
-          <span class="font-bold text-red-500 ">{finalPrice} {" ฿"}</span>
+          <span className="text-gray-400 line-through mr-2">{product.price}</span>
+          <span className="font-bold text-red-500 ">{finalPrice} {" ฿"}</span>
         </div>
       )}
       {!product.promotion.active && (
         <div className="mt-2 mb-6 text-2xl sm:text-4xl">
-          <span class="font-bold text-gray-900 ">{product.price} {" ฿"}</span>
+          <span className="font-bold text-gray-900 ">{product.price} {" ฿"}</span>
         </div>
       )}
 

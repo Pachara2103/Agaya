@@ -38,7 +38,7 @@ function CheckoutPage() {
 
     const handleAddressSelect = (address) => {
         setSelectedAddress(address);
-        console.log(address)
+        // console.log(address)
     };
 
     const handleCancelOrder = () => {

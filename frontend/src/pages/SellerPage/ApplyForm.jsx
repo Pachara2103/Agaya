@@ -79,7 +79,7 @@ const Form = ({
             )}
           </div>
 
-          <button className="button" onClick={handleUploadButtonClick}>
+          <button className="button cursor-pointer" onClick={handleUploadButtonClick}>
             เลือกรูป
           </button>
 

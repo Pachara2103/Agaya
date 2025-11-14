@@ -40,9 +40,9 @@ function Home() {
   };
 
   return (
-    <div class="flex flex-col relative ">
+    <div className="flex flex-col relative ">
       <main>
-        <div class="flex flex-col gap-10 px-12 lg:px-30">
+        <div className="flex flex-col gap-10 px-12 lg:px-30">
           <Advertisement />
 
           {recommendations && (<RowProductAndTitle
