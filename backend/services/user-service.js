@@ -17,13 +17,6 @@ exports.findById = async (id) => {
 };
 
 exports.findByVendorId = async (vendorId) => {
-    // console.log("vendorId: ", vendorId)
-    // const vendor = await Vendor.findById(vendorId);
-    // if (!vendor) {
-    //     throw createError(404, "Vendor not found");
-    // }
-    // console.log("vendor: ", vendor);
-    // const userId = vendor.userId;
     const user = await User.findById(vendorId);
     if (!user) {
         throw createError(404, "User not found");

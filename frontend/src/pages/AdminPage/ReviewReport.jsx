@@ -7,7 +7,7 @@ function ReviewReport() {
     const [reviewReports, setReviewReports] = useState(null);
     const fetchReviewReports = async () => {
         const res = await getReviewReports();
-        console.log(res);
+        // console.log(res.data);
         setReviewReports(res.data);
         return res;
     };
@@ -31,7 +31,7 @@ function ReviewReport() {
             "PENDING": filter.pendingFilter,
             "APPROVED": filter.approvedFilter
         };
-        return ReviewReports.map((reviewReport) => 
+        return reviewReports.map((reviewReport) => 
             statusFilterMap[reviewReport.status] ? (
                 <ReviewReportBox key={reviewReport._id} data={reviewReport} onReviewReportUpdate={handleReviewReportUpdate}/>
             ) : null
