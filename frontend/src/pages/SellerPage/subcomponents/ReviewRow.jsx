@@ -115,7 +115,7 @@ export const ReviewRow = ({ review, onReplySubmit }) => {
                 <button
                   onClick={handleSend}
                   disabled={loading}
-                  className="min-w-[100px] h-[50px] px-5 bg-[#48B3AF] text-white text-sm font-medium rounded-md hover:bg-[#3b8f8c] disabled:opacity-50"
+                  className="min-w-[100px] h-[50px] px-5 bg-[#48B3AF] text-white text-sm font-medium rounded-md hover:bg-[#3b8f8c] disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? 'กำลังส่ง...' : 'Reply'}
                 </button>

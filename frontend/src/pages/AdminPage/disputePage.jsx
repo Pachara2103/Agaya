@@ -7,6 +7,7 @@ import { StatusButton } from "./DisputeComponent/statusButton";
 
 function DisputePage() {
   const [disputes, setDisputes] = useState(null);
+
   const fetchDispute = async () => {
     const res = await getReturnRequests();
     // console.log(res.data);
@@ -29,6 +30,7 @@ function DisputePage() {
       receivedFilter,
       completedFilter,
     } = filter;
+
     const statusFilterMap = {
       "PENDING": filter.pendingFilter,
       "APPROVED": filter.approvedFilter,
@@ -43,13 +45,16 @@ function DisputePage() {
       ) : null
     );
   };
+
   useEffect(() => {
     fetchDispute();
   }, []);
+
   useEffect(() => {
     if (disputes) {
     }
   }, [disputes]);
+
   const [pendingFilter, setPendingFilter] = useState(true);
   const [approvedFilter, setApprovedFilter] = useState(true);
   const [rejectedFilter, setRejectedFilter] = useState(true);
@@ -74,6 +79,7 @@ function DisputePage() {
     { text: "COMPLETED", state: completedFilter, setState: setCompletedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400" },
     { text: "REJECTED", state: rejectedFilter, setState: setRejectedFilter, colorOn: "bg-blue-500", colorOff:  "bg-gray-400"},
   ];
+  
   return (
     <>
       <div className="flex h-20 items-center pl-14 text-[24px] font-[700] text-black">
