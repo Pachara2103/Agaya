@@ -2,9 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import {
   getOrdersByVendor, 
   addOrderTrackingEvent, 
-} from "../libs/orderService";
-import { getMe } from "../libs/authService"; 
-import { getVendorId } from "../libs/userService";
+} from "../services/orderService";
+import { getMe } from "../services/authService"; 
+import { getVendorId } from "../services/userService";
 
 const VENDOR_ORDER_PAGES = {
   All: 6,

@@ -3,6 +3,8 @@ const orderService = require("./order-service");
 const Addto = require("../models/addto");
 const Product = require("../models/product");
 const createError = require("http-errors");
+const emailService = require('./email-service');
+const Order = require("../models/order")
 
 exports.createCheckoutSession = async (orderData, user) => {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -72,15 +74,28 @@ exports.verifyPayment = async (sessionId, user) => {
   } catch (e) {
     throw new createError(500, "Invalid metadata in payment session.");
   }
-
+  const transactionId = session.id;
   const orderData = {
     cartId: session.metadata.cartId,
     customerId: user._id,
     paymentMethod: session.metadata.paymentMethod || "card",
     selectedItem,
     selectedAddress,
-    transactionId: session.id, 
+    transactionId 
   };
-
-  return { success: true, orderData };
+  try {
+    const existingOrders = await Order.find({ "transactionId": transactionId });
+    if (existingOrders && existingOrders.length > 0) {
+      return { success: true, createdOrders: existingOrders };
+    }
+    const createdOrders = await orderService.checkoutOrder(orderData, user);
+    // console.log(createdOrders)
+    // console.log(orderData)
+    await emailService.sendPaymentSuccessEmail(user, createdOrders);
+    return { success: true, createdOrders };
+  } catch (err) {
+    // console.log(createdOrders)
+    console.log(err)
+    return { success: false };
+  }
 };

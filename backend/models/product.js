@@ -30,7 +30,15 @@ const productSchema = new mongoose.Schema({
     type: Number,
     min: 0.0,
     max: 5.0,
-    default: null
+    default: 0
+  },
+  numberOfReviews: {
+    type: Number,
+    default: 0
+  },
+  sumOfRating: {
+    type: Number,
+    default: 0
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,

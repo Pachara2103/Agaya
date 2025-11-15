@@ -1,0 +1,193 @@
+import { API_URL } from "./api";
+import Cookies from "js-cookie";
+
+const getAuthHeaders = () => {
+    const token = Cookies.get('token');
+    if (!token) {
+        return { "Content-Type": "application/json" };
+    }
+    return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+};
+
+export const createReview = async (reviewData) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(reviewData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create review');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw err; // ส่ง error message จริงไปให้ component จัดการ
+    }
+};
+
+export const getReviews = async (page = 1, limit = 10, productId = null, rating = null) => {
+    try {
+        let url = `${API_URL}/reviews?page=${page}&limit=${limit}`;
+        if (productId) {
+            url += `&productId=${productId}`;
+        }
+        if (rating) {
+            url += `&rating=${rating}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch reviews');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw new Error("Server Error");
+    }
+};
+
+export const getReview = async (reviewId) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch review');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw new Error("Server Error");
+    }
+};
+
+export const getReviewByTransaction = async (transactionId) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/transaction/${transactionId}`, {
+            headers: getAuthHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch review');
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw new Error("Server Error");
+    }
+};
+
+export const updateReview = async (reviewId, updateData) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(updateData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update review');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw new Error("Server Error");
+    }
+};
+
+export const deleteReview = async (reviewId) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete review');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw new Error("Server Error");
+    }
+};
+
+export const replyToReview = async (reviewId, responseContent) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ responseContent })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to reply to review');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error: ", err);
+        throw new Error("Server Error");
+    }
+};
+
+export const getReviewsByVendor = async (page = 1, limit = 5, rating = null) => {
+    try {
+        let url = `${API_URL}/reviews/vendor?page=${page}&limit=${limit}`;
+        if (rating) {
+            url += `&rating=${rating}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to fetch vendor reviews');
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Error fetching vendor reviews: ", err);
+        throw err;
+    }
+};
+
+export const checkReviewsForProducts = async (customerId, productIds) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/check-batch`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ customerId, productIds })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to check batch reviews');
+        }
+
+        const result = await response.json();
+        return result.data; 
+    } catch (err) {
+        console.error("Error checking batch reviews: ", err);
+        return [];
+    }
+};

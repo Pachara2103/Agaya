@@ -7,7 +7,8 @@ const Cart = require("../models/cart");
 const mongoose = require("mongoose");
 const createError = require('http-errors');
 const { getOrderDetailsPipeline, calculatePagination } = require("../utils/orderUtil.js");
-const user = require("../models/user.js");
+const User = require("../models/user.js");
+const Vendor = require("../models/vendor.js");
 
 const hasRole = (user, roles) =>
   user.userType.some((role) => roles.includes(role));
@@ -18,9 +19,10 @@ exports.checkoutOrder = async (orderData, user) => {
 
   try {
     orderData.customerId = user._id;
-    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress } = orderData;
-
-    const carts = await Cart.findOne({ customerId: customerId, _id: cartId });
+    const { cartId, customerId, paymentMethod, selectedItem, selectedAddress, transactionId } = orderData;
+    let obj_cartId = new mongoose.Types.ObjectId(cartId)
+    let obj_customerId = new mongoose.Types.ObjectId(customerId)
+    const carts = await Cart.findOne({ customerId: obj_customerId, _id: obj_cartId });
     if (!carts)
       throw new createError(
         404, `There no cart with id of ${cartId} that belong to customer ${customerId}`
@@ -46,7 +48,7 @@ exports.checkoutOrder = async (orderData, user) => {
 
     const itemsByVendor = {};
     for (let item of cartItems) {
-      console.log(item);
+      // console.log(item);
       const product = await Product.findOne({ _id: item.productId }).session(session);
       if (!product) throw new createError(404, `Product ${item.productId} not found`);
       if (product.stockQuantity < item.quantity) {
@@ -69,6 +71,7 @@ exports.checkoutOrder = async (orderData, user) => {
         customerId,
         vendorId,
         shippingAddress: selectedAddress,
+        transactionId: transactionId,
         orderTracking: [
           {
             statusKey: 'ORDER_RECEIVED',
@@ -79,6 +82,7 @@ exports.checkoutOrder = async (orderData, user) => {
       });
       await order.save({ session });
 
+      const contains = [];
       for (const { item, product } of vendorItem) {
         totalAmount += item.quantity * product.price;
         product.stockQuantity -= item.quantity;
@@ -90,15 +94,23 @@ exports.checkoutOrder = async (orderData, user) => {
           quantity: item.quantity,
         });
         await contain.save({ session });
+        contains.push({
+          name: product.productName,
+          quantity: item.quantity,
+          price: product.price,
+          image: product.image[0], 
+        });
       }
-
+      console.log("dude", contains);
       const transaction = new Transaction({
         orderId: order._id,
         paymentMethod: paymentMethod,
         amount: totalAmount.toFixed(2),
+        transactionId: transactionId
       });
 
       await transaction.save({ session });
+      order.contains = contains;
       createdOrders.push({ order, transaction });
 
     }
@@ -123,7 +135,9 @@ const statusFlow = {
   IN_TRANSIT: { next: ["DELIVERED", "FAILED_ATTEMPT"], roles: ["vendor", "admin"] },
   FAILED_ATTEMPT: { next: ["IN_TRANSIT"], roles: ["vendor", "admin"] },
   DELIVERED: { next: ["COMPLETED"], roles: ["customer", "admin"] },
-  COMPLETED: { next: [], roles: [] }
+  COMPLETED: { next: [], roles: [] },
+  RETURN_SHIPPED: { next: ["COMPLETED", "REFUNDED"], roles: ["vendor", "admin"] },
+  DISPUTED: { next: ["COMPLETED"], roles: ["admin"]}
 };
 const defaultDescriptions = {
   ORDER_RECEIVED: 'คำสั่งซื้อได้รับการยืนยันและรอการจัดส่ง',
@@ -170,7 +184,9 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
       'DELIVERED',
       'FAILED_ATTEMPT',
       'COMPLETED',
-      'CANCELLED'
+      'CANCELLED',
+      'RETURN_SHIPPED',
+      'REFUNDED'
     ];
     if (!validStatuses.includes(newStatus)) {
       throw new createError(
@@ -191,17 +207,82 @@ exports.addOrderTrackingEvent = async (orderId, trackingBody, user) => {
       throw new createError(403, "You are not authorized to update this order status");
     }
 
-    order.orderTracking.push({
-      statusKey: newStatus,
-      description: description || defaultDescriptions[newStatus],
-      timestamp: new Date()
-    });
+    if (currentState === 'RETURN_SHIPPED' && newStatus === 'COMPLETED') {
+      newStatus = 'REFUNDED';
+    }
+
+    // dummy for show assume pick_up then all transit working fine until delivered
+    if (newStatus === 'PICKED_UP') {
+      // add PICKED_UP
+      order.orderTracking.push({
+        statusKey: newStatus,
+        description: description || defaultDescriptions[newStatus],
+        timestamp: new Date()
+      });
+      // add IN_TRANSIT
+      order.orderTracking.push({
+        statusKey: 'IN_TRANSIT',
+        description: defaultDescriptions['IN_TRANSIT'],
+        timestamp: new Date()
+      });      
+      // add DELIVERED
+      order.orderTracking.push({
+        statusKey: 'DELIVERED',
+        description: defaultDescriptions['DELIVERED'],
+        timestamp: new Date()
+      });
+    } else {
+      order.orderTracking.push({
+        statusKey: newStatus,
+        description: description || defaultDescriptions[newStatus],
+        timestamp: new Date()
+      });
+    }
 
     //order.orderTracking.push(trackingEvent);
     await order.save();
+    // if it pass through here so it fine
+    if (newStatus === 'COMPLETED' || newStatus === 'REFUNDED') {
+      const transaction = await Transaction.findOne({ orderId: order._id });
+      if (!transaction) {
+        throw new createError(404, "Transaction not found for this order");
+      }
 
+      if (newStatus === 'REFUNDED') {
+        // This is a return completion, so refund the customer.
+        transaction.status = 'REFUNDED';
+        transaction.refunded = true;
+        transaction.refundDate = new Date();
+        transaction.refundAmount = transaction.amount;
+        await transaction.save();
+
+        const customer = await User.findById(order.customerId);
+        if (!customer) {
+          throw new createError(404, "Customer not found for this order");
+        }
+
+        customer.balance += transaction.amount;
+        await customer.save();
+      } else {
+        // This is a regular order completion, so pay the vendor.
+        const vendor = await Vendor.findById(order.vendorId);
+        if (!vendor) {
+          throw new createError(404, "Vendor not found for this order");
+        }
+
+        const vendorUser = await User.findById(vendor.userId);
+        if (!vendorUser) {
+          throw new createError(404, "Vendor user not found");
+        }
+
+        vendorUser.balance += transaction.amount;
+        await vendorUser.save();
+
+        transaction.status = 'COMPLETED';
+        await transaction.save();
+      }
+    }
     return order;
-
   } catch (err) {
     throw err;
   }
@@ -241,6 +322,19 @@ const getOrders = async ({ field, id, user, queryParams = {} }) => {
       },
     };
   } catch (err) {
+    throw err;
+  }
+};
+
+exports.getOrder = async (orderId) => {
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new Error("Order not found");
+    }
+    return order;
+  } catch(err) {
+    console.error("Error in getOrders:", err);
     throw err;
   }
 };
@@ -317,12 +411,19 @@ exports.cancelOrder = async (orderId, user, cancelBody) => {
     }
 
     const transaction = await Transaction.findOne({ orderId: order._id }).session(session);
-
+    const user2 = await User.findOne({_id: user._id}).session(session);
     if (transaction) {
+      // ????
+      // model does not have it 
       transaction.refunded = true;
       transaction.refundDate = new Date();
       transaction.refundAmount = transaction.amount;
       transaction.refundNote = cancelBody.refundNote || "Cancelled by customer before shipping";
+      // model does not have it 
+      if (transaction.paymentMethod === "CREDIT_CARD") {
+        user2.balance += transaction.amount;
+        await user2.save({ session });
+      }
       await transaction.save({ session });
     }
 

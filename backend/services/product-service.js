@@ -5,6 +5,8 @@ const auditService = require('./audit-service');
 const Vendor = require('../models/vendor');
 const { getVendorId } = require('../services/user-service')
 const { connection } = require('mongoose');
+const Contain = require('../models/contain');
+const Order = require('../models/order');
 
 
 // Get all products
@@ -47,7 +49,7 @@ exports.findAllProduct = async (queryParams) => {
 // Get product by ID 
 exports.findProductById = async (id) => {
     const product = await Product.findById(id);
-
+    console.log('product in service:', product);
     if (product) {
         return product;
     }
@@ -62,12 +64,18 @@ exports.findProductById = async (id) => {
     throw createError(404, 'Product not found');
 }
 
-exports.findProductsByVendorId = async (userId) => {
+exports.findProductsByVendorId = async (userId, queryParams) => {
+    const { keyword, category } = queryParams;
     const vendor = await Vendor.findOne({ userId: userId })
     if (!vendor) {
         throw createError(404, `You are not vendor brother`);
     }
-    const products = await Product.find({ vendorId: vendor._id });
+
+    let query = { vendorId: vendor._id };
+    if (keyword) query.productName = { $regex: keyword, $options: 'i' };
+    if (category) query.type = category;
+
+    const products = await Product.find(query);
     return products
 }
 
@@ -178,12 +186,44 @@ exports.deleteProduct = async (id, user) => {
     if (!product) {
         throw createError(404, "Product not found");
     }
-    // Check permmission here
+
     const isAdmin = user.userType.includes('admin');
-    const isOwner = product.vendorId.toString() === user._id.toString();
+    let isOwner = false;
+    if (user.userType.includes('vendor')) {
+        const vendorId = await getVendorId(user._id);
+        isOwner = product.vendorId.toString() === vendorId.toString();
+    }
 
     if (!isAdmin && !isOwner) {
         throw createError(403, "You do not have permission to delete this product.");
+    }
+
+    const contains = await Contain.find({ productId: id });
+    const orderIds = contains.map(c => c.orderId);
+    const orders = await Order.find({ '_id': { $in: orderIds } });
+
+    const nonDeletableStates = ['PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'DISPUTED', 'APPROVED', 'RETURN_SHIPPED'];
+
+    const hasActiveOrder = orders.some(order => {
+        const latestStatus = order.orderTracking[order.orderTracking.length - 1].statusKey;
+        return nonDeletableStates.includes(latestStatus);
+    });
+
+    if (hasActiveOrder) {
+        product.stockQuantity = 0;
+        await product.save();
+        
+        if (user) {
+            await auditService.logAction({
+                user: user._id,
+                action: "update",
+                resource: "Product",
+                resourceId: product._id,
+                changes: { stockQuantity: 0, reason: "Product is in an active order, stock set to 0 instead of deletion." }
+            });
+        }
+        
+        throw createError(400, 'Product is in an active order. Stock has been set to 0.');
     }
 
     await product.deleteOne();
@@ -221,4 +261,33 @@ exports.updatePromotionStatus = async () => {
 
     return;
 
+}
+
+exports.getProductSalesByVendor = async (userId) => {
+    const vendor = await Vendor.findOne({ userId: userId });
+    if (!vendor) {
+        throw createError(404, `You are not a vendor`);
+    }
+
+    const orders = await Order.find({ vendorId: vendor._id });
+
+    const completedOrders = orders.filter(order => {
+        const latestStatus = order.orderTracking[order.orderTracking.length - 1].statusKey;
+        return latestStatus === 'COMPLETED';
+    });
+
+    const completedOrderIds = completedOrders.map(order => order._id);
+
+    const contains = await Contain.find({ orderId: { $in: completedOrderIds } });
+
+    const sales = contains.reduce((acc, contain) => {
+        const productId = contain.productId.toString();
+        if (!acc[productId]) {
+            acc[productId] = 0;
+        }
+        acc[productId] += contain.quantity;
+        return acc;
+    }, {});
+
+    return sales;
 }

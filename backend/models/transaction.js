@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
-  /*transaction_id: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: 100
-  },*/
+  transactionId: { 
+    type: String
+  },
   paymentMethod: {
     type: String,
     required: true,
@@ -27,6 +24,24 @@ const transactionSchema = new mongoose.Schema({
     type: Number,
     min : 0,
     max : 9999999
+  },
+  status: {
+    type: String,
+    enum: ['PENDING', 'COMPLETED', 'REFUNDED'],
+    default: 'PENDING'
+  },
+  refunded: {
+    type: Boolean,
+    default: false
+  },
+  refundDate: {
+    type: Date
+  },
+  refundAmount: {
+    type: Number
+  },
+  refundNote: {
+    type: String
   }
 }, {
   timestamps: true

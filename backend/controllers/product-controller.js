@@ -31,7 +31,7 @@ exports.findProductById = async (req, res, next) => {
 exports.findProductsByVendor = async (req, res, next) => {
     console.log('call findProductsByVendor')
     try {
-        const products = await productService.findProductsByVendorId(req.user._id);
+        const products = await productService.findProductsByVendorId(req.user._id, req.query);
         res.status(200).json({ success: true, count: products.length, data: products });
     } catch (err) {
         next(err);
@@ -73,5 +73,15 @@ exports.updatePromotionStatus = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.getProductSalesByVendor = async (req, res, next) => {
+    try {
+        const sales = await productService.getProductSalesByVendor(req.user._id);
+        res.status(200).json({ success: true, data: sales });
+    } catch (err) {
+        next(err);
+    }
+};
+
 
 

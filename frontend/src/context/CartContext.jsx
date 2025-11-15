@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
-import { getOrCreateCartByUserId, getCartItems, updateCartItemQuantity, deleteCartItem } from '../libs/cartService';
+import { getOrCreateCartByUserId, getCartItems, updateCartItemQuantity, deleteCartItem } from '../services/cartService';
 import { useAuth } from './AuthContext';
-import { getFinalPrice, getTotalPrice } from '../libs/productService';
+import { getFinalPrice, getTotalPrice } from '../services/productService';
 
 const CartContext = createContext();
 

@@ -54,7 +54,7 @@ function Nav() {
 
   return (
     <nav>
-      <div class="flex flex-row justify-between w-full h-15 box-border border-b border-[#7d8184]">
+      <div className="flex flex-row justify-between w-full h-15 box-border border-b border-[#7d8184]">
 
         <div className="w-full justify-start px-5 sm:px-0 md:w-80 flex sm:justify-center items-center relative">
           <h2 className="text-[#000] text-[18px] cursor-pointer font-bold " onClick={() => { nav("/") }}>
@@ -76,8 +76,6 @@ function Nav() {
             numberOfStoresInCart={numberOfStoresInCart}
           />
         </div>
-
-
       </div>
     </nav>
   );

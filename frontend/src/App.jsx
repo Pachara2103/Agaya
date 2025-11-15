@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Promotion from "./components/Promotion/Promotion.jsx";
 import Nav from "./components/NavBar/Nav.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import CookieBanner from "./components/HomePage/CookieBanner.jsx";
+import CookieBanner from "./components/Common/CookieBanner.jsx";
 import "./app.css";
 
 function App() {
