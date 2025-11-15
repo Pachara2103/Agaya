@@ -1,6 +1,7 @@
 import {useState} from "react";
+import { updateReviewReportStatus } from "../../services/reviewReportService";
 
-export function AdminResponse({reviewId, onProcessComplete}) {
+export function AdminResponse({reviewReportId, onProcessComplete, user}) {
     const [responseMessage, setResponseMessage] = useState("");
     const [status, setStatus] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -8,6 +9,22 @@ export function AdminResponse({reviewId, onProcessComplete}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!status) {
+            setError("Please select either Approve or Reject.");
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await updateReviewReportStatus(reviewReportId, status, responseMessage, user);
+            onProcessComplete();
+        } catch(err) {
+            setError(err.message || `Failed to process request: ${status}`);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

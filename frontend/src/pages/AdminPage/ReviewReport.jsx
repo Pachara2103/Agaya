@@ -7,7 +7,7 @@ function ReviewReport() {
     const [reviewReports, setReviewReports] = useState(null);
     const fetchReviewReports = async () => {
         const res = await getReviewReports();
-        // console.log(res.data);
+        // console.log("ReviewReport: ", res.data);
         setReviewReports(res.data);
         return res;
     };
@@ -17,19 +17,17 @@ function ReviewReport() {
         fetchReviewReports();
     };
 
-    const handleDeleteReview = () => {
-
-    };
-
     const displayReviewReports = (ReviewReports, filter) => {
         if (!ReviewReports) return null;
         const {
             pendingFilter,
-            approvedFilter
+            approvedFilter,
+            rejectedFilter
         } = filter;
         const statusFilterMap = {
             "PENDING": filter.pendingFilter,
-            "APPROVED": filter.approvedFilter
+            "APPROVED": filter.approvedFilter,
+            "REJECTED": filter.rejectedFilter
         };
         return reviewReports.map((reviewReport) => 
             statusFilterMap[reviewReport.status] ? (
@@ -50,15 +48,18 @@ function ReviewReport() {
     
     const [pendingFilter, setPendingFilter] = useState(true);
     const [approvedFilter, setApprovedFilter] = useState(true);
+    const [rejectedFilter, setRejectedFilter] = useState(true);
     
     let filter = {
         pendingFilter,
-        approvedFilter
+        approvedFilter,
+        rejectedFilter
     };
 
     const statusButtonsData = [
         {text: "PENDING", state: pendingFilter, setState: setPendingFilter, colorOn: "bg-blue-500", colorOff: "bg-gray-400"},
-        {text: "APPROVED", state: approvedFilter, setState: setApprovedFilter, colorOn: "bg-blue-500", colorOff: "bg-gray-400"}
+        {text: "APPROVED", state: approvedFilter, setState: setApprovedFilter, colorOn: "bg-blue-500", colorOff: "bg-gray-400"},
+        {text: "REJECTED", state: rejectedFilter, setState: setRejectedFilter, colorOn: "bg-blue-500", colorOff: "bg-gray-400"}
     ];
 
     return (

@@ -17,10 +17,13 @@ exports.findById = async (id) => {
 };
 
 exports.findByVendorId = async (vendorId) => {
-    const user = await User.findById(vendorId);
-    if (!user) {
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
         throw createError(404, "User not found");
     }
+    const userId = vendor.userId;
+    const user = await exports.findById(userId);
+    console.log("userbyvendorId: ", user);
     return user;
 };
 

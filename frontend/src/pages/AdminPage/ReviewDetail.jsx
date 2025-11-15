@@ -1,6 +1,6 @@
 import { FaStar } from "react-icons/fa6";
 
-export const ReviewDetail = (customerName, customerId, rating, content) => {
+export const ReviewDetail = ({customerName, customerId, rating, content}) => {
 
     return (
         <>

@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getVendorName } from "../../services/reviewReportService";
-import { getReview } from "../../services/reviewService";
 import { ReviewDetail } from "./ReviewDetail";
 import { AdminResponse } from "./AdminResponse";
 
@@ -23,40 +22,46 @@ const formatTime = (isoString) => {
 export function ReviewReportBox({data, onReviewReportUpdate}) {
     const [vendorName, setVendorName] = useState("");
     const [user, setUser] = useState(null);
-    // const [review, setReview] = useState(null);
     const {_id, vendorId, reason, status, createdAt, reviewId:review} = data;
     const reqDate = formatDate(createdAt || "2025-10-15T10:49:08.377Z");
     const time = formatTime(createdAt || "2025-10-15T10:49:08.377Z");
-    const fetchVendorName = async () => {
-        const user = await getVendorName(vendorId);
-        console.log("user: ", user);
-        console.log("data: ", data);
-        console.log("review: ", review.rating);
-        setVendorName(user.data.email);
-        setUser(user);
-    };
-    //old review id 69043a1877a572b545fb4c58
-    //new review id 6910a694709c4f5e6c7df2a6
+    
+    const fetchVendorName = useCallback(async () => {
+        if (!vendorId) {
+            console.error("No vendorId provided for report:", _id);
+            return; 
+        }
+        // console.log("vendorId: ", vendorId);
+        try {
+            const user = await getVendorName(vendorId);
 
-    // const fetchReview = async () => {
-    //     console.log("reviewId: ", reviewId);
-    //     const review = await getReview(reviewId);
-    //     console.log("review: ", review);
-    //     setReview(review);
-    // };
+            if (user && user.data) {
+                setVendorName(user.data.email);
+                setUser(user.data);
+                // console.log("Fetched user: ", user.data);
+            } else {
+                console.warn("Vendor not found for ID:", vendorId);
+            }
+            // console.log("Report data: ", data);
+            // console.log("Review object: ", review);
+        } catch (err) {
+            console.error(`Failed to fetch vendor ${vendorId}:`, err);
+        }
+    }, [vendorId, _id]);
 
     const statusColor = (status) => {
         return status == "PENDING"
         ? "bg-yellow-500"
         : status === "APPROVED"
         ? "bg-blue-900"
+        : status === "REJECTED"
+        ? "bg-red-800"
         : "bg-white";
     };
 
     useEffect(() => {
         fetchVendorName();
-        // fetchReview();
-    }, []);
+    }, [fetchVendorName, status]);
 
     const [detailState, setDetailState] = useState(false);
 
@@ -98,28 +103,40 @@ export function ReviewReportBox({data, onReviewReportUpdate}) {
                             {status}
                         </span>
                     </div>
-                    <div className="flex-3 flex items-center justify-center">
-                        <div
-                            className="flex items-center justify-center h-10 w-24 bg-[#48B3AF] text-white font-[100] cursor-pointer rounded-md"
-                            onClick={() => setDetailState(!detailState)}
-                        >
-                            {detailState ? "Close Detail" : "Detail"}
+                    {status !== "APPROVED" ? (
+                        <div className="flex-3 flex items-center justify-center">
+                            <div
+                                className="flex items-center justify-center h-10 w-24 bg-[#48B3AF] text-white font-[100] cursor-pointer rounded-md"
+                                onClick={() => setDetailState(!detailState)}
+                            >
+                                {detailState ? "Close Detail" : "Detail"}
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="flex-3 flex font-bold text-black h-10 w-24 items-center justify-center">Review deleted</div>
+                    )}
                 </div>
                 {/* detail */}
-                {detailState ? (
+                {detailState && (
                     <>
-                        {ReviewDetail(user.data.email, user.data._id, review.rating, review.reviewContent)}
+                        {user && review ? (
+                            <ReviewDetail
+                                customerName={user.email}
+                                customerId={user._id}
+                                rating={review.rating}
+                                content={review.reviewContent}
+                            />
+                        ) : (
+                            <div className="p-4 text-gray-500">ไม่พบรายละเอียดรีวิว (อาจถูกลบไปแล้ว)</div>
+                        )}
                         {status === "PENDING" && (
                             <AdminResponse
-                                reviewId={_id}
+                                reviewReportId={_id}
                                 onProcessComplete={onReviewReportUpdate}
+                                user={user}
                             />
                         )}
                     </>
-                ) : (
-                    <></>
                 )}
             </div>
         </>

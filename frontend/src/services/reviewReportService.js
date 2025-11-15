@@ -26,4 +26,18 @@ export const getVendorName = async (vendorId) => {
     }
 };
 
+export const updateReviewReportStatus = async (id, status, response, user) => {
+    try {
+        const res = await fetch(`${API_URL}/review-reports/${id}`, {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({id, status, response, user})
+        });
+        return await handleResponse(res);
+    } catch(err) {
+        console.error("Error processing review report: ", err);
+        throw new Error(err.message || "Server Error: Could not process review report.");
+    }
+};
+
 //delete, reply
