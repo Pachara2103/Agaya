@@ -8,7 +8,10 @@ const createError = require("http-errors");
  */
 exports.createReviewReport = async (req, res, next) => {
   try {
-    const report = await reviewReportService.createReviewReport(req.body); // req.body = {reviewId, vendorId, reason} 
+    const report = await reviewReportService.createReviewReport(
+      req.body,
+      req.user
+    ); // req.body = {reviewId, vendorId, reason}
     res.status(201).json({ success: true, data: report });
   } catch (err) {
     next(err);
@@ -52,7 +55,7 @@ exports.getReviewReportById = async (req, res, next) => {
 exports.deleteReviewReport = async (req, res, next) => {
   try {
     const deleted = await reviewReportService.deleteReviewReport(req.params.id);
-    res.status(200).json({ success: true, data: {}});
+    res.status(200).json({ success: true, data: {} });
   } catch (err) {
     next(err);
   }
@@ -66,7 +69,7 @@ exports.deleteReviewReport = async (req, res, next) => {
 exports.updateReviewReportStatus = async (req, res, next) => {
   try {
     const { status, response } = req.body;
-    const user = req.user; 
+    const user = req.user;
     const updatedReport = await reviewReportService.updateReviewReportStatus(
       req.params.id,
       status,
