@@ -2,7 +2,7 @@ import React from 'react';
 
 function CookieBanner({onAccept, onDecline}) {
     return (
-        <div className="fixed bottom-0 left-0 w-full bg-slate-800/95 text-white p-5 z-50 shadow-lg animate-slide-up">
+        <div id="cookies-banner" className="fixed bottom-0 left-0 w-full bg-slate-800/95 text-white p-5 z-50 shadow-lg animate-slide-up">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5">
                 <p className="text-sm text-center md:text-left">
                     เว็บไซต์นี้ใช้คุกกี้เพื่อปรับปรุงประสบการณ์ของผู้ใช้ การใช้เว็บไซต์นี้ต่อไปถือว่าคุณยอมรับการใช้คุกกี้ของเรา

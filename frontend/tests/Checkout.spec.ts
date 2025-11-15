@@ -27,7 +27,7 @@ test.describe("Cart page -> Place an order", () => {
                 const url = new URL(route.request().url());
                 const parts = url.toString().split('/');
                 const product_id = parts[parts.length - 1];
-                route.fulfill({ status: 200, json: {data: mockItems.filter(item => item.productId._id == product_id)[0].productId} });
+                route.fulfill({ status: 200, json: {data: mockItems.filter(item => item.productId._id == product_id)[0]?.productId} });
             } else {
                 route.continue();
             }
