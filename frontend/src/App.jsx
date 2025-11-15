@@ -9,7 +9,6 @@ import "./app.css";
 function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(false);
   const location = useLocation();
-
   const showNav = !location.pathname.startsWith("/seller-page");
 
   useEffect(() => {
@@ -21,6 +20,7 @@ function App() {
 
   const handleAcceptCookie = () => {
     localStorage.setItem("cookieConsent", "given");
+    window.location.reload();
     setShowCookieBanner(false);
   };
 

@@ -3,12 +3,17 @@ import { getProducts, getProductsById } from './productService';
 
 export const getRecommendations = async () => {
     try {
-        const res = await getProducts("",1,10,"");
+        const consent = localStorage.getItem("cookieConsent");
+        if (!consent) return null;
+        
+        const res = await getProducts("", 1, 10, "");
         const allProducts = res.data;
         const viewedItemsCookie = Cookies.get("viewedItems");
 
+
         if (!viewedItemsCookie) {
-            return null;
+            const randomProducts = [...allProducts].sort(() => 0.5 - Math.random());
+            return randomProducts.slice(0, 5);
         }
         let viewedItems = [];
         viewedItems = viewedItemsCookie.split(" ").filter(Boolean);
