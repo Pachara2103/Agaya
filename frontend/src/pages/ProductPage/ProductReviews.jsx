@@ -41,7 +41,7 @@ const ProductReviews = ({ productId }) => {
   }, [productId, page, ratingFilter]);
 
   const handleRatingFilterChange = (newRating) => {
-    console.log("Changing rating filter to:", newRating);
+    // console.log("Changing rating filter to:", newRating);
     setRatingFilter(newRating); 
     setPage(1); 
   };

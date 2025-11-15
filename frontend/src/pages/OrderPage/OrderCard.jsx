@@ -226,7 +226,7 @@ const OrderCard = ({
         <div className="space-y-6">
 
           {products.map((product, index) => (
-            <div key={product._id} className="flex md:flex-row flex-col gap-2 md:gap-0 items-center space-x-4 justify-between">
+            <div key={product.productId} className="flex md:flex-row flex-col gap-2 md:gap-0 items-center space-x-4 justify-between">
 
               {product && product.image && product.image.length > 0 && (
                 <img

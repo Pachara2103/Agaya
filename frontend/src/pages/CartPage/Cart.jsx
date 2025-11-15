@@ -43,8 +43,8 @@ const Cart = () => {
       return;
     }
 
-    console.log("selectedItems: ", selectedItems);
-    console.log("selectedItems[0]: ", selectedItems[0]);
+    // console.log("selectedItems: ", selectedItems);
+    // console.log("selectedItems[0]: ", selectedItems[0]);
     
     const outOfStockItem = selectedItems.find(item => 
       item.quantity <= 0

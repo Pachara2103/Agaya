@@ -1,4 +1,5 @@
 import {API_URL} from './api';
+
 const getUsers = async () => {
   try {
     const data = await fetch(`${API_URL}/api/v1/Agaya/users`);
@@ -7,7 +8,8 @@ const getUsers = async () => {
   } catch (err) {
     throw new Error("Can not get users");
   }
-}
+};
+
 const getUser = async (userId) => {
   try {
     const data = await fetch(`${API_URL}/users/${userId}`);
@@ -16,7 +18,7 @@ const getUser = async (userId) => {
   } catch (err) {
     throw new Error("Can not get user");
   }
-}
+};
 
 const createUser = async (newUser) => {
   console.log("Create User Called")
@@ -67,5 +69,6 @@ const deleteUser = async (url, id) => {
   } catch (e) {
     throw new Error("Can not delete user");
   }
-}
+};
+
 export { getUsers, getUser, createUser, updateUser, deleteUser }

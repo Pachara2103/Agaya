@@ -2,17 +2,17 @@ import ProductCard from "./ProductCard";
 
 const GridProductAndTitle = ({ title, products, details }) => {
   return (
-    <div class="flex flex-col gap-5 w-full ">
-      <div class="flex flex-row gap-5 h-8 items-center">
-        <div class="w-4 h-full rounded-[4px] bg-[#DB4444]"></div>
-        <p class="text-[14px] font-bold text-[#000]">{title}</p>
+    <div className="flex flex-col gap-5 w-full ">
+      <div className="flex flex-row gap-5 h-8 items-center">
+        <div className="w-4 h-full rounded-[4px] bg-[#DB4444]"></div>
+        <p className="text-[14px] font-bold text-[#000]">{title}</p>
       </div>
 
-      <div class="flex gap-5 h-8 items-center">
-        <span class="text-2xl md:text-3xl text-[#000] font-bold">{details}</span>
+      <div className="flex gap-5 h-8 items-center">
+        <span className="text-2xl md:text-3xl text-[#000] font-bold">{details}</span>
       </div>
 
-      <div class="flex items-center justify-center w-full ">
+      <div className="flex items-center justify-center w-full ">
         <ProductGrid products={products} />
       </div>
     </div>
@@ -21,11 +21,11 @@ const GridProductAndTitle = ({ title, products, details }) => {
 
 export const ProductGrid = ({ products }) => {
   return (
-    <div class="w-full">
-      <div class="p-5 md:p-10">
-        <div class="grid grid-cols-2 min-[620px]:grid-cols-3  min-[1240px]:grid-cols-4 min-[1400px]:grid-cols-5 gap-x-5 gap-y-5 hide-scrollbar">
+    <div className="w-full">
+      <div className="p-5 md:p-10">
+        <div className="grid grid-cols-2 min-[620px]:grid-cols-3  min-[1240px]:grid-cols-4 min-[1400px]:grid-cols-5 gap-x-5 gap-y-5 hide-scrollbar">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
       </div>
