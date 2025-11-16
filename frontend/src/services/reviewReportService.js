@@ -2,6 +2,7 @@
 import { API_URL } from "./api";
 import { getMe } from "./authService";
 import { getAuthHeaders, handleResponse } from "../utils/apiHealper";
+import { getVendorId } from "./userService";
 
 export const isOwnerOfProduct = async (productVendorId) => {
   try {
@@ -12,8 +13,8 @@ export const isOwnerOfProduct = async (productVendorId) => {
       return false;
     }
 
-    const vendorIdResponse = await getVendorIdByUserId(user._id);
-    const loggedInVendorId = vendorIdResponse.data;
+    const vendorIdResponse = await getVendorId(user._id);
+    const loggedInVendorId = vendorIdResponse;
     
     return loggedInVendorId === productVendorId;
 
@@ -21,18 +22,6 @@ export const isOwnerOfProduct = async (productVendorId) => {
     console.error("Error checking product ownership:", err);
     return false;
   }
-};
-
-export const getVendorIdByUserId = async (userId) => {
-    try {
-        const res = await fetch(`${API_URL}/users/vendor/${userId}`, {
-            method: "GET",
-        });
-        return await handleResponse(res);
-    } catch(err) {
-        console.error("Error fetching vendorId: ", err);
-        throw new Error(err.message || "Server Error: Could not fetch vendorId.");
-    }
 };
 
 export const createReviewReport = async (reportData) => {
