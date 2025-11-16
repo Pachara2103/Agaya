@@ -2,12 +2,43 @@ const ReviewReport = require("../models/review-report");
 const { deleteReview } = require("./review-service");
 const auditService = require("./audit-service");
 const createError = require("http-errors");
+const Review = require("../models/review");
+const Vendor = require("../models/vendor");
 
 exports.createReviewReport = async (data, user) => {
   try {
     const { reviewId, reason } = data;
-    const vendorId = user._id;
-    const report = await ReviewReport.create({ reviewId, vendorId, reason });
+
+    const reportingVendor = await Vendor.findOne({ userId: user._id });
+    if (!reportingVendor) {
+      throw createError(403, "User is not a vendor.");
+    }
+
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      throw createError(404, "Review not found.");
+    }
+
+    if (review.vendorId.toString() !== reportingVendor._id.toString()) {
+      throw createError(
+        403,
+        "Forbidden: You can only report reviews on your own products."
+      );
+    }
+
+    const existingReport = await ReviewReport.findOne({
+      reviewId,
+      vendorId: reportingVendor._id,
+    });
+    if (existingReport) {
+      throw createError(400, "You have already reported this review.");
+    }
+
+    const report = await ReviewReport.create({
+      reviewId,
+      vendorId: reportingVendor._id,
+      reason,
+    });
     return report;
   } catch (err) {
     throw err;
