@@ -16,6 +16,17 @@ exports.findById = async (id) => {
     return user;
 };
 
+exports.findByVendorId = async (vendorId) => {
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
+        throw createError(404, "User not found");
+    }
+    const userId = vendor.userId;
+    const user = await exports.findById(userId);
+    console.log("userbyvendorId: ", user);
+    return user;
+};
+
 exports.findByEmail = async (email) => {
     const user = await User.find({email:email});
     if (!user) {

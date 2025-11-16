@@ -3,8 +3,8 @@ const Item = ({ imgsrc, title, description }) => {
     <div className="text-center grid grid-cols-1 place-items-center">
       <div className="col-span-1">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#c9c9c9]">
-          <div class="flex items-center justify-center bg-[#000]  h-14 w-14 rounded-full ">
-            <img src={imgsrc} class="w-[80%] h-[80%] " />
+          <div className="flex items-center justify-center bg-[#000]  h-14 w-14 rounded-full ">
+            <img src={imgsrc} className="w-[80%] h-[80%] " />
           </div>
         </div>
 
@@ -36,7 +36,7 @@ const Service = () => {
   ];
 
   return (
-    <div class="py-5 w-full mb-10">
+    <div className="py-5 w-full mb-10">
       <div className="grid grid-cols-3 gap-x-10">
         {features.map((feature, index) => (
           <Item

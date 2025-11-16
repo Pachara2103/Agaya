@@ -8,6 +8,7 @@ import CategoryManagement from "./CategoryManagement";
 import ApproveVendorPage from "./ApproveVendorPage";
 import ProductManagement from "./ProductManagement";
 import DisputePage from "./disputePage";
+import ReviewReport from "./ReviewReport";
 
 function AdminPageContainer() {
   const [currentPanel, setCurrentPanel] = useState("user");
@@ -28,6 +29,7 @@ function AdminPageContainer() {
         {currentPanel === "category" ? <CategoryManagement /> : <></>}
         {currentPanel === "approve-vendor" ? <ApproveVendorPage /> : <></>}
         {currentPanel === "dispute" ? <DisputePage /> : <></>}
+        {currentPanel === "review-report" ? <ReviewReport/> : <></>}
       </>
     );
   };
@@ -85,6 +87,11 @@ function AdminPageContainer() {
               textColor={checkPanel("dispute", currentPanel)}
               handle={() => setCurrentPanel("dispute")}
             />
+            <Button1
+              text="&emsp;ตรวจสอบรีวิว"
+              textColor={checkPanel("review-report", currentPanel)}
+              handle={() => setCurrentPanel("review-report")}
+            />
           </div>
         </div>
         <div
@@ -96,4 +103,5 @@ function AdminPageContainer() {
     </div>
   );
 }
+
 export default AdminPageContainer;

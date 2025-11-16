@@ -16,7 +16,7 @@ function ProfileDropdown({ user, handleLogout, onClose }) {
       <div className="dropdown-item" onClick={() => handleNavigate("/profile")}>    บัญชีของฉัน    </div>
 
       {user && user.userType.includes("admin") && (
-        <div className="dropdown-item" onClick={() => handleNavigate("/dashboard")} >  Dashboard   </div>
+        <div className="dropdown-item" onClick={() => handleNavigate("/dashboard")} >  แดชบอร์ด   </div>
       )}
 
       <div className="dropdown-item" onClick={() => handleOrderPage("/profile")}>การซื้อของฉัน</div>

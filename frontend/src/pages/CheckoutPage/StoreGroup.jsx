@@ -13,6 +13,7 @@ export const StoreGroup = ({storeName, items}) => {
             <div className="space-y-0">
                 {items.map((item) => (
                     <ProductItemRow
+                        key={item._id}
                         item={item}
                     />
                 ))}

@@ -18,6 +18,15 @@ exports.findById = async (req, res, next) => {
     }
 };
 
+exports.findByVendorId = async (req, res, next) => {
+    try {
+        const user = await userService.findByVendorId(req.params.id);
+        res.status(200).json({success: true, data: user});
+    } catch(err) {
+        next(err);
+    }
+};
+
 exports.findByEmail = async (req, res, next) => {
     try {
         const user = await userService.findByEmail(req.params.email);

@@ -21,11 +21,8 @@ function ChangePasswordSuccess() {
 
                         <h2 className="text-2xl font-semibold mb-5">ตั้งรหัสผ่านใหม่สำเร็จแล้ว</h2>
 
-                        <p className="text-base text-gray-800 mb-2">
+                        <p className="text-base text-gray-800 mb-8">
                             เปลี่ยนรหัสผ่านบัญชีนี้สำเร็จ
-                        </p>
-                        <p className="text-sm text-gray-600 mb-8">
-                            คุณจะย้ายไปล็อกอินเข้าสู่ระบบภายใน 3 วินาที
                         </p>
 
                         <button className="w-full py-3 bg-[#80cbc4] text-white rounded-md text-base font-bold cursor-pointer transition-colors duration-300 hover:bg-[#4db6ac]" 

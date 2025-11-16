@@ -26,7 +26,6 @@ const ResultSearch = () => {
     }
     getcategories();
     setIsLoading(false);
-
   }, [])
 
   const handlePageChange = (value) => {
@@ -37,7 +36,7 @@ const ResultSearch = () => {
 
   useEffect(() => {
     setIsLoading(true);
-        console.log('keyword2= ', keyword)
+        // console.log('keyword2= ', keyword)
 
     const handlePage = async () => {
       const res = await getProducts("", 1, 10, currentCategory);
@@ -56,7 +55,7 @@ const ResultSearch = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log('keyword1= ', keyword);
+    // console.log('keyword1= ', keyword);
     const handleSearch = async () => {
       try {
         let key = (keyword=="All")? "":keyword;
@@ -92,7 +91,7 @@ const ResultSearch = () => {
   }
 
   return (
-    <div class="min-h-screen h-auto overflow-x-hidden hide-scrollbar relative flex flex-col items-center">
+    <div className="min-h-screen h-auto overflow-x-hidden hide-scrollbar relative flex flex-col items-center">
       {isloading && (<LoadingOverlay isloading={isloading} />)}
 
       <button className="button-white absolute top-0 left-0 mt-15 text-[12px] w-12 ml-1 md:mt-20 lg:mt-5 md:ml-5 sm:w-15 sm:text-[14px] lg:w-20 " onClick={() => nav("/")} >   ย้อนกลับ </button>
@@ -111,7 +110,6 @@ const ResultSearch = () => {
         </div>
       )}
       {products.length == 0 && (<span className="font-extrabold text-red-500 text-4xl items-center flex h-100"> ไม่พบสินค้าที่ค้นหา</span>)}
-
 
       <div className="w-5/6">  <ProductGrid products={products} />  </div>
 
@@ -133,12 +131,8 @@ const ResultSearch = () => {
           <div className="w-15 h-10 flex items-center justify-center">
             <IoIosArrowForward size={30} className="hover:text-[#B71F3B] text-gray-400 cursor-pointer" onClick={() => handlePageChange(currentpage + 1)} />
           </div>
-
         </div>
-
-
       </div>
-
     </div>
   );
 };

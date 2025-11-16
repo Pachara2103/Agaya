@@ -1,7 +1,7 @@
 import { CartItemRow } from "./CartItemRow";
 
 export const StoreGroup = ({ storeName, items, onQuantityChange, onRemoveClick, isSelected, onToggleSelect }) => {
-    console.log("hehe2", storeName, items)
+    // console.log("hehe2", storeName, items)
     return (
         <div className="mb-5 border border-[#D9D9D9]">
             <div className="p-3 bg-[#F5F5F5] font-bold text-base text-left">

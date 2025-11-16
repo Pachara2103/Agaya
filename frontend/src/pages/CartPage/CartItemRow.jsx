@@ -38,7 +38,7 @@ export const CartItemRow = ({ item, handleQuantityChange, handleRemoveClick, isS
       </div>
 
       {/* Price */}
-      <span class="col-span-1 md:col-span-2">{finalPrice}{" ฿"}</span>
+      <span className="col-span-1 md:col-span-2">{finalPrice}{" ฿"}</span>
 
 
       {/* Quantity */}

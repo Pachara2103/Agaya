@@ -7,7 +7,7 @@ const ChevronRightIcon = () => (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    class="w-5 h-5"
+    className="w-5 h-5"
   >
     <path
       strokeLinecap="round"
@@ -45,17 +45,17 @@ const Advertisement = () => {
     console.log(index);
   };
   return (
-    <div class="flex justify-center items-center ">
-      <aside class="flex flex-row">
-        <ul class="space-y-5 p-10 w-70">
+    <div className="flex justify-center items-center ">
+      <aside className="flex flex-row">
+        <ul className="space-y-5 p-10 w-70">
           {categories.map((category, index) => (
             <li
               key={index}
-              class="flex justify-between items-center text-gray-800"
+              className="flex justify-between items-center text-gray-800"
             >
               <a
                 href="#"
-                class="hover:text-black font-medium transition-colors"
+                className="hover:text-black font-medium transition-colors"
               >
                 {category.name}
               </a>
@@ -64,24 +64,24 @@ const Advertisement = () => {
           ))}
         </ul>
 
-        <div class="border-r-2 border-[#c9c9c9] "></div>
+        <div className="border-r-2 border-[#c9c9c9] "></div>
       </aside>
 
-      <main class="w-full h-full min-w-[700px]  p-10  flex items-center justify-center">
-        <div class="aspect-video relative text-white h-[384px] w-200 rounded-lg overflow-hidden flex items-center justify-center">
+      <main className="w-full h-full min-w-[700px]  p-10  flex items-center justify-center">
+        <div className="aspect-video relative text-white h-[384px] w-200 rounded-lg overflow-hidden flex items-center justify-center">
           <img
             src={AdsImg[index]}
-            class=""
+            className=""
           />
 
-          <div class="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-3 flex-row">
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-3 flex-row">
             {Array(5)
               .fill(0)
               .map((_, i) => (
                 <span
                   key={i}
                   onClick={() => changeIndex(i)}
-                  class={
+                  className={
                     index === i
                       ? "w-3 h-3 bg-white rounded-full cursor-pointer ring-2 ring-offset-2 ring-offset-black ring-white"
                       : "w-3 h-3 bg-gray-600 rounded-full cursor-pointer hover:bg-gray-400"
