@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { getReviews } from '../../services/reviewService.js';
-import { ReviewItem } from './ReviewItem.jsx';
+import React, { useState, useEffect } from "react";
+import { getReviews } from "../../services/reviewService.js";
+import { ReviewItem } from "./ReviewItem.jsx";
 
-const ProductReviews = ({ productId }) => {
+const ProductReviews = ({ productId, isOwner }) => {
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -27,7 +27,10 @@ const ProductReviews = ({ productId }) => {
         } else {
           setReviews([]);
           setPagination(null);
-          console.warn("No review data returned or data format is incorrect", data);
+          console.warn(
+            "No review data returned or data format is incorrect",
+            data
+          );
         }
       } catch (err) {
         console.error("Error in ProductReviews:", err);
@@ -60,8 +63,8 @@ const ProductReviews = ({ productId }) => {
 
   const renderFilterButtons = () => (
     <div className="flex flex-wrap gap-2 mb-6">
-      {['All', 5, 4, 3, 2, 1].map((star) => {
-        const ratingValue = star === 'All' ? null : star;
+      {["All", 5, 4, 3, 2, 1].map((star) => {
+        const ratingValue = star === "All" ? null : star;
         const isActive = ratingFilter === ratingValue;
         return (
           <button
@@ -69,11 +72,11 @@ const ProductReviews = ({ productId }) => {
             onClick={() => handleRatingFilterChange(ratingValue)}
             className={`px-4 py-2 rounded-lg text-m font-medium transition ${
               isActive
-                ? 'bg-[#B71F3B] text-white shadow'
-                : 'bg-gray-100 text-yellow-400 hover:bg-gray-200'
+                ? "bg-[#B71F3B] text-white shadow"
+                : "bg-gray-100 text-yellow-400 hover:bg-gray-200"
             }`}
           >
-            {star === 'All' ? 'All Reviews' : `${'★'.repeat(star)}`}
+            {star === "All" ? "All Reviews" : `${"★".repeat(star)}`}
           </button>
         );
       })}
@@ -82,25 +85,32 @@ const ProductReviews = ({ productId }) => {
 
   const renderContent = () => {
     if (isLoading && reviews.length === 0) {
-      return <div className="text-center text-gray-500 py-12">Loading reviews...</div>;
+      return (
+        <div className="text-center text-gray-500 py-12">
+          Loading reviews...
+        </div>
+      );
     }
 
     if (error) {
-      return <div className="text-center text-red-500 py-12">Error: {error}</div>;
+      return (
+        <div className="text-center text-red-500 py-12">Error: {error}</div>
+      );
     }
 
     if (!isLoading && reviews.length === 0) {
       return (
         <div className="text-center text-gray-500">
-          No reviews found{ratingFilter ? ` for ${'★'.repeat(ratingFilter)}` : ''}.
+          No reviews found
+          {ratingFilter ? ` for ${"★".repeat(ratingFilter)}` : ""}.
         </div>
       );
     }
 
     return (
-      <div className= "space-y-6">
+      <div className="space-y-6">
         {reviews.map((review) => (
-          <ReviewItem key={review._id} review={review} />
+          <ReviewItem key={review._id} review={review} isOwner={isOwner} />
         ))}
       </div>
     );
@@ -109,9 +119,9 @@ const ProductReviews = ({ productId }) => {
   return (
     <div className="py-12">
       <h2 className="text-3xl font-bold text-gray-900 mb-6">Product Reviews</h2>
-      
+
       {renderFilterButtons()}
-      
+
       {renderContent()}
 
       {pagination && pagination.totalPages > 1 && (

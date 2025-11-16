@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { addProductToCart, getOrCreateCartByUserId, } from "../../services/cartService";
+import {
+  addProductToCart,
+  getOrCreateCartByUserId,
+} from "../../services/cartService";
 import { getMe } from "../../services/authService";
 import Cookies from "js-cookie";
 import { useCart } from "../../context/CartContext";
 import { trackView } from "../../services/cookieService";
-import { ProductImageGallery, ProductDetailsPanel, } from "./ProductSubComponents";
+import { isOwnerOfProduct } from "../../services/reviewReportService.js";
+import {
+  ProductImageGallery,
+  ProductDetailsPanel,
+} from "./ProductSubComponents";
 import { getProductsById } from "../../services/productService";
-import  ProductReviews from "./ProductReviews.jsx";
+import ProductReviews from "./ProductReviews.jsx";
 
 const ProductDetailPage = () => {
   const location = useLocation();
@@ -20,6 +27,7 @@ const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(!initialProduct);
   const [isError, setIsError] = useState(false);
+  const [isOwner, setIsOwner] = useState(null);
 
   const fetchProductData = async (productId) => {
     try {
@@ -40,8 +48,12 @@ const ProductDetailPage = () => {
           rating: apiProduct.rating || 0,
           stockQuantity: apiProduct.stockQuantity || 0,
           image: apiProduct.image,
-          promotion: apiProduct.promotion || { active: false, discountPercentage: 0 },
+          promotion: apiProduct.promotion || {
+            active: false,
+            discountPercentage: 0,
+          },
           numberOfReviews: apiProduct.numberOfReviews || 0,
+          vendorId: apiProduct.vendorId,
         });
       } else {
         setProduct(null);
@@ -54,6 +66,12 @@ const ProductDetailPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const checkOwner = async (vendorId) => {
+    const ownerStatus = await isOwnerOfProduct(vendorId);
+    setIsOwner(ownerStatus);
+    //console.log("isOwnerOfProduct:", ownerStatus);
   };
 
   useEffect(() => {
@@ -81,6 +99,7 @@ const ProductDetailPage = () => {
       setSelectedImage(
         product.image?.[0] || "https://via.placeholder.com/500x500"
       );
+      checkOwner(product.vendorId);
     }
   }, [product]);
 
@@ -196,7 +215,7 @@ const ProductDetailPage = () => {
           </div>
           <div className="mt-20">
             <div className="container mx-auto px-4 md:px-8">
-              <ProductReviews productId={product._id} />
+              <ProductReviews productId={product._id} isOwner={isOwner} />
             </div>
           </div>
         </div>
