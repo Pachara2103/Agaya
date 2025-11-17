@@ -2,6 +2,7 @@ import {useState, useEffect} from "react";
 import AddAddressModal from "./AddAddressModal";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { API_URL } from "../../services/api"
 
 function AddressDropdown({onAddressSelect}) {
     const [addresses, setAddresses] = useState([]);
@@ -20,7 +21,7 @@ function AddressDropdown({onAddressSelect}) {
             }
 
             try {
-                const response = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
+                const response = await axios.get(`${API_URL}/auth/me`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const user = response.data.data;
@@ -28,7 +29,7 @@ function AddressDropdown({onAddressSelect}) {
                     
                 if (response.data.data?._id) {
                     const userId = response.data.data._id;
-                    const addressUrl = `http://localhost:5000/api/v1/Agaya/address/${userId}/addresses`;
+                    const addressUrl = `${API_URL}/address/${userId}/addresses`;
                     const addressResponse = await axios.get(addressUrl, {
                         headers: {Authorization: `Bearer ${token}`}
                     });
@@ -86,7 +87,7 @@ function AddressDropdown({onAddressSelect}) {
             address: formDataFromForm.addressLine1
         };
 
-        const url = `http://localhost:5000/api/v1/Agaya/address/${currentUser._id}/addresses`;
+        const url = `${API_URL}/address/${currentUser._id}/addresses`;
         try {
             const response = await axios.post(url, requestData, {
                 headers: {Authorization: `Bearer ${token}`}

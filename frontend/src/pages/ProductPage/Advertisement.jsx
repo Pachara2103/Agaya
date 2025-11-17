@@ -46,7 +46,7 @@ const Advertisement = () => {
   };
   return (
     <div className="flex justify-center items-center ">
-      <aside className="flex flex-row">
+      {/* <aside className="flex flex-row">
         <ul className="space-y-5 p-10 w-70">
           {categories.map((category, index) => (
             <li
@@ -65,7 +65,7 @@ const Advertisement = () => {
         </ul>
 
         <div className="border-r-2 border-[#c9c9c9] "></div>
-      </aside>
+      </aside> */}
 
       <main className="w-full h-full min-w-[700px]  p-10  flex items-center justify-center">
         <div className="aspect-video relative text-white h-[384px] w-200 rounded-lg overflow-hidden flex items-center justify-center">

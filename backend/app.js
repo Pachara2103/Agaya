@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const passport = require('passport');
 const session = require('express-session');
@@ -8,7 +9,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
 
 const corsOptions = {
-    origin: ['http://localhost:5173'],
+    origin: [process.env.FRONTEND_URL || 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -90,7 +91,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: "http://localhost:5000/api/v1/Agaya"
+                url: `${process.env.BACKEND_URL}/api/v1/Agaya` || "http://localhost:5000/api/v1/Agaya"
             }
         ],
     },

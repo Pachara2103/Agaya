@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import AddressList from './AddressList.jsx';
 import AddAddressForm from './AddAddressForm.jsx';
+import { API_URL } from '../../services/api.js';
 
 function Address() {
     const [addresses, setAddresses] = useState([]);
@@ -24,7 +25,7 @@ function Address() {
 
          try {
             // 1. ดึงข้อมูล User ปัจจุบัน (เพื่อเอา ID)
-            const userResponse = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
+            const userResponse = await axios.get(`${API_URL}/auth/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCurrentUser(userResponse.data.data);
@@ -32,7 +33,7 @@ function Address() {
             // 2. ดึงรายการที่อยู่ทั้งหมดโดยใช้ ID ของผู้ใช้ปัจจุบัน
             if (userResponse.data.data?._id) {
                 const userId = userResponse.data.data._id;
-                const addressUrl = `http://localhost:5000/api/v1/Agaya/address/${userId}/addresses`;
+                const addressUrl = `${API_URL}/address/${userId}/addresses`;
 
                 const addressResponse = await axios.get(addressUrl, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -80,7 +81,7 @@ function Address() {
         };
 
         // 2. สร้าง URL พร้อม User ID
-        const url = `http://localhost:5000/api/v1/Agaya/address/${currentUser._id}/addresses`;
+        const url = `${API_URL}/address/${currentUser._id}/addresses`;
         
         console.log("Sending POST to:", url);
         console.log("With data:", requestData);
@@ -116,7 +117,7 @@ function Address() {
             address: formDataFromForm.addressLine1
         };
 
-        const url = `http://localhost:5000/api/v1/Agaya/address/addresses/${editingAddress._id}`;
+        const url = `${API_URL}/address/addresses/${editingAddress._id}`;
         console.log(`Sending PUT to: ${url}`);
         console.log("with data:", requestData);
         
@@ -145,7 +146,7 @@ function Address() {
 
             try {
                 const token = Cookies.get('token');
-                const url = `http://localhost:5000/api/v1/Agaya/address/addresses/${addressId}`;
+                const url = `${API_URL}/address/addresses/${addressId}`;
             
                 await axios.delete(url, {
                     headers: {Authorization: `Bearer ${token}`}

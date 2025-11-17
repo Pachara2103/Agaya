@@ -13,6 +13,7 @@ import { checkReviewsForProducts } from "../../services/reviewService";
 import ConfirmReturn from "../SellerPage/ConfirmReturn";
 import ReviewForm from "./ReviewForm";
 import { ChevronDownIcon, ChevronUpIcon } from "./Icons/Icon.jsx";
+import { API_URL } from "../../services/api.js";
 
 const OrderCard = ({
   isSellerPage,
@@ -72,7 +73,7 @@ const OrderCard = ({
       }
 
       try {
-        const userResponse = await axios.get('http://localhost:5000/api/v1/Agaya/auth/me', {
+        const userResponse = await axios.get(`${API_URL}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setCurrentUser(userResponse.data);

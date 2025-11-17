@@ -24,7 +24,5 @@ dist-ssr
 *.sw?
 .env
 
-playwright
-playwright.config.ts
 test-results
 playwright-report

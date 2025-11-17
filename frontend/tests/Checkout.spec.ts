@@ -1,8 +1,9 @@
+import { API_URL } from "../src/services/api";
 import { test, expect } from "./login";
 import { mockItems } from './mock-data';
 
-const addToPath = "http://localhost:5000/api/v1/agaya/addto/*";
-const getFinalPrice = "http://localhost:5000/api/v1/agaya/products/*"
+const addToPath = "**/addto/*";
+const getFinalPrice = "**/products/*"
 
 test.describe("Cart page -> Place an order", () => {
     let item1: any;
@@ -80,11 +81,14 @@ test.describe("Cart page -> Place an order", () => {
                 transaction: { _id: "1", orderId: "10", paymentMethod: 'cod', amount: 3 }
             }]
 
-        await page.route("http://localhost:5000/api/v1/Agaya/address/*/addresses", (route) => {
-            if (route.request().method() === "GET") route.fulfill({ status: 200, json: mockAddresses, });
+        await page.route("**/address/*/addresses", (route) => {
+            if (route.request().method() === "GET") {
+                console.log('...Making address')
+                route.fulfill({ status: 200, json: mockAddresses, });
+            }
         });
 
-        await page.route("http://localhost:5000/api/v1/Agaya/orders/checkout", (route) => {
+        await page.route("**/orders/checkout", (route) => {
             if (route.request().method() === "POST") route.fulfill({ status: 200, json: { data: mockOrder } });
         });
 

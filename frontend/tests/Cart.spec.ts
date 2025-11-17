@@ -1,7 +1,7 @@
 import { test, expect } from "./login";
 import { mockItems } from './mock-data';
 
-const addToPath = "http://localhost:5000/api/v1/agaya/addto/*";
+const addToPath = "**/addto/*";
 
 test.describe("Cart page -> Change quantity", () => {
     let gameItem: any;
@@ -197,7 +197,7 @@ test.describe("Cart page -> Place an order", () => {
             }
         });
 
-        await page.route("http://localhost:5000/api/v1/agaya/products/*", (route) => {
+        await page.route("**/products/*", (route) => {
             const method = route.request().method();
             if (method === "GET") {
                 const url = new URL(route.request().url());

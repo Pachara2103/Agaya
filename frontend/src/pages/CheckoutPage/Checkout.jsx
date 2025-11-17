@@ -8,6 +8,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useCart } from "../../context/CartContext";
 import * as paymentService from "../../services/paymentService"; 
+import { API_URL } from "../../services/api";
 
 function CheckoutPage() {
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -82,7 +83,7 @@ function CheckoutPage() {
                 const token = Cookies.get('token');
                 if (!token) throw new Error("กรุณาเข้าสู่ระบบ");
 
-                const response = await axios.post('http://localhost:5000/api/v1/Agaya/orders/checkout', orderPayload, {
+                const response = await axios.post(`${API_URL}/orders/checkout`, orderPayload, {
                     headers: {Authorization: `Bearer ${token}`}
                 });
                 console.log("Backend Response Data:", response.data);
