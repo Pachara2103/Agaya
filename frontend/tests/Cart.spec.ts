@@ -2,7 +2,7 @@ import { API_URL } from "../src/services/api";
 import { test, expect } from "./login";
 import { mockItems } from './mock-data';
 
-const addToPath = `${API_URL}/addto/*`;
+const addToPath = "http://localhost:5000/api/v1/agaya/addto/*";
 
 test.describe("Cart page -> Change quantity", () => {
     let gameItem: any;

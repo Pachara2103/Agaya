@@ -2,8 +2,8 @@ import { API_URL } from "../src/services/api";
 import { test, expect } from "./login";
 import { mockItems } from './mock-data';
 
-const addToPath = `${API_URL}/addto/*`;
-const getFinalPrice = `${API_URL}/products/*`
+const addToPath = "http://localhost:5000/api/v1/agaya/addto/*";
+const getFinalPrice = "http://localhost:5000/api/v1/agaya/products/*"
 
 test.describe("Cart page -> Place an order", () => {
     let item1: any;
