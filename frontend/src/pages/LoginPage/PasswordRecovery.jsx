@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FaCircleCheck } from "react-icons/fa6";
 
 const Done = ({ countdown }) => {
+  const navigate = useNavigate();
   return (
     <div className="otp-input-box">
       <div className="relative flex flex-col justify-between  text-[#000] gap-2  p-5 w-full h-full text-center">
@@ -23,8 +24,6 @@ const Done = ({ countdown }) => {
     </div>
   );
 };
-
-
 
 const PasswordRecovery = ({}) => {
   const [state, setState] = useState(0);
