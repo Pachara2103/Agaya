@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import {useNavigate} from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
 import axios from 'axios';
+import { API_URL } from '../../services/api';
 
 function PasswordForm() {
     const [password, setPassword] = useState('');
@@ -28,7 +29,7 @@ function PasswordForm() {
                 return;
             }
 
-            const url = 'http://localhost:5000/api/v1/Agaya/auth/verify-password';
+            const url = `${API_URL}/auth/verify-password`;
             const requestData = {password: password};
 
             const response = await axios.post(url, requestData, {

@@ -3,6 +3,7 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import axios from 'axios';
 import {FaEye, FaEyeSlash, FaArrowLeft, FaCheck, FaTimes} from 'react-icons/fa';
 import Cookies from 'js-cookie'
+import { API_URL } from '../../services/api';
 
 function SetNewPasswordPage() {
     // State Management
@@ -64,7 +65,7 @@ function SetNewPasswordPage() {
 
         try {
             await axios.put(
-                'http://localhost:5000/api/v1/Agaya/auth/change-password', 
+                `${API_URL}/auth/change-password`, 
                 requestData,
                 config
             );
