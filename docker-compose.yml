@@ -1,0 +1,44 @@
+services:
+    frontend:
+        build: ./frontend
+        container_name: agaya_frontend_image
+        ports:
+           - "5173:5173"   
+        volumes:
+           - ./frontend:/Agaya
+           - /Agaya/node_modules
+        networks:
+            - Agaya-network
+        depends_on:
+           - backend
+    backend:
+        build: ./backend
+        container_name: agaya_backend_image
+        ports:
+           - "5000:5000"
+        environment:
+          - MONGO_URI=mongodb://admin:password@mongodb:27017/Agaya?authSource=admin
+        volumes:
+           - ./backend:/Agaya
+           - /Agaya/node_modules
+        networks:
+            - Agaya-network
+        depends_on:
+           - mongodb  
+    mongodb:
+        image: mongo:6.0
+        ports:
+          - "27017:27017"
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: password
+        networks:
+           - Agaya-network
+        volumes:
+           - mongo_data:/data/db
+
+networks:
+  Agaya-network:
+    driver: bridge
+volumes:
+  mongo_data:
